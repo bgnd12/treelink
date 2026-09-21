@@ -4,7 +4,7 @@
             <div class="col-span-2">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 font-extrabold text-lg text-white">
                     <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white text-sm">🔗</span>
-                    LinkBio
+                    TreeLink
                 </a>
                 <p class="mt-3 text-sm max-w-xs text-ink-400">Satu link untuk semua kontenmu. Bangun halaman link-in-bio yang cantik dalam hitungan menit.</p>
             </div>
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="mt-10 pt-6 border-t border-white/10 text-xs text-ink-500 flex flex-col sm:flex-row justify-between gap-2">
-            <p>&copy; {{ date('Y') }} LinkBio. Seluruh hak cipta dilindungi.</p>
+            <p>&copy; {{ date('Y') }} TreeLink. Seluruh hak cipta dilindungi.</p>
             <p>Dibuat dengan Laravel &amp; Tailwind CSS.</p>
         </div>
     </div>

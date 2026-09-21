@@ -1,4 +1,4 @@
-# LinkBio — Platform Link-in-Bio (Clone Linktree)
+# TreeLink — Platform Link-in-Bio (Clone Linktree)
 
 Platform "link-in-bio" lengkap yang dibangun dengan **Laravel 11, PHP, MySQL, Tailwind CSS, dan JavaScript (Alpine.js + SortableJS + Chart.js)**.
 
@@ -21,7 +21,7 @@ Setiap user bisa mendaftar, membuat halaman profil publik di `domain.com/usernam
 
 ```bash
 # 1. Masuk ke folder project
-cd linkbio
+cd TreeLink
 
 # 2. Install dependency PHP
 composer install
@@ -36,10 +36,10 @@ cp .env.example .env
 php artisan key:generate
 
 # 6. Buat database MySQL terlebih dahulu, misal:
-mysql -u root -e "CREATE DATABASE linkbio CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -e "CREATE DATABASE TreeLink CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
 # 7. Sesuaikan kredensial database di file .env
-#    DB_DATABASE=linkbio
+#    DB_DATABASE=TreeLink
 #    DB_USERNAME=root
 #    DB_PASSWORD=
 
@@ -67,8 +67,8 @@ Seeder (`database/seeders/DatabaseSeeder.php`) otomatis membuat 2 akun saat `php
 
 | Peran | Email | Password | Username | Keterangan |
 |---|---|---|---|---|
-| **Admin** | `admin@linkbio.test` | `password` | `admin` | Akses ke `/admin` (panel admin) |
-| **User Demo** | `demo@linkbio.test` | `password` | `demo` | Sudah punya 6 contoh link + data analitik 30 hari terakhir (untuk lihat chart) |
+| **Admin** | `admin@TreeLink.test` | `password` | `admin` | Akses ke `/admin` (panel admin) |
+| **User Demo** | `demo@TreeLink.test` | `password` | `demo` | Sudah punya 6 contoh link + data analitik 30 hari terakhir (untuk lihat chart) |
 
 Halaman publik demo bisa langsung dicoba di: `http://localhost:8000/demo`
 

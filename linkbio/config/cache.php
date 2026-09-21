@@ -27,6 +27,6 @@ return [
 
     ],
 
-    'prefix' => env('CACHE_PREFIX', 'linkbio_cache_'),
+    'prefix' => env('CACHE_PREFIX', 'TreeLink_cache_'),
 
 ];

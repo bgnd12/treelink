@@ -18,7 +18,7 @@
             <div class="h-16 flex items-center px-6 border-b border-ink-100">
                 <a href="{{ route('dashboard.index') }}" class="flex items-center gap-2 font-extrabold text-lg text-ink-900">
                     <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white text-sm">🔗</span>
-                    LinkBio
+                    TreeLink
                 </a>
             </div>
 

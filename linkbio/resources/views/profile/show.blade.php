@@ -87,7 +87,7 @@
             </div>
 
             <p class="mt-10 text-xs opacity-50">
-                Dibuat dengan <a href="{{ route('home') }}" class="underline hover:opacity-80">LinkBio</a>
+                Dibuat dengan <a href="{{ route('home') }}" class="underline hover:opacity-80">TreeLink</a>
             </p>
         </div>
     </div>

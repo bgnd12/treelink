@@ -1,5 +1,5 @@
 {
-    "name": "linkbio/linkbio",
+    "name": "TreeLink/TreeLink",
     "type": "project",
     "description": "Link-in-bio platform (Linktree clone) built with Laravel.",
     "keywords": ["laravel", "linktree", "link-in-bio"],

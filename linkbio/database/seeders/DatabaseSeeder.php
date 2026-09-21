@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     {
         // Admin account -----------------------------------------------------
         $admin = User::firstOrCreate(
-            ['email' => 'admin@linkbio.test'],
+            ['email' => 'admin@TreeLink.test'],
             [
                 'name' => 'Super Admin',
                 'username' => 'admin',
@@ -23,14 +23,14 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $admin->getOrCreateProfile()->update([
-            'display_name' => 'LinkBio HQ',
-            'bio' => 'Akun administrator platform LinkBio.',
+            'display_name' => 'TreeLink HQ',
+            'bio' => 'Akun administrator platform TreeLink.',
             'theme' => 'midnight',
         ]);
 
         // Demo/testing user with sample data ---------------------------------
         $demo = User::firstOrCreate(
-            ['email' => 'demo@linkbio.test'],
+            ['email' => 'demo@TreeLink.test'],
             [
                 'name' => 'Demo Creator',
                 'username' => 'demo',

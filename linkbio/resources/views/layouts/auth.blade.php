@@ -11,7 +11,7 @@
         <div class="relative z-10 text-white max-w-md">
             <a href="{{ route('home') }}" class="flex items-center gap-2 font-extrabold text-2xl">
                 <span class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-lg">🔗</span>
-                LinkBio
+                TreeLink
             </a>
             <h2 class="mt-10 text-3xl font-extrabold leading-tight">Satu link untuk semua kontenmu.</h2>
             <p class="mt-4 text-brand-100">Bergabung dengan ribuan kreator yang sudah membangun halaman link-in-bio profesional mereka.</p>
@@ -24,7 +24,7 @@
             <div class="lg:hidden mb-8">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 font-extrabold text-xl text-ink-900">
                     <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white text-sm">🔗</span>
-                    LinkBio
+                    TreeLink
                 </a>
             </div>
 

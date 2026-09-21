@@ -28,8 +28,8 @@ return [
     ],
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@linkbio.test'),
-        'name' => env('MAIL_FROM_NAME', 'LinkBio'),
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@TreeLink.test'),
+        'name' => env('MAIL_FROM_NAME', 'TreeLink'),
     ],
 
 ];

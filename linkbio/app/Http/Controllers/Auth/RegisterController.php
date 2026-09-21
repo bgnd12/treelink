@@ -46,6 +46,6 @@ class RegisterController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard.index')->with('status', 'Selamat datang di LinkBio! Yuk mulai tambahkan link pertamamu.');
+        return redirect()->route('dashboard.index')->with('status', 'Selamat datang di TreeLink! Yuk mulai tambahkan link pertamamu.');
     }
 }
