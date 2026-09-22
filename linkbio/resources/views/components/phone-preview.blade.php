@@ -7,6 +7,7 @@
         default => 'rounded-xl',
     };
     $btnBg = $profile->button_style === 'outline' ? 'bg-transparent' : ($theme['text'] === 'text-white' ? 'bg-white/15 backdrop-blur' : 'bg-white');
+    $featuredLink = $links->firstWhere('id', $profile->featured_link_id);
 @endphp
 
 <div class="mx-auto w-[280px]">
@@ -23,7 +24,7 @@
                 <div class="flex justify-center flex-wrap gap-2 mt-4">
                     @foreach (array_filter($profile->social_links ?? []) as $platform => $url)
                         <span class="w-7 h-7 rounded-full {{ $btnBg }} flex items-center justify-center text-xs">
-                            {{ substr($platform, 0, 1) }}
+                            {{ ['instagram' => '◎', 'tiktok' => '♪', 'youtube' => '▶', 'facebook' => 'f', 'twitter' => '𝕏', 'whatsapp' => '◉'][$platform] ?? strtoupper(substr($platform, 0, 1)) }}
                         </span>
                     @endforeach
                 </div>
@@ -31,7 +32,8 @@
 
             <div class="mt-5 space-y-2.5">
                 @forelse ($links->where('is_active', true) as $link)
-                    <div class="w-full py-2.5 px-4 {{ $btnClasses }} {{ $btnBg }} text-xs font-semibold truncate">
+                    <div class="w-full py-2.5 px-4 {{ $btnClasses }} {{ $btnBg }} text-xs font-semibold truncate {{ $profile->animations_enabled ? 'animate-fade-up' : '' }} {{ $featuredLink?->id === $link->id ? 'ring-2 ring-yellow-300 scale-[1.03]' : '' }}">
+                        @if ($featuredLink?->id === $link->id)⭐ @endif
                         {{ $link->title }}
                     </div>
                 @empty
