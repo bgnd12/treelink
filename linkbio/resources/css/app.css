@@ -6,6 +6,30 @@
     display: none !important;
 }
 
+/* Background pattern utilities (base colour comes from the theme/design) */
+.pattern-dots {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.28) 2px, transparent 2.5px);
+    background-size: 22px 22px;
+}
+
+.pattern-grid {
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+
+.pattern-diagonal {
+    background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.16) 0 2px, transparent 2px 18px);
+}
+
+.pattern-waves {
+    background-image:
+        radial-gradient(circle at 22% 110%, rgba(255, 255, 255, 0.24) 0 18%, transparent 19%),
+        radial-gradient(circle at 78% -10%, rgba(255, 255, 255, 0.24) 0 18%, transparent 19%);
+    background-size: 90px 90px;
+}
+
 html {
     scroll-behavior: smooth;
 }

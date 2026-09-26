@@ -168,3 +168,126 @@
 #43 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
 #44 {main}
 "} 
+[2026-09-21 13:24:56] local.ERROR: Command "optimize:clearphp" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"optimize:clearphp\" is not defined.
+
+Did you mean one of these?
+    optimize
+    optimize:clear at C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php:759)
+[stacktrace]
+#0 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(298): Symfony/Component/Console/Application->find('optimize:clearp...')
+#1 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#2 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#3 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#4 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#5 {main}
+"} 
+[2026-09-21 13:27:14] local.ERROR: No arguments expected for "migrate" command, got "php". {"exception":"[object] (Symfony\\Component\\Console\\Exception\\RuntimeException(code: 0): No arguments expected for \"migrate\" command, got \"php\". at C:/laragon/www/treelink/linkbio/vendor/symfony/console/Input/ArgvInput.php:199)
+[stacktrace]
+#0 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Input/ArgvInput.php(92): Symfony/Component/Console/Input/ArgvInput->parseArgument('php')
+#1 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Input/ArgvInput.php(77): Symfony/Component/Console/Input/ArgvInput->parseToken('php', true)
+#2 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Input/Input.php(53): Symfony/Component/Console/Input/ArgvInput->parse()
+#3 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Command/Command.php(295): Symfony/Component/Console/Input/Input->bind(Object(Symfony/Component/Console/Input/InputDefinition))
+#4 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#5 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#6 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Illuminate/Database/Console/Migrations/MigrateCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#7 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#8 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#10 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#11 {main}
+"} 
+[2026-09-21 13:53:09] local.ERROR: PHP Parse error: Syntax error, unexpected T_NS_SEPARATOR, expecting T_VARIABLE on line 1 {"exception":"[object] (Psy\\Exception\\ParseErrorException(code: 0): PHP Parse error: Syntax error, unexpected T_NS_SEPARATOR, expecting T_VARIABLE on line 1 at C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Exception/ParseErrorException.php:44)
+[stacktrace]
+#0 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/CodeCleaner.php(657): Psy/Exception/ParseErrorException::fromParseError(Object(PhpParser/Error))
+#1 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/CodeCleaner.php(273): Psy/CodeCleaner->parse('<?php App//Model...', false)
+#2 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Shell.php(1399): Psy/CodeCleaner->clean(Array, false)
+#3 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Shell.php(1506): Psy/Shell->appendCode('App//Models//User...', true, false)
+#4 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Shell.php(2215): Psy/Shell->setCode('App//Models//User...', true)
+#5 C:/laragon/www/treelink/linkbio/vendor/laravel/tinker/src/Console/TinkerCommand.php(77): Psy/Shell->execute('App//Models//User...')
+#6 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Laravel/Tinker/Console/TinkerCommand->handle()
+#7 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#8 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#9 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#10 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#11 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate/Container/Container->call(Array)
+#12 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#13 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#14 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#15 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Laravel/Tinker/Console/TinkerCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#16 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#17 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#18 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#19 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#20 {main}
+"} 
+[2026-09-21 14:02:38] local.ERROR: Unexpected end of input {"exception":"[object] (InvalidArgumentException(code: 0): Unexpected end of input at C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Shell.php:1516)
+[stacktrace]
+#0 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Shell.php(2215): Psy/Shell->setCode('/ntry { App//Mode...', true)
+#1 C:/laragon/www/treelink/linkbio/vendor/laravel/tinker/src/Console/TinkerCommand.php(77): Psy/Shell->execute('/ntry { App//Mode...')
+#2 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Laravel/Tinker/Console/TinkerCommand->handle()
+#3 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#4 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#5 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#6 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#7 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate/Container/Container->call(Array)
+#8 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#9 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#10 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#11 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Laravel/Tinker/Console/TinkerCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#12 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#13 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#14 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#15 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#16 {main}
+"} 
+[2026-09-23 06:49:02] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:232)
+[stacktrace]
+#0 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(139): Illuminate/Log/LogManager->resolve('', NULL)
+#1 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(126): Illuminate/Log/LogManager->get('')
+#2 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(701): Illuminate/Log/LogManager->driver()
+#3 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(380): Illuminate/Log/LogManager->error('Class \"App//Http...', Array)
+#4 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(343): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Error))
+#5 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(621): Illuminate/Foundation/Exceptions/Handler->report(Object(Error))
+#6 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(200): Illuminate/Foundation/Console/Kernel->reportException(Object(Error))
+#7 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#8 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#9 {main}
+"} 
+[2026-09-23 06:49:02] laravel.ERROR: Class "App\Http\Controllers\Controller" not found {"exception":"[object] (Error(code: 0): Class \"App\\Http\\Controllers\\Controller\" not found at C:/laragon/www/treelink/linkbio/config/app/Http/Controllers/Admin/AdminController.php:14)
+[stacktrace]
+#0 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(97): require()
+#1 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(97): Illuminate/Foundation/Bootstrap/LoadConfiguration->Illuminate/Foundation/Bootstrap/{closure}()
+#2 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(78): Illuminate/Foundation/Bootstrap/LoadConfiguration->loadConfigurationFile(Object(Illuminate/Config/Repository), 'app.Http.Contro...', 'C://laragon//www//...', Array)
+#3 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate/Foundation/Bootstrap/LoadConfiguration->loadConfigurationFiles(Object(Illuminate/Foundation/Application), Object(Illuminate/Config/Repository))
+#4 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(342): Illuminate/Foundation/Bootstrap/LoadConfiguration->bootstrap(Object(Illuminate/Foundation/Application))
+#5 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(474): Illuminate/Foundation/Application->bootstrapWith(Array)
+#6 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(196): Illuminate/Foundation/Console/Kernel->bootstrap()
+#7 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#8 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#9 {main}
+"} 
+[2026-09-23 07:07:54] local.ERROR: Unsupported operand types: string + int {"exception":"[object] (TypeError(code: 0): Unsupported operand types: string + int at C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/ServeCommand.php:241)
+[stacktrace]
+#0 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/ServeCommand.php(209): Illuminate/Foundation/Console/ServeCommand->port()
+#1 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/ServeCommand.php(174): Illuminate/Foundation/Console/ServeCommand->serverCommand()
+#2 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/ServeCommand.php(129): Illuminate/Foundation/Console/ServeCommand->startProcess(true)
+#3 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Foundation/Console/ServeCommand->handle()
+#4 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#5 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#6 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#7 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#8 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate/Container/Container->call(Array)
+#9 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#10 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#11 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#12 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Illuminate/Foundation/Console/ServeCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#13 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#14 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#15 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#16 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#17 {main}
+"} 

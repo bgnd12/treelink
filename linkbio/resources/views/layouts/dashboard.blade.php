@@ -25,10 +25,7 @@
             <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
                 @php
                     $navItems = [
-                        ['route' => 'dashboard.index', 'label' => 'Overview', 'icon' => '📊'],
-                        ['route' => 'dashboard.links.index', 'label' => 'Links', 'icon' => '🔗'],
-                        ['route' => 'dashboard.appearance.edit', 'label' => 'Appearance', 'icon' => '🎨'],
-                        ['route' => 'dashboard.profile.edit', 'label' => 'Profile', 'icon' => '👤'],
+                        ['route' => 'dashboard.index', 'label' => 'Editor', 'icon' => '✏️'],
                         ['route' => 'dashboard.analytics.index', 'label' => 'Analytics', 'icon' => '📈'],
                         ['route' => 'dashboard.settings.index', 'label' => 'Settings', 'icon' => '⚙️'],
                     ];
