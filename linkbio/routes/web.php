@@ -60,6 +60,12 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
     Route::post('design', [EditorController::class, 'design'])->name('design');
     Route::post('enhance', [EditorController::class, 'enhance'])->name('enhance');
 
+    Route::get('short-links', [App\Http\Controllers\ShortLinkController::class, 'index'])->name('short-links.index');
+    Route::post('short-links', [App\Http\Controllers\ShortLinkController::class, 'store'])->name('short-links.store');
+    Route::put('short-links/{shortLink}', [App\Http\Controllers\ShortLinkController::class, 'update'])->name('short-links.update');
+    Route::delete('short-links/{shortLink}', [App\Http\Controllers\ShortLinkController::class, 'destroy'])->name('short-links.destroy');
+    Route::patch('short-links/{shortLink}/toggle', [App\Http\Controllers\ShortLinkController::class, 'toggle'])->name('short-links.toggle');
+
     Route::get('links', [LinkController::class, 'index'])->name('links.index');
     Route::post('links', [LinkController::class, 'store'])->name('links.store');
     Route::put('links/{link}', [LinkController::class, 'update'])->name('links.update');
@@ -114,3 +120,11 @@ Route::get('{username}/l/{link}', [PublicProfileController::class, 'redirectLink
 Route::get('{username}', [PublicProfileController::class, 'show'])
     ->where('username', '[A-Za-z0-9_.]+')
     ->name('public.profile');
+
+    Route::get('/locale/{locale}', function (string $locale) {
+    abort_unless(in_array($locale, ['id', 'en']), 404);
+
+    session(['locale' => $locale]);
+
+    return back();
+})->name('locale.set');

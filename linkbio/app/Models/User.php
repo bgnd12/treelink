@@ -62,6 +62,11 @@ class User extends Authenticatable
         return $this->hasMany(Link::class)->orderBy('position');
     }
 
+    public function shortLinks(): HasMany
+    {
+        return $this->hasMany(ShortLink::class)->latest();
+    }
+
     public function profileViews(): HasMany
     {
         return $this->hasMany(ProfileView::class);

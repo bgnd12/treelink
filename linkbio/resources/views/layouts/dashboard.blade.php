@@ -25,17 +25,22 @@
             <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
                 @php
                     $navItems = [
-                        ['route' => 'dashboard.index', 'label' => 'Editor', 'icon' => '✏️'],
-                        ['route' => 'dashboard.analytics.index', 'label' => 'Analytics', 'icon' => '📈'],
-                        ['route' => 'dashboard.settings.index', 'label' => 'Settings', 'icon' => '⚙️'],
+                        ['route' => 'dashboard.index', 'label' => __('My TreeLink'), 'icon' => '🌳'],
+                        ['route' => '#', 'label' => __('Earn'), 'icon' => '💰'], // Placeholder route
+                        ['route' => '#', 'label' => __('Audience'), 'icon' => '👥'], // Placeholder route
+                        ['route' => 'dashboard.analytics.index', 'label' => __('Insights'), 'icon' => '📈'],
+                        ['route' => '#', 'label' => __('Tools'), 'icon' => '🧰'], // Placeholder route
+                        ['route' => 'short-links.index', 'label' => '  ↳ ' . __('Short Links'), 'icon' => ''],
+                        ['route' => 'dashboard.index', 'label' => '  ↳ ' . __('Link-in-Bio'), 'icon' => ''],
+                        ['route' => 'dashboard.settings.index', 'label' => __('Settings'), 'icon' => '⚙️'],
                     ];
                 @endphp
 
                 @foreach ($navItems as $item)
-                    <a href="{{ route($item['route']) }}"
+                    <a href="{{ $item['route'] !== '#' ? route($item['route']) : '#' }}"
                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition
-                       {{ request()->routeIs($item['route']) ? 'bg-brand-50 text-brand-700' : 'text-ink-600 hover:bg-ink-50 hover:text-ink-900' }}">
-                        <span class="text-base">{{ $item['icon'] }}</span>
+                       {{ $item['route'] !== '#' && request()->routeIs($item['route']) ? 'bg-brand-50 text-brand-700' : 'text-ink-600 hover:bg-ink-50 hover:text-ink-900' }}">
+                        @if($item['icon'])<span class="text-base">{{ $item['icon'] }}</span>@endif
                         {{ $item['label'] }}
                     </a>
                 @endforeach
@@ -82,14 +87,18 @@
                 </div>
 
                 <div class="flex items-center gap-3">
+                    <div class="hidden md:flex items-center gap-2 border border-ink-200 rounded-full px-2 py-1 mr-2 text-xs font-semibold">
+                        <a href="{{ route('locale.set', 'id') }}" class="px-2 py-1 rounded-full {{ App::getLocale() === 'id' ? 'bg-ink-100 text-ink-900' : 'text-ink-500 hover:text-ink-900' }}">ID</a>
+                        <a href="{{ route('locale.set', 'en') }}" class="px-2 py-1 rounded-full {{ App::getLocale() === 'en' ? 'bg-ink-100 text-ink-900' : 'text-ink-500 hover:text-ink-900' }}">EN</a>
+                    </div>
                     <button type="button" onclick="copyProfileUrl()"
                             class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full border border-ink-200 text-sm font-semibold text-ink-700 hover:border-ink-400 transition">
                         <span id="copy-icon">🔗</span>
-                        <span id="copy-label">Salin URL Profil</span>
+                        <span id="copy-label">{{ __('Copy Profile URL') }}</span>
                     </button>
                     <a href="{{ auth()->user()->publicUrl() }}" target="_blank"
                        class="px-4 py-2 rounded-full bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition">
-                        Lihat Halaman
+                        {{ __('View Page') }}
                     </a>
                 </div>
             </header>

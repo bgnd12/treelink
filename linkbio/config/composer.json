@@ -1,8 +1,11 @@
 {
-    "name": "bgnd12/treelink",
     "type": "project",
     "description": "Link-in-bio platform (Linktree clone) built with Laravel.",
-    "keywords": ["laravel", "linktree", "link-in-bio"],
+    "keywords": [
+        "laravel",
+        "linktree",
+        "link-in-bio"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
