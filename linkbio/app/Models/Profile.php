@@ -22,12 +22,18 @@ class Profile extends Model
         'background_type',
         'background_value',
         'social_links',
+        'featured_link_id',
+        'animations_enabled',
+        'seo_title',
+        'seo_description',
     ];
 
     protected function casts(): array
     {
         return [
             'social_links' => 'array',
+            'featured_link_id' => 'integer',
+            'animations_enabled' => 'boolean',
         ];
     }
 
