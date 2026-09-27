@@ -64,6 +64,10 @@ class EditorController extends Controller
             'display_name' => ['nullable', 'string', 'max:255'],
             'username' => [
                 'nullable', 'string', 'max:60', 'alpha_dash',
+                'not_regex:/^(?:'.implode('|', array_map(
+                    'preg_quote',
+                    PublicProfileController::RESERVED_USERNAMES
+                )).')$/i',
                 Rule::unique('users', 'username')->ignore($user->id),
             ],
             'bio' => ['nullable', 'string', 'max:280'],
@@ -72,6 +76,7 @@ class EditorController extends Controller
         ], [
             'username.unique' => 'Username tersebut sudah dipakai.',
             'username.alpha_dash' => 'Username hanya boleh huruf, angka, tanda hubung, dan garis bawah.',
+            'username.not_regex' => 'Username ini dipakai oleh sistem. Pilih username lain.',
         ]);
 
         $profile = $user->getOrCreateProfile();

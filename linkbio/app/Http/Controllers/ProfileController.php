@@ -33,6 +33,10 @@ class ProfileController extends Controller
             'username' => [
                 'required', 'string', 'max:30', 'min:3',
                 'regex:/^[a-zA-Z0-9_.]+$/',
+                'not_regex:/^(?:'.implode('|', array_map(
+                    'preg_quote',
+                    PublicProfileController::RESERVED_USERNAMES
+                )).')$/i',
                 Rule::unique('users', 'username')->ignore($user->id),
             ],
             'display_name' => ['nullable', 'string', 'max:100'],

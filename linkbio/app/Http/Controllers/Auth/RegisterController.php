@@ -25,12 +25,17 @@ class RegisterController extends Controller
             'username' => [
                 'required', 'string', 'max:30', 'min:3',
                 'regex:/^[a-zA-Z0-9_.]+$/',
+                'not_regex:/^(?:'.implode('|', array_map(
+                    'preg_quote',
+                    \App\Http\Controllers\PublicProfileController::RESERVED_USERNAMES
+                )).')$/i',
                 'unique:users,username',
             ],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ], [
             'username.regex' => 'Username hanya boleh berisi huruf, angka, titik, dan garis bawah.',
+            'username.not_regex' => 'Username ini dipakai oleh sistem. Pilih username lain.',
         ]);
 
         $user = User::create([

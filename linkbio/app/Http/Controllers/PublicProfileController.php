@@ -10,6 +10,27 @@ use Illuminate\View\View;
 
 class PublicProfileController extends Controller
 {
+    /**
+     * Words that are already claimed by a real route (admin panel, auth,
+     * dashboard, assets). They are matched first, so a public profile can
+     * never take them over — and a user cannot register one of them and
+     * end up with a profile URL that opens the wrong page.
+     */
+    public const RESERVED_USERNAMES = [
+        'admin', 'dashboard', 'login', 'register', 'logout', 'lang',
+        'forgot-password', 'reset-password', 'email', 'verify-email',
+        'api', 'storage', 'build', 'up', 'assets', 'css', 'js',
+        'images', 'img', 'telescope', 'horizon', 'sanctum', 'nova',
+        'pulse', 'livewire', 'webhooks', 'docs', 'help', 'about',
+    ];
+
+    /** Route constraint: a valid username that is not a reserved word. */
+    public const USERNAME_PATTERN = '^(?!(?:'
+        .'admin|dashboard|login|register|logout|lang|forgot-password|reset-password|email'
+        .'|verify-email|api|storage|build|up|assets|css|js|images|img|telescope|horizon'
+        .'|sanctum|nova|pulse|livewire|webhooks|docs|help|about'
+        .")$)[A-Za-z0-9_.]+$";
+
     public function show(Request $request, string $username)
     {
         // First check if this is a short link slug

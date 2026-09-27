@@ -112,13 +112,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 |--------------------------------------------------------------------------
 | Public link-in-bio pages
 |--------------------------------------------------------------------------
-| Kept at the very bottom so it never shadows the routes above.
+| Kept at the very bottom so it never shadows the routes above. Those
+| routes always win for their exact paths, so a reserved word below can
+| never be claimed as a public username either (e.g. /admin stays the
+| admin panel instead of silently rendering someone's profile).
 */
 Route::get('{username}/l/{link}', [PublicProfileController::class, 'redirectLink'])
-    ->where('username', '[A-Za-z0-9_.]+')
     ->where('link', '[0-9]+')
+    ->where('username', PublicProfileController::USERNAME_PATTERN)
     ->name('public.link.redirect');
 
 Route::get('{username}', [PublicProfileController::class, 'show'])
-    ->where('username', '[A-Za-z0-9_.]+')
+    ->where('username', PublicProfileController::USERNAME_PATTERN)
     ->name('public.profile');
