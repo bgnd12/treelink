@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>{{ $profile->seo_title ?: ($profile->display_name ?: $profileUser->name).' — Semua link saya' }}</title>
-=======
     <title>{{ $profile->seo_title ?: ($profile->display_name ?: $profileUser->name).' (@'.$profileUser->username.')' }}</title>
->>>>>>> a296aa186cbe12bdc9277baec278fa3b0a6dcf6e
     <meta name="description" content="{{ $profile->seo_description ?: ($profile->bio ?: 'Lihat semua link '.$profileUser->name.' di satu halaman.') }}">
 
     {{-- Open Graph for nice link previews when shared --}}
@@ -61,15 +57,9 @@
 </head>
 <body class="min-h-screen {{ $theme['text'] }} {{ $bgClass }}" style="{{ $bgStyle }} font-family:{{ $fontFamily }}">
 
-<<<<<<< HEAD
     @if ($bgOverlay)
         <div class="fixed inset-0 bg-black/35"></div>
     @endif
-=======
-    @php $featuredLink = $links->firstWhere('id', $profile->featured_link_id); @endphp
-    <div class="min-h-screen flex flex-col items-center px-5 py-14 sm:py-20">
-        <div class="w-full max-w-md mx-auto text-center {{ $profile->animations_enabled ? 'animate-fade-up' : '' }}">
->>>>>>> a296aa186cbe12bdc9277baec278fa3b0a6dcf6e
 
     <div class="relative min-h-screen flex flex-col items-center px-5 py-14 sm:py-20 {{ $animate ? 'animate-fade-up' : '' }}">
         <div class="w-full max-w-md mx-auto text-center">
@@ -135,14 +125,9 @@
                 @forelse ($links as $link)
                     <a href="{{ route('public.link.redirect', ['username' => $profileUser->username, 'link' => $link->id]) }}"
                        target="_blank" rel="noopener"
-<<<<<<< HEAD
                        class="group flex items-center justify-center gap-2 w-full py-3.5 px-5 font-semibold text-sm {{ $hoverClass }}{{ $shadowClass }}"
                        style="{{ $btnStyle }}">
                         @if ($link->is_featured)<span>⭐</span>@endif
-=======
-                       class="group flex items-center justify-center gap-2 w-full py-3.5 px-5 {{ $btnRadius }} {{ $btnBg }} font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg {{ $profile->animations_enabled ? 'animate-fade-up' : '' }} {{ $featuredLink?->id === $link->id ? 'ring-2 ring-yellow-300 scale-[1.03]' : '' }}">
-                        @if ($featuredLink?->id === $link->id)<span>⭐</span>@endif
->>>>>>> a296aa186cbe12bdc9277baec278fa3b0a6dcf6e
                         {{ $link->title }}
                         <span class="opacity-0 group-hover:opacity-60 transition-opacity">&rarr;</span>
                     </a>

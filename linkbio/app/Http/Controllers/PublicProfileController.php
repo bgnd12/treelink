@@ -25,6 +25,7 @@ class PublicProfileController extends Controller
 
         $profile = $user->getOrCreateProfile();
         $links = $user->links()->where('is_active', true)->orderBy('position')->get();
+        $products = $user->products()->where('is_active', true)->get();
 
         // Record a profile view (skip if the owner is previewing their own page).
         if (! $request->user() || $request->user()->id !== $user->id) {
@@ -39,6 +40,7 @@ class PublicProfileController extends Controller
             'profileUser' => $user,
             'profile' => $profile,
             'links' => $links,
+            'products' => $products,
         ]);
     }
 

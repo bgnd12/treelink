@@ -22,7 +22,7 @@ class LinkController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:100'],
@@ -34,7 +34,7 @@ class LinkController extends Controller
 
         $maxPosition = (int) $request->user()->links()->max('position');
 
-        $request->user()->links()->create([
+        $link = $request->user()->links()->create([
             'title' => $validated['title'],
             'url' => $validated['url'],
             'icon' => $validated['icon'] ?? 'link',
@@ -42,10 +42,10 @@ class LinkController extends Controller
             'is_active' => true,
         ]);
 
-        return back()->with('status', 'Link berhasil ditambahkan.');
+        return $this->respond($request, $link, 'Link berhasil ditambahkan.', 201);
     }
 
-    public function update(Request $request, Link $link): RedirectResponse
+    public function update(Request $request, Link $link): JsonResponse|RedirectResponse
     {
         $this->authorizeOwnership($link);
 
@@ -57,25 +57,29 @@ class LinkController extends Controller
 
         $link->update($validated);
 
-        return back()->with('status', 'Link berhasil diperbarui.');
+        return $this->respond($request, $link, 'Link berhasil diperbarui.');
     }
 
-    public function destroy(Link $link): RedirectResponse
+    public function destroy(Request $request, Link $link): JsonResponse|RedirectResponse
     {
         $this->authorizeOwnership($link);
 
         $link->delete();
 
-        return back()->with('status', 'Link berhasil dihapus.');
+        return $this->respond($request, null, 'Link berhasil dihapus.');
     }
 
-    public function toggle(Link $link): RedirectResponse
+    public function toggle(Request $request, Link $link): JsonResponse|RedirectResponse
     {
         $this->authorizeOwnership($link);
 
         $link->update(['is_active' => ! $link->is_active]);
 
-        return back()->with('status', $link->is_active ? 'Link diaktifkan.' : 'Link dinonaktifkan.');
+        return $this->respond(
+            $request,
+            $link,
+            $link->is_active ? 'Link diaktifkan.' : 'Link dinonaktifkan.'
+        );
     }
 
     /**
@@ -104,5 +108,17 @@ class LinkController extends Controller
     private function authorizeOwnership(Link $link): void
     {
         abort_unless($link->user_id === Auth::id(), 403);
+    }
+
+    /**
+     * The editor talks JSON, while the legacy links page posts a normal form.
+     */
+    private function respond(Request $request, ?Link $link, string $message, int $status = 200): JsonResponse|RedirectResponse
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['link' => $link?->fresh(), 'status' => 'ok'], $status);
+        }
+
+        return back()->with('status', $message);
     }
 }

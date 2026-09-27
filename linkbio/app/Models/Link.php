@@ -18,12 +18,14 @@ class Link extends Model
         'icon',
         'position',
         'is_active',
+        'is_featured',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
+            'is_featured' => 'boolean',
             'position' => 'integer',
         ];
     }

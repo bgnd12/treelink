@@ -7,7 +7,7 @@
 <div class="max-w-4xl mx-auto space-y-6">
     <div class="bg-white rounded-2xl shadow-sm border border-ink-100 p-6">
         <h2 class="text-xl font-bold mb-4">{{ __('Create New Short Link') }}</h2>
-        <form action="{{ route('short-links.store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('dashboard.short-links.store') }}" method="POST" class="space-y-4">
             @csrf
             <div>
                 <label class="block text-sm font-semibold text-ink-700 mb-1">{{ __('Destination URL') }}</label>
@@ -44,14 +44,14 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <form action="{{ route('short-links.toggle', $link) }}" method="POST">
+                    <form action="{{ route('dashboard.short-links.toggle', $link) }}" method="POST">
                         @csrf
                         @method('PATCH')
                         <button type="submit" class="p-2 rounded-xl {{ $link->is_active ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-ink-50 text-ink-400 hover:bg-ink-100' }}" title="{{ __('Toggle Status') }}">
                             {{ $link->is_active ? '✅' : '❌' }}
                         </button>
                     </form>
-                    <form action="{{ route('short-links.destroy', $link) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to delete this short link?') }}')">
+                    <form action="{{ route('dashboard.short-links.destroy', $link) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to delete this short link?') }}')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="p-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100" title="{{ __('Delete') }}">

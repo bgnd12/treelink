@@ -1,99 +1,82 @@
 @extends('layouts.guest')
 
-@section('title', config('app.name').' — Satu Link untuk Semua Kontenmu')
-@section('description', 'Buat halaman link-in-bio profesional dalam hitungan menit. Gabungkan Instagram, TikTok, YouTube, WhatsApp, dan semua tautanmu dalam satu link.')
+@section('title', config('app.name').' — Find Your People, Build Your Future')
+@section('description', 'TreeLink helps students discover friends, mentors, and communities that help them grow.')
 
 @section('content')
+<div class="landing-page">
     @include('components.navbar')
 
     {{-- HERO --}}
-    <section class="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
-        <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 via-white to-white"></div>
-        <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-200/50 rounded-full blur-3xl -z-10"></div>
-        <div class="absolute top-40 -left-24 w-72 h-72 bg-indigo-200/50 rounded-full blur-3xl -z-10"></div>
-
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 grid lg:grid-cols-2 gap-16 items-center">
-            <div class="animate-fade-up">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-semibold">
-                    ✨ Platform link-in-bio terbaik untuk kreator Indonesia
-                </span>
-                <h1 class="mt-5 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-ink-900 leading-[1.1]">
-                    Satu link untuk<br>
-                    <span class="bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent">semua kontenmu.</span>
-                </h1>
-                <p class="mt-6 text-lg text-ink-600 max-w-lg">
-                    Kumpulkan semua tautan penting — Instagram, TikTok, YouTube, WhatsApp, toko online, dan lainnya — dalam satu halaman yang cantik dan mudah dibagikan.
+    <section class="hero-stage relative overflow-hidden pt-28 pb-20 sm:pt-36 sm:pb-28">
+        <div class="hero-grid absolute inset-0 -z-10"></div>
+        <div class="max-w-7xl min-h-[calc(100svh-7rem)] mx-auto px-5 sm:px-8 grid md:grid-cols-[.92fr_1.08fr] gap-8 xl:gap-16 items-center">
+            <div class="animate-fade-up max-w-xl">
+                <p class="hero-kicker"><span></span> {{ __('CONNECT · LEARN · GROW') }}</p>
+                <h1 class="hero-title mt-6">{!! __('Find your people,<br><em>build your future.</em>') !!}</h1>
+                <p class="mt-6 text-lg text-ink-600 max-w-lg leading-relaxed">
+                    {{ __('TreeLink connects students, mentors, and learning communities. Meet new people, discover new opportunities, and grow together.') }}
                 </p>
-                <div class="mt-8 flex flex-col sm:flex-row gap-4">
-                    <a href="{{ route('register') }}" class="px-7 py-3.5 rounded-full bg-brand-600 text-white font-semibold text-center shadow-soft hover:bg-brand-700 hover:-translate-y-0.5 transition-all">
-                        Buat Halamanmu — Gratis
-                    </a>
-                    <a href="#how-it-works" class="px-7 py-3.5 rounded-full border-2 border-ink-200 text-ink-800 font-semibold text-center hover:border-ink-400 transition-all">
-                        Lihat Cara Kerja
-                    </a>
+                <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                    <a href="{{ route('register') }}" class="hero-primary">{{ __('Get started') }} <span>↗</span></a>
+                    <a href="#features" class="hero-secondary">{{ __('Explore features') }} <span>↓</span></a>
                 </div>
-                <div class="mt-8 flex items-center gap-6 text-sm text-ink-500">
-                    <div class="flex items-center gap-1.5"><span class="text-brand-600">✓</span> Tanpa kartu kredit</div>
-                    <div class="flex items-center gap-1.5"><span class="text-brand-600">✓</span> Setup 2 menit</div>
+                <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-ink-500">
+                    <span><b class="hero-check">✓</b> {{ __('Meet new people') }}</span>
+                    <span><b class="hero-check">✓</b> {{ __('Learn with mentors') }}</span>
                 </div>
             </div>
 
-            {{-- Phone mockup preview --}}
-            <div class="flex justify-center lg:justify-end animate-fade-up" style="animation-delay:.15s">
-                <div class="relative w-[280px] sm:w-[320px]">
-                    <div class="rounded-[2.5rem] border-8 border-ink-900 bg-ink-900 shadow-2xl overflow-hidden">
-                        <div class="bg-gradient-to-br from-brand-500 to-indigo-600 px-6 pt-10 pb-8 text-center">
-                            <div class="w-20 h-20 rounded-full bg-white/20 border-4 border-white/40 mx-auto flex items-center justify-center text-3xl">🚀</div>
-                            <p class="mt-3 font-bold text-white">@ nama.kamu</p>
-                            <p class="text-white/80 text-xs mt-1">Content Creator ✨ Semua link di sini</p>
-                        </div>
-                        <div class="bg-white p-4 space-y-3">
-                            @foreach (['📸 Instagram', '🎵 TikTok', '▶️ YouTube', '💬 WhatsApp', '🐙 GitHub'] as $item)
-                                <div class="w-full py-3 rounded-full bg-ink-50 border border-ink-100 text-center text-sm font-semibold text-ink-700">
-                                    {{ $item }}
-                                </div>
-                            @endforeach
-                        </div>
+            {{-- Product-led hero artwork --}}
+            <div class="hero-art relative min-h-[530px] sm:min-h-[590px] animate-fade-up" style="animation-delay:.15s">
+                <div class="hero-note hero-note-top"><span class="hero-dot"></span><div><b>{{ __('LIVE PREVIEW') }}</b><small>{{ __('See every connection grow') }}</small></div></div>
+                <div class="hero-note hero-note-bottom"><span class="hero-spark">↗</span><div><b>{{ __('+24% this week') }}</b><small>{{ __('New people discovered') }}</small></div></div>
+                <div class="hero-student-image"><img src="{{ asset('images/hero-portrait.jpg') }}" alt="TreeLink community member" width="900" height="1350"></div>
+                <div class="hero-note hero-note-students"><span class="hero-spark">✦</span><div><b>{{ __('12.5K+') }}</b><small>{{ __('active students') }}</small></div></div>
+
+                <div class="hero-profile-card">
+                    <div class="hero-profile-head">
+                        <div class="hero-avatar">T</div>
+                        <div class="hero-profile-meta"><b>tree.link</b><span>{{ __('student community') }}</span></div>
+                        <span class="hero-menu">•••</span>
                     </div>
+                    <div class="hero-profile-intro"><strong>{!! __('Better<br>together.') !!}</strong><span>↗</span></div>
+                    <div class="hero-link hero-link-featured"><i class="hero-icon hero-icon-lime">✦</i><span>{{ __('Join communities') }}</span><b>↗</b></div>
+                    <div class="hero-link"><i class="hero-icon hero-icon-dark">◎</i><span>{{ __('Find a mentor') }}</span><b>↗</b></div>
+                    <div class="hero-link"><i class="hero-icon hero-icon-red">⌁</i><span>{{ __('Explore opportunities') }}</span><b>↗</b></div>
+                    <div class="hero-profile-footer"><span>treelink.app/connect</span><span>♡</span></div>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    {{-- SOCIAL PROOF STRIP --}}
-    <section class="border-y border-ink-100 bg-ink-50/50 py-8">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-ink-400 font-semibold text-sm">
-            <span>Dipercaya oleh kreator, UMKM, dan profesional</span>
-            <span class="hidden sm:inline">•</span>
-            <span>Instagram</span><span>TikTok</span><span>YouTube</span><span>WhatsApp Business</span><span>Shopee</span>
+                <div class="hero-mini-card hero-mini-share"><span>✦</span><b>{{ __('Better together') }}</b><small>{{ __('grow with your people') }}</small></div>
+                <div class="hero-mini-card hero-mini-custom"><span class="hero-mini-number">↗</span><b>{{ __('Join communities') }}</b><small>{{ __('learn, share, grow') }}</small></div>
+            </div>
         </div>
     </section>
 
     {{-- FEATURES --}}
-    <section id="features" class="py-24">
+    <section id="features" class="landing-features py-24">
         <div class="max-w-7xl mx-auto px-5 sm:px-8">
             <div class="max-w-2xl mx-auto text-center">
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-ink-900">Semua yang kamu butuhkan, dalam satu tempat</h2>
-                <p class="mt-4 text-ink-600">Fitur lengkap untuk membangun kehadiran online kamu, tanpa perlu keahlian coding.</p>
+                <p class="hero-kicker justify-center"><span></span> {{ __('WHY TREELINK?') }}</p>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-ink-900 mt-4">{{ __('Why TreeLink?') }}</h2>
+                <p class="mt-4 text-ink-600">{{ __('You do not have to figure everything out alone. Connect, learn, and grow with people who get you.') }}</p>
             </div>
 
-            <div class="mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @php
-                    $features = [
-                        ['icon' => '🔗', 'title' => 'Link Tanpa Batas', 'desc' => 'Tambahkan sebanyak apapun tautan yang kamu mau — sosial media, toko, portofolio, dan lainnya.'],
-                        ['icon' => '🎨', 'title' => 'Tema & Tampilan Kustom', 'desc' => 'Pilih tema warna, gaya tombol, dan background sesuai kepribadian brand kamu.'],
-                        ['icon' => '🖱️', 'title' => 'Drag & Drop', 'desc' => 'Atur ulang urutan link hanya dengan menyeret dan melepas — real-time, tanpa reload.'],
-                        ['icon' => '📊', 'title' => 'Analitik Mendalam', 'desc' => 'Pantau total kunjungan, klik per link, dan pengunjung unik dalam grafik yang mudah dibaca.'],
-                        ['icon' => '📱', 'title' => 'Responsive Penuh', 'desc' => 'Halaman profilmu akan terlihat sempurna di semua perangkat, dari HP sampai desktop.'],
-                        ['icon' => '⚡', 'title' => 'Real-time Preview', 'desc' => 'Lihat perubahan halamanmu secara langsung sebelum mempublikasikannya ke dunia.'],
-                    ];
+                        $features = [
+                            ['icon' => '✦', 'title' => 'Connect with New Friends', 'desc' => 'Meet people who share your interests and goals.'],
+                            ['icon' => '▣', 'title' => 'Access Mentors & Learning', 'desc' => 'Learn from people who have already walked the path.'],
+                            ['icon' => '⌁', 'title' => 'Join Communities', 'desc' => 'Discover communities built around your passions.'],
+                            ['icon' => '◎', 'title' => 'Achieve Your Goals Together', 'desc' => 'Turn small conversations into meaningful progress.'],
+                        ];
                 @endphp
 
                 @foreach ($features as $feature)
-                    <div class="p-7 rounded-2xl border border-ink-100 bg-white hover:shadow-soft hover:-translate-y-1 transition-all duration-300">
+                    <div class="landing-feature-card p-7 rounded-2xl border hover:-translate-y-1 transition-all duration-300">
                         <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl">{{ $feature['icon'] }}</div>
-                        <h3 class="mt-5 font-bold text-lg text-ink-900">{{ $feature['title'] }}</h3>
-                        <p class="mt-2 text-sm text-ink-600 leading-relaxed">{{ $feature['desc'] }}</p>
+                        <h3 class="mt-5 font-bold text-lg text-ink-900">{{ __($feature['title']) }}</h3>
+                        <p class="mt-2 text-sm text-ink-600 leading-relaxed">{{ __($feature['desc']) }}</p>
                     </div>
                 @endforeach
             </div>
@@ -101,28 +84,29 @@
     </section>
 
     {{-- HOW IT WORKS --}}
-    <section id="how-it-works" class="py-24 bg-ink-50/60">
+    <section id="how-it-works" class="landing-steps py-24">
         <div class="max-w-7xl mx-auto px-5 sm:px-8">
             <div class="max-w-2xl mx-auto text-center">
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-ink-900">Mulai dalam 3 langkah mudah</h2>
-                <p class="mt-4 text-ink-600">Tidak perlu keahlian teknis. Halaman link-in-bio kamu siap dalam hitungan menit.</p>
+                <p class="hero-kicker justify-center"><span></span> {{ __('SIMPLE BY DESIGN') }}</p>
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-ink-900 mt-4">{{ __('How TreeLink Works') }}</h2>
+                <p class="mt-4 text-ink-600">{{ __('Simple, clear, and designed around your next step.') }}</p>
             </div>
 
             <div class="mt-16 grid md:grid-cols-3 gap-8">
                 @php
                     $steps = [
-                        ['num' => '1', 'title' => 'Daftar Akun', 'desc' => 'Buat akun gratis dengan email dan pilih username unik untuk URL halamanmu.'],
-                        ['num' => '2', 'title' => 'Tambahkan Link & Kustomisasi', 'desc' => 'Masukkan semua tautanmu, atur urutan, pilih tema, dan unggah foto profil.'],
-                        ['num' => '3', 'title' => 'Bagikan ke Dunia', 'desc' => 'Salin URL profilmu dan tempel di bio Instagram, TikTok, atau platform lainnya.'],
+                        ['num' => '01', 'title' => 'Create an Account', 'desc' => 'Set up your space in a few simple steps.'],
+                        ['num' => '02', 'title' => 'Explore & Discover', 'desc' => 'Find friends, mentors, and communities that match your interests.'],
+                        ['num' => '03', 'title' => 'Start Connecting', 'desc' => 'Join in, learn together, and keep growing.'],
                     ];
                 @endphp
                 @foreach ($steps as $step)
-                    <div class="relative p-8 rounded-2xl bg-white border border-ink-100 text-center">
+                    <div class="landing-step-card relative p-8 rounded-2xl text-center">
                         <div class="w-14 h-14 rounded-full bg-gradient-to-br from-brand-500 to-indigo-600 text-white font-extrabold text-xl flex items-center justify-center mx-auto shadow-soft">
                             {{ $step['num'] }}
                         </div>
-                        <h3 class="mt-5 font-bold text-lg text-ink-900">{{ $step['title'] }}</h3>
-                        <p class="mt-2 text-sm text-ink-600">{{ $step['desc'] }}</p>
+                        <h3 class="mt-5 font-bold text-lg text-ink-900">{{ __($step['title']) }}</h3>
+                        <p class="mt-2 text-sm text-ink-600 leading-relaxed">{{ __($step['desc']) }}</p>
                     </div>
                 @endforeach
             </div>
@@ -130,48 +114,19 @@
     </section>
 
     {{-- CTA --}}
-    <section class="py-24">
+    <section id="contact" class="landing-cta py-24">
         <div class="max-w-5xl mx-auto px-5 sm:px-8">
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 to-indigo-700 px-8 py-16 sm:px-16 text-center shadow-2xl">
+            <div class="relative overflow-hidden rounded-3xl px-8 py-16 sm:px-16 text-center shadow-2xl">
                 <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Siap membangun halaman link-in-bio-mu?</h2>
-                <p class="mt-4 text-brand-100 max-w-xl mx-auto">Bergabung sekarang dan dapatkan URL profil pribadimu, gratis selamanya.</p>
-                <a href="{{ route('register') }}" class="mt-8 inline-block px-8 py-4 rounded-full bg-white text-brand-700 font-bold shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all">
-                    Buat Halaman Gratis Sekarang
+                <h2 class="text-3xl sm:text-5xl font-extrabold text-white">{!! __('Ready to be part of <span class="text-lime-300">TreeLink?</span>') !!}</h2>
+                <p class="mt-4 text-brand-100 max-w-xl mx-auto">{{ __('Start your journey today and discover communities that help you grow.') }}</p>
+                <a href="{{ route('register') }}" class="mt-8 inline-block px-8 py-4 rounded-full bg-lime-300 text-ink-900 font-bold shadow-lg hover:-translate-y-0.5 hover:shadow-xl transition-all">
+                    {{ __('Get Started') }} ↗
                 </a>
             </div>
         </div>
     </section>
 
-    {{-- FAQ --}}
-    <section id="faq" class="py-24 bg-ink-50/60">
-        <div class="max-w-3xl mx-auto px-5 sm:px-8">
-            <h2 class="text-3xl sm:text-4xl font-extrabold text-ink-900 text-center">Pertanyaan Umum</h2>
-
-            <div class="mt-12 space-y-4" x-data="{ open: 0 }">
-                @php
-                    $faqs = [
-                        ['q' => 'Apakah TreeLink benar-benar gratis?', 'a' => 'Ya! Kamu bisa membuat akun dan halaman link-in-bio secara gratis dengan fitur lengkap: link tak terbatas, tema, dan analitik.'],
-                        ['q' => 'Apakah saya bisa mengganti username setelah mendaftar?', 'a' => 'Bisa. Kamu dapat mengubah username kapan saja melalui menu Profil di dashboard, selama username tersebut belum digunakan orang lain.'],
-                        ['q' => 'Bagaimana cara melihat statistik pengunjung?', 'a' => 'Buka menu Analytics di dashboard untuk melihat total kunjungan, klik per link, pengunjung unik, dan grafik tren 30 hari terakhir.'],
-                        ['q' => 'Apakah halaman saya responsive di HP?', 'a' => 'Tentu. Setiap halaman profil dirancang mobile-first agar terlihat sempurna di semua ukuran layar.'],
-                    ];
-                @endphp
-
-                @foreach ($faqs as $i => $faq)
-                    <div class="rounded-2xl border border-ink-100 bg-white overflow-hidden">
-                        <button @click="open = open === {{ $i }} ? -1 : {{ $i }}" class="w-full flex items-center justify-between gap-4 px-6 py-5 text-left font-semibold text-ink-900">
-                            {{ $faq['q'] }}
-                            <span x-text="open === {{ $i }} ? '−' : '+'" class="text-brand-600 text-xl flex-shrink-0"></span>
-                        </button>
-                        <div x-show="open === {{ $i }}" x-collapse x-cloak class="px-6 pb-5 text-sm text-ink-600 leading-relaxed">
-                            {{ $faq['a'] }}
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
     @include('components.footer')
+</div>
 @endsection

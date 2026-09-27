@@ -16,7 +16,9 @@ use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('lang/{locale}', [LocaleController::class, 'setLocale'])->name('locale.set');
+Route::get('lang/{locale}', [LocaleController::class, 'setLocale'])
+    ->where('locale', 'id|en')
+    ->name('locale.set');
 
 /*
 |--------------------------------------------------------------------------
@@ -120,11 +122,3 @@ Route::get('{username}/l/{link}', [PublicProfileController::class, 'redirectLink
 Route::get('{username}', [PublicProfileController::class, 'show'])
     ->where('username', '[A-Za-z0-9_.]+')
     ->name('public.profile');
-
-    Route::get('/locale/{locale}', function (string $locale) {
-    abort_unless(in_array($locale, ['id', 'en']), 404);
-
-    session(['locale' => $locale]);
-
-    return back();
-})->name('locale.set');
