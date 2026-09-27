@@ -7,22 +7,29 @@
             </a>
 
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-ink-600">
-                <a href="<?php echo e(route('home')); ?>#features" class="hover:text-ink-900 transition">Fitur</a>
-                <a href="<?php echo e(route('home')); ?>#how-it-works" class="hover:text-ink-900 transition">Cara Kerja</a>
-                <a href="<?php echo e(route('home')); ?>#faq" class="hover:text-ink-900 transition">FAQ</a>
+                <a href="<?php echo e(route('home')); ?>#features" class="hover:text-ink-900 transition"><?php echo e(__('Fitur')); ?></a>
+                <a href="<?php echo e(route('home')); ?>#how-it-works" class="hover:text-ink-900 transition"><?php echo e(__('Cara Kerja')); ?></a>
+                <a href="<?php echo e(route('home')); ?>#faq" class="hover:text-ink-900 transition"><?php echo e(__('FAQ')); ?></a>
             </div>
 
             <div class="hidden md:flex items-center gap-3">
+                <div class="flex items-center gap-2 mr-4 border-r border-ink-200 pr-4">
+                    <a href="<?php echo e(route('locale.set', 'id')); ?>" class="text-xs font-bold <?php echo e(session('locale', 'id') == 'id' ? 'text-brand-600' : 'text-ink-400 hover:text-ink-600'); ?>">ID</a>
+                    <span class="text-ink-300">/</span>
+                    <a href="<?php echo e(route('locale.set', 'en')); ?>" class="text-xs font-bold <?php echo e(session('locale', 'id') == 'en' ? 'text-brand-600' : 'text-ink-400 hover:text-ink-600'); ?>">EN</a>
+                </div>
                 <?php if(auth()->guard()->check()): ?>
                     <a href="<?php echo e(auth()->user()->is_admin ? route('admin.index') : route('dashboard.index')); ?>"
                        class="px-4 py-2 rounded-full text-sm font-semibold bg-ink-900 text-white hover:bg-ink-800 transition">
-                        Ke Dashboard
+                        <?php echo e(__('Ke Dashboard')); ?>
+
                     </a>
                 <?php else: ?>
-                    <a href="<?php echo e(route('login')); ?>" class="text-sm font-semibold text-ink-700 hover:text-ink-900 transition">Masuk</a>
+                    <a href="<?php echo e(route('login')); ?>" class="text-sm font-semibold text-ink-700 hover:text-ink-900 transition"><?php echo e(__('Masuk')); ?></a>
                     <a href="<?php echo e(route('register')); ?>"
                        class="px-4 py-2 rounded-full text-sm font-semibold bg-brand-600 text-white shadow-soft hover:bg-brand-700 transition">
-                        Daftar Gratis
+                        <?php echo e(__('Daftar Gratis')); ?>
+
                     </a>
                 <?php endif; ?>
             </div>

@@ -14,7 +14,7 @@
         "vite": "^5.2.10"
     },
     "dependencies": {
-        "@alpinejs/collapse": "^3.14.0",
+        "@alpinejs/collapse": "^3.17.3",
         "alpinejs": "^3.14.0",
         "chart.js": "^4.4.3",
         "sortablejs": "^1.15.2"

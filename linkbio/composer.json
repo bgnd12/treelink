@@ -1,5 +1,5 @@
 {
-    "name": "TreeLink/TreeLink",
+    "name": "bgnd12/treelink",
     "type": "project",
     "description": "Link-in-bio platform (Linktree clone) built with Laravel.",
     "keywords": ["laravel", "linktree", "link-in-bio"],
@@ -57,6 +57,11 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "policy": {
+            "advisories": {
+                "block": false
+            }
         }
     },
     "minimum-stability": "stable",

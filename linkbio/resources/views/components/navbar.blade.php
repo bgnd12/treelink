@@ -7,22 +7,27 @@
             </a>
 
             <div class="hidden md:flex items-center gap-8 text-sm font-medium text-ink-600">
-                <a href="{{ route('home') }}#features" class="hover:text-ink-900 transition">Fitur</a>
-                <a href="{{ route('home') }}#how-it-works" class="hover:text-ink-900 transition">Cara Kerja</a>
-                <a href="{{ route('home') }}#faq" class="hover:text-ink-900 transition">FAQ</a>
+                <a href="{{ route('home') }}#features" class="hover:text-ink-900 transition">{{ __('Fitur') }}</a>
+                <a href="{{ route('home') }}#how-it-works" class="hover:text-ink-900 transition">{{ __('Cara Kerja') }}</a>
+                <a href="{{ route('home') }}#faq" class="hover:text-ink-900 transition">{{ __('FAQ') }}</a>
             </div>
 
             <div class="hidden md:flex items-center gap-3">
+                <div class="flex items-center gap-2 mr-4 border-r border-ink-200 pr-4">
+                    <a href="{{ route('locale.set', 'id') }}" class="text-xs font-bold {{ session('locale', 'id') == 'id' ? 'text-brand-600' : 'text-ink-400 hover:text-ink-600' }}">ID</a>
+                    <span class="text-ink-300">/</span>
+                    <a href="{{ route('locale.set', 'en') }}" class="text-xs font-bold {{ session('locale', 'id') == 'en' ? 'text-brand-600' : 'text-ink-400 hover:text-ink-600' }}">EN</a>
+                </div>
                 @auth
                     <a href="{{ auth()->user()->is_admin ? route('admin.index') : route('dashboard.index') }}"
                        class="px-4 py-2 rounded-full text-sm font-semibold bg-ink-900 text-white hover:bg-ink-800 transition">
-                        Ke Dashboard
+                        {{ __('Ke Dashboard') }}
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm font-semibold text-ink-700 hover:text-ink-900 transition">Masuk</a>
+                    <a href="{{ route('login') }}" class="text-sm font-semibold text-ink-700 hover:text-ink-900 transition">{{ __('Masuk') }}</a>
                     <a href="{{ route('register') }}"
                        class="px-4 py-2 rounded-full text-sm font-semibold bg-brand-600 text-white shadow-soft hover:bg-brand-700 transition">
-                        Daftar Gratis
+                        {{ __('Daftar Gratis') }}
                     </a>
                 @endauth
             </div>

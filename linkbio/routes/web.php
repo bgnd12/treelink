@@ -8,10 +8,15 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EditorController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProfileController;
+use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('lang/{locale}', [LocaleController::class, 'setLocale'])->name('locale.set');
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +54,17 @@ Route::post('logout', [LoginController::class, 'destroy'])
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('index');
+    Route::get('/', [EditorController::class, 'index'])->name('index');
+
+    Route::post('header', [EditorController::class, 'header'])->name('header');
+    Route::post('design', [EditorController::class, 'design'])->name('design');
+    Route::post('enhance', [EditorController::class, 'enhance'])->name('enhance');
+
+    Route::get('short-links', [App\Http\Controllers\ShortLinkController::class, 'index'])->name('short-links.index');
+    Route::post('short-links', [App\Http\Controllers\ShortLinkController::class, 'store'])->name('short-links.store');
+    Route::put('short-links/{shortLink}', [App\Http\Controllers\ShortLinkController::class, 'update'])->name('short-links.update');
+    Route::delete('short-links/{shortLink}', [App\Http\Controllers\ShortLinkController::class, 'destroy'])->name('short-links.destroy');
+    Route::patch('short-links/{shortLink}/toggle', [App\Http\Controllers\ShortLinkController::class, 'toggle'])->name('short-links.toggle');
 
     Route::get('links', [LinkController::class, 'index'])->name('links.index');
     Route::post('links', [LinkController::class, 'store'])->name('links.store');
@@ -57,6 +72,12 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
     Route::delete('links/{link}', [LinkController::class, 'destroy'])->name('links.destroy');
     Route::patch('links/{link}/toggle', [LinkController::class, 'toggle'])->name('links.toggle');
     Route::post('links/reorder', [LinkController::class, 'reorder'])->name('links.reorder');
+
+    Route::post('products', [ProductController::class, 'store'])->name('products.store');
+    Route::put('products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::patch('products/{product}/toggle', [ProductController::class, 'toggle'])->name('products.toggle');
+    Route::post('products/reorder', [ProductController::class, 'reorder'])->name('products.reorder');
 
     Route::get('appearance', [AppearanceController::class, 'edit'])->name('appearance.edit');
     Route::post('appearance', [AppearanceController::class, 'update'])->name('appearance.update');
@@ -99,3 +120,11 @@ Route::get('{username}/l/{link}', [PublicProfileController::class, 'redirectLink
 Route::get('{username}', [PublicProfileController::class, 'show'])
     ->where('username', '[A-Za-z0-9_.]+')
     ->name('public.profile');
+
+    Route::get('/locale/{locale}', function (string $locale) {
+    abort_unless(in_array($locale, ['id', 'en']), 404);
+
+    session(['locale' => $locale]);
+
+    return back();
+})->name('locale.set');

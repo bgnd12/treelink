@@ -10,8 +10,15 @@ use Illuminate\View\View;
 
 class PublicProfileController extends Controller
 {
-    public function show(Request $request, string $username): View
+    public function show(Request $request, string $username)
     {
+        // First check if this is a short link slug
+        $shortLink = \App\Models\ShortLink::where('slug', $username)->where('is_active', true)->first();
+        if ($shortLink) {
+            $shortLink->increment('clicks');
+            return redirect()->away($shortLink->destination_url);
+        }
+
         $user = User::where('username', strtolower($username))
             ->where('is_active', true)
             ->firstOrFail();

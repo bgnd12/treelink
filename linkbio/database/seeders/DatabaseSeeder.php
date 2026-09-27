@@ -71,6 +71,23 @@ class DatabaseSeeder extends Seeder
                     ...$link,
                     'position' => $position,
                     'is_active' => true,
+                    'is_featured' => $position === 0,
+                ]);
+            }
+        }
+
+        if ($demo->products()->count() === 0) {
+            $sampleProducts = [
+                ['name' => 'E-Book Creator 101', 'url' => 'https://example.com/ebook', 'price' => 49000],
+                ['name' => 'Preset Foto Premium', 'url' => 'https://example.com/preset', 'price' => 75000],
+                ['name' => 'Konsultasi 1-on-1', 'url' => 'https://example.com/konsultasi', 'price' => 250000],
+            ];
+
+            foreach ($sampleProducts as $position => $product) {
+                $demo->products()->create([
+                    ...$product,
+                    'position' => $position,
+                    'is_active' => true,
                 ]);
             }
         }
