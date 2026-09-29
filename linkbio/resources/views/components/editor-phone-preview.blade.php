@@ -1,14 +1,18 @@
 {{-- Reactive phone preview — driven entirely by the editor() Alpine component state. --}}
 <div class="mx-auto w-[300px]">
     <div class="rounded-[2.5rem] border-8 border-ink-900 bg-ink-900 shadow-2xl overflow-hidden">
-        <div class="h-[560px] overflow-y-auto px-5 pt-10 pb-8 text-center transition-colors duration-300"
-             :class="backgroundClass + ' ' + profile.theme_text"
+        <div class="h-[560px] overflow-y-auto transition-colors duration-300"
+             :class="backgroundClass + ' ' + (cardEnabled ? '' : profile.theme_text)"
              :style="backgroundStyle">
+
+            <div class="text-center transition-all"
+                 :class="cardEnabled ? 'overflow-hidden px-4 pt-7 pb-6' : 'px-5 pt-10 pb-8'"
+                 :style="cardEnabled ? cardStyle : ''">
 
             {{-- BANNER header layout --}}
             <template x-if="profile.header_layout === 'banner'">
-                <div class="pt-4">
-                    <div class="h-20 w-[130%] -ml-[15%] rounded-b-3xl"
+                <div>
+                    <div class="h-16 w-[calc(100%+2rem)] -ml-4 rounded-b-3xl"
                          :class="isLight ? 'bg-black/10' : 'bg-white/15 backdrop-blur'"></div>
                     <img :src="avatarSrc" alt="Avatar"
                          class="w-24 h-24 rounded-full object-cover mx-auto -mt-10 border-4"
@@ -137,6 +141,7 @@
             </div>
 
             <p x-show="!activeLinks.length && !activeProducts.length" class="text-xs opacity-60 mt-8">Tambahkan link pertamamu di tab Content ✨</p>
+            </div>
         </div>
     </div>
     <p class="text-center text-xs text-ink-400 mt-3">Preview langsung berubah tanpa reload</p>

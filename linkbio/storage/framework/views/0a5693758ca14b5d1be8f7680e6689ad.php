@@ -55,12 +55,22 @@
         $shadowClass = $profile->button_shadow ? ' hover:shadow-lg' : '';
 
         // Card ----------------------------------------------------------------------
-        // The whole profile lives inside one card that floats over the page
-        // background, so it reads as a card instead of a full-bleed screen.
-        $cardStyle = $isLight
-            ? 'background:#ffffff;color:#111827;box-shadow:0 30px 70px -24px rgba(15,23,42,.45),0 2px 6px rgba(15,23,42,.06);'
-            : 'background:rgba(15,23,42,.55);color:#fff;border:1px solid rgba(255,255,255,.18);'
-              .'backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 30px 70px -24px rgba(0,0,0,.65);';
+        // The whole profile can live inside one card that floats over the page
+        // background. When the card is on, the readable text colour is derived
+        // from the card itself so a light card on a dark page still reads well.
+        $themeIsLight = $theme['text'] !== 'text-white';
+        $cardOn = (bool) $profile->card_enabled;
+        $isLight = $cardOn ? $profile->cardTextColor($themeIsLight) === '#111827' : $themeIsLight;
+
+        $cardStyle = 'background:'.$profile->cardBackgroundCss($themeIsLight).';'
+            .'color:'.$profile->cardTextColor($themeIsLight).';'
+            .'border:'.$profile->cardBorderCss($themeIsLight).';'
+            .'box-shadow:'.$profile->cardShadowCss().';'
+            .'border-radius:'.$profile->cardRadiusPx().'px;';
+
+        if ($profile->cardStyle() === 'glass') {
+            $cardStyle .= 'backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);';
+        }
     ?>
 </head>
 <body class="min-h-screen <?php echo e($theme['text']); ?> <?php echo e($bgClass); ?>" style="<?php echo e($bgStyle); ?> font-family:<?php echo e($fontFamily); ?>">
@@ -71,12 +81,16 @@
 
     <div class="relative min-h-screen flex flex-col items-center px-4 py-8 sm:py-14 <?php echo e($animate ? 'animate-fade-up' : ''); ?>">
         <div class="w-full max-w-md mx-auto text-center">
-            <div class="overflow-hidden rounded-[2rem] px-6 pt-9 pb-8 profile-card" style="<?php echo e($cardStyle); ?>">
+            <?php if($cardOn): ?>
+                <div class="overflow-hidden px-6 pt-9 pb-8" style="<?php echo e($cardStyle); ?>">
+            <?php else: ?>
+                <div class="-mx-4 -my-8 sm:-my-14 px-4 py-8 sm:py-14">
+            <?php endif; ?>
 
             
             <?php if($layout === 'banner'): ?>
-                <div class="-mx-6 -mt-9">
-                    <div class="h-28 <?php echo e($isLight ? 'bg-black/10' : 'bg-white/15 backdrop-blur'); ?>"></div>
+                <div class="<?php echo e($cardOn ? '-mx-6 -mt-9' : '-mt-8'); ?>">
+                    <div class="h-28 <?php echo e($cardOn ? '' : 'rounded-b-3xl'); ?> <?php echo e($isLight ? 'bg-black/10' : 'bg-white/15 backdrop-blur'); ?>"></div>
                     <img src="<?php echo e($profile->avatar_url); ?>" alt="<?php echo e($profileUser->name); ?>"
                          class="w-24 h-24 rounded-full object-cover mx-auto -mt-12 border-4 <?php echo e($isLight ? 'border-gray-200 shadow-xl' : 'border-white/80 shadow-xl'); ?>">
                     <h1 class="mt-3 text-xl font-bold"><?php echo e($profile->display_name ?: $profileUser->name); ?></h1>

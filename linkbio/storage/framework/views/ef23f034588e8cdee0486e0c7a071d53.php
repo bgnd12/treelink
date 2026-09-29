@@ -385,6 +385,72 @@
                     </div>
 
                     
+                    <div class="rounded-2xl border border-ink-100 p-5">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <h3 class="font-bold text-ink-900 mb-1">Card</h3>
+                                <p class="text-sm text-ink-500">Kartu yang membungkus isi halaman publikmu.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                                <input type="checkbox" x-model="profile.card_enabled" @change="designChanged()" class="sr-only peer">
+                                <span class="w-11 h-6 bg-ink-200 rounded-full peer-checked:bg-brand-600 transition-colors"></span>
+                                <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5"></span>
+                            </label>
+                        </div>
+
+                        <div class="mt-5 space-y-5" x-show="cardEnabled" x-cloak :class="cardEnabled ? '' : 'opacity-50 pointer-events-none'">
+                            <div>
+                                <label class="block text-sm font-semibold text-ink-800 mb-2">Gaya</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <template x-for="(meta, key) in cardStyles" :key="key">
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="card_style" :value="key" class="peer sr-only"
+                                                   x-model="profile.card_style" @change="designChanged()">
+                                            <div class="px-3 py-2.5 rounded-xl bg-ink-100 text-ink-700 text-xs font-bold text-center ring-2 ring-transparent peer-checked:ring-brand-600 transition"
+                                                 x-text="meta.label"></div>
+                                            <p class="text-center text-[10px] text-ink-400 mt-1.5 leading-tight" x-text="meta.desc"></p>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-ink-800 mb-2">Warna card</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="color" x-model="profile.card_color" @change="designChanged()"
+                                           class="w-12 h-12 rounded-xl border border-ink-200 cursor-pointer">
+                                    <span class="text-xs text-ink-400">Kosongkan = warna otomatis sesuai tema.</span>
+                                    <button type="button" @click="profile.card_color = null; designChanged()"
+                                            class="ml-auto px-3 py-2 rounded-lg bg-ink-100 text-ink-600 text-xs font-bold hover:bg-ink-200 transition">Reset</button>
+                                </div>
+                            </div>
+
+                            <div class="grid sm:grid-cols-3 gap-5">
+                                <div x-show="cardStyleName !== 'outline'">
+                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Transparansi · <span x-text="cardOpacity"></span>%</label>
+                                    <input type="range" min="0" max="100" x-model.number="profile.card_opacity" @input="designChanged()" class="w-full accent-brand-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Radius · <span x-text="profile.card_radius ?? 32"></span>px</label>
+                                    <input type="range" min="0" max="64" x-model.number="profile.card_radius" @input="designChanged()" class="w-full accent-brand-600">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Border · <span x-text="profile.card_border_width ?? 0"></span>px</label>
+                                    <input type="range" min="0" max="8" x-model.number="profile.card_border_width" @input="designChanged()" class="w-full accent-brand-600">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" x-model="profile.card_shadow" @change="designChanged()"
+                                           class="w-5 h-5 rounded accent-brand-600">
+                                    <span class="text-sm font-semibold text-ink-800">Bayangan card</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    
                     <div class="rounded-2xl border border-ink-100 p-5 space-y-5">
                         <div>
                             <h3 class="font-bold text-ink-900 mb-1">Tombol Link</h3>

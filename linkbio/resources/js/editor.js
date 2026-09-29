@@ -89,20 +89,73 @@ export default function editor(initial = {}) {
             return {};
         },
 
+        // ---- card -----------------------------------------------------------
+        get cardStyleName() {
+            const style = this.profile.card_style;
+            return this.cardStyles[style] ? style : 'glass';
+        },
+
+        get cardEnabled() {
+            const value = this.profile.card_enabled;
+            return value === undefined || value === null || value === '' ? true : !!value && value !== '0' && value !== 0;
+        },
+
+        get cardColor() {
+            const color = this.profile.card_color || '';
+            return /^#[0-9a-fA-F]{6}$/.test(color) ? color : this.themeIsLight ? '#ffffff' : '#0f172a';
+        },
+
+        get cardOpacity() {
+            const value = this.profile.card_opacity;
+            if (value !== undefined && value !== null && value !== '') {
+                return Math.max(0, Math.min(100, Number(value)));
+            }
+            return { solid: 100, outline: 0 }[this.cardStyleName] ?? (this.themeIsLight ? 96 : 55);
+        },
+
+        get cardText() {
+            const hex = this.cardColor.slice(1);
+            const opacity = this.cardOpacity / 100;
+            const cardLuma =
+                0.299 * parseInt(hex.slice(0, 2), 16) +
+                0.587 * parseInt(hex.slice(2, 4), 16) +
+                0.114 * parseInt(hex.slice(4, 6), 16);
+            const luma = opacity * cardLuma + (1 - opacity) * (this.themeIsLight ? 255 : 0);
+
+            return luma > 150 ? '#111827' : '#ffffff';
+        },
+
+        get cardStyle() {
+            const style = this.cardStyleName;
+            const contrast = (this.themeIsLight ? '#000000' : '#ffffff').slice(1);
+            const hasColor = /^#[0-9a-fA-F]{6}$/.test(this.profile.card_color || '');
+            const borderHex = style === 'outline' && hasColor ? this.profile.card_color.slice(1) : contrast;
+            const alpha = (p) => Math.round((Math.max(0, Math.min(100, p)) * 255) / 100).toString(16).padStart(2, '0');
+
+            return {
+                background: this.cardOpacity >= 100 ? this.cardColor : this.cardColor + alpha(this.cardOpacity),
+                color: this.cardText,
+                border: `${this.profile.card_border_width ?? 1}px solid #${borderHex}${alpha(style === 'outline' ? 45 : 18)}`,
+                boxShadow: this.profile.card_shadow ? '0 20px 45px -18px rgba(0,0,0,.55)' : 'none',
+                borderRadius: `${this.profile.card_radius ?? 32}px`,
+                backdropFilter: style === 'glass' ? 'blur(16px)' : 'none',
+            };
+        },
+
         get buttonStyle() {
             const p = this.profile;
             let radius = p.button_radius ?? (p.button_style === 'pill' ? 999 : p.button_style === 'square' ? 6 : 14);
             const border = p.button_style === 'outline' ? Math.max(p.button_border_width || 0, 2) : (p.button_border_width || 0);
             const isOutline = p.button_style === 'outline';
             const bgColor = p.button_color || this.theme.accent || '#ffffff';
-            const textColor = isOutline ? (p.theme_text === 'text-white' ? '#ffffff' : '#111827') : this.luminanceText(bgColor);
+            const textColor = isOutline ? (this.isLight ? '#111827' : '#ffffff') : this.luminanceText(bgColor);
             const alpha = border >= 3 ? 0.45 : 0.35;
 
             return {
                 borderRadius: `${radius}px`,
                 borderWidth: `${border}px`,
                 borderStyle: border ? 'solid' : 'none',
-                borderColor: p.theme_text === 'text-white' ? `rgba(255,255,255,${alpha})` : `rgba(0,0,0,${alpha})`,
+                borderColor: this.isLight ? `rgba(0,0,0,${alpha})` : `rgba(255,255,255,${alpha})`,
                 backgroundColor: isOutline ? 'transparent' : bgColor,
                 color: textColor,
                 boxShadow: p.button_shadow ? '0 10px 28px -10px rgba(0,0,0,0.45)' : 'none',
@@ -117,8 +170,14 @@ export default function editor(initial = {}) {
             return this.profile.font || 'sans';
         },
 
-        get isLight() {
+        get themeIsLight() {
             return this.profile.theme_text !== 'text-white';
+        },
+
+        // Inside the card the readable colour is decided by the card itself,
+        // so a light card on a dark page still renders dark text.
+        get isLight() {
+            return this.cardEnabled ? this.cardText === '#111827' : this.themeIsLight;
         },
 
         get avatarSrc() {
@@ -471,18 +530,7 @@ export default function editor(initial = {}) {
             this.backgroundPreview = '';
             this.profile.background_image_url = null;
             this.saving = true;
-            const payload = {
-                theme: this.profile.theme,
-                button_style: this.profile.button_style,
-                button_color: this.profile.button_color || '',
-                button_radius: this.profile.button_radius ?? '',
-                button_border_width: this.profile.button_border_width ?? 0,
-                button_shadow: this.profile.button_shadow ? 1 : 0,
-                font: this.profile.font,
-                background_type: this.profile.background_type,
-                background_value: this.profile.background_value || '',
-                remove_background_image: 1,
-            };
+            const payload = { ...this.designPayload(), remove_background_image: 1 };
             this.jsonReq(window.designUrl, 'POST', payload)
                 .then((res) => {
                     this.profile = { ...this.profile, ...res.profile };
@@ -492,10 +540,8 @@ export default function editor(initial = {}) {
                 .finally(() => (this.saving = false));
         },
 
-        saveDesign(withFile = false) {
-            if (this.saving) return;
-            this.saving = true;
-            const payload = {
+        designPayload() {
+            return {
                 theme: this.profile.theme,
                 button_style: this.profile.button_style,
                 button_color: this.profile.button_color || '',
@@ -505,7 +551,20 @@ export default function editor(initial = {}) {
                 font: this.profile.font,
                 background_type: this.profile.background_type,
                 background_value: this.profile.background_value || '',
+                card_enabled: this.cardEnabled ? 1 : 0,
+                card_style: this.cardStyleName,
+                card_color: this.profile.card_color || '',
+                card_opacity: this.profile.card_opacity ?? '',
+                card_radius: this.profile.card_radius ?? '',
+                card_border_width: this.profile.card_border_width ?? 1,
+                card_shadow: this.profile.card_shadow ? 1 : 0,
             };
+        },
+
+        saveDesign(withFile = false) {
+            if (this.saving) return;
+            this.saving = true;
+            const payload = this.designPayload();
 
             const send = (url, options) =>
                 this.req(url, options)
