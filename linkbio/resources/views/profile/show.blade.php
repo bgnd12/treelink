@@ -137,7 +137,7 @@
                            class="w-10 h-10 rounded-full {{ $hoverClass }} flex items-center justify-center text-sm font-bold {{ $hoverClass }}"
                            style="{{ $isLight ? 'background:rgba(0,0,0,.12);color:#111827' : 'background:rgba(255,255,255,.22);color:#fff' }}"
                            title="{{ \App\Models\Profile::SOCIAL_PLATFORMS[$platform]['label'] ?? ucfirst($platform) }}">
-                            {{ ['instagram' => '◎', 'tiktok' => '♪', 'youtube' => '▶', 'facebook' => 'f', 'twitter' => '𝕏', 'whatsapp' => '◉'][$platform] ?? strtoupper(substr($platform, 0, 1)) }}
+                            {!! \App\Support\Brands::markup($platform === 'website' ? 'globe' : ($platform === 'email' ? 'mail' : $platform), 'w-4 h-4') !!}
                         </a>
                     @endforeach
                 </div>
@@ -148,9 +148,10 @@
                 @forelse ($links as $link)
                     <a href="{{ route('public.link.redirect', ['username' => $profileUser->username, 'link' => $link->id]) }}"
                        target="_blank" rel="noopener"
-                       class="group flex items-center justify-center gap-2 w-full py-3.5 px-5 font-semibold text-sm {{ $hoverClass }}{{ $shadowClass }}"
+                       class="group flex items-center justify-center gap-2.5 w-full py-3.5 px-5 font-semibold text-sm {{ $hoverClass }}{{ $shadowClass }}"
                        style="{{ $btnStyle }}">
                         @if ($link->is_featured)<span>⭐</span>@endif
+                        {!! \App\Support\Brands::render($link->url, $link->icon, 'w-5 h-5 flex-shrink-0') !!}
                         {{ $link->title }}
                         <span class="opacity-0 group-hover:opacity-60 transition-opacity">&rarr;</span>
                     </a>

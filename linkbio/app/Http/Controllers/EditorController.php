@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Link;
 use App\Models\Profile;
+use App\Support\Brands;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,6 +50,8 @@ class EditorController extends Controller
                 'buttonStyles' => Profile::BUTTON_STYLES,
                 'fonts' => Profile::FONT_LABELS,
                 'icons' => Link::AVAILABLE_ICONS,
+                'iconSvgs' => Brands::iconSvgs(),
+                'brandHosts' => Brands::hosts(),
                 'socials' => $socials,
             ],
         ]);

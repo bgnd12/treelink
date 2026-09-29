@@ -93,9 +93,9 @@
             <template x-if="socials.length && socials.some(s => s.url)">
                 <div class="flex justify-center flex-wrap gap-2 mt-4">
                     <template x-for="s in socials.filter(s => s.url && s.url.trim())" :key="s.key">
-                        <span class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] uppercase font-bold"
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center"
                               :style="isLight ? 'background:rgba(0,0,0,.12);color:#111827' : 'background:rgba(255,255,255,.22);color:#fff'">
-                            <span x-text="s.label.slice(0,1)"></span>
+                            <span x-html="socialIcon(s.key, 'w-3.5 h-3.5')"></span>
                         </span>
                     </template>
                 </div>
@@ -107,9 +107,9 @@
                     <div class="flex items-center gap-2.5 w-full py-3 px-4 font-semibold text-sm truncate transition-transform duration-150"
                          :style="buttonStyle"
                          :class="link.is_featured ? 'ring-2 ring-offset-2 ' + (isLight ? 'ring-black/30 ring-offset-black/20' : 'ring-white/60 ring-offset-white/10') : ''">
-                        <span class="w-6 h-6 flex-shrink-0 rounded-full flex items-center justify-center text-[10px] uppercase font-bold"
+                        <span class="w-6 h-6 flex-shrink-0 rounded-full flex items-center justify-center"
                               :style="isLight ? 'background:rgba(0,0,0,.12)' : 'background:rgba(0,0,0,.22)'">
-                            <span x-text="(link.icon || 'link').slice(0,1)"></span>
+                            <span x-html="linkIcon(link, 'w-4 h-4')"></span>
                         </span>
                         <span x-text="link.title" class="flex-1 min-w-0 truncate"></span>
                         <span x-show="link.is_featured" class="text-xs flex-shrink-0">⭐</span>

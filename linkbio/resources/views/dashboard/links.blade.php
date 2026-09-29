@@ -49,7 +49,9 @@
                 @forelse ($links as $link)
                     <li data-id="{{ $link->id }}" class="link-item flex items-center gap-3 p-4 rounded-xl border border-ink-100 bg-ink-50/40 {{ !$link->is_active ? 'opacity-50' : '' }}">
                         <span class="drag-handle cursor-grab active:cursor-grabbing text-ink-300 text-lg select-none">⠿</span>
-                        <span class="w-9 h-9 rounded-lg bg-white border border-ink-100 flex items-center justify-center text-sm flex-shrink-0">🔗</span>
+                        <span class="w-9 h-9 rounded-lg bg-white border border-ink-100 flex items-center justify-center text-sm flex-shrink-0">
+                            {!! \App\Support\Brands::render($link->url, $link->icon, 'w-5 h-5') !!}
+                        </span>
 
                         <div class="flex-1 min-w-0" x-data="{ editing: false }">
                             <div x-show="!editing">

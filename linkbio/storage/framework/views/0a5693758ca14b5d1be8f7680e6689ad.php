@@ -137,7 +137,7 @@
                            class="w-10 h-10 rounded-full <?php echo e($hoverClass); ?> flex items-center justify-center text-sm font-bold <?php echo e($hoverClass); ?>"
                            style="<?php echo e($isLight ? 'background:rgba(0,0,0,.12);color:#111827' : 'background:rgba(255,255,255,.22);color:#fff'); ?>"
                            title="<?php echo e(\App\Models\Profile::SOCIAL_PLATFORMS[$platform]['label'] ?? ucfirst($platform)); ?>">
-                            <?php echo e(['instagram' => '◎', 'tiktok' => '♪', 'youtube' => '▶', 'facebook' => 'f', 'twitter' => '𝕏', 'whatsapp' => '◉'][$platform] ?? strtoupper(substr($platform, 0, 1))); ?>
+                            <?php echo \App\Support\Brands::markup($platform === 'website' ? 'globe' : ($platform === 'email' ? 'mail' : $platform), 'w-4 h-4'); ?>
 
                         </a>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -149,9 +149,11 @@
                 <?php $__empty_1 = true; $__currentLoopData = $links; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $link): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <a href="<?php echo e(route('public.link.redirect', ['username' => $profileUser->username, 'link' => $link->id])); ?>"
                        target="_blank" rel="noopener"
-                       class="group flex items-center justify-center gap-2 w-full py-3.5 px-5 font-semibold text-sm <?php echo e($hoverClass); ?><?php echo e($shadowClass); ?>"
+                       class="group flex items-center justify-center gap-2.5 w-full py-3.5 px-5 font-semibold text-sm <?php echo e($hoverClass); ?><?php echo e($shadowClass); ?>"
                        style="<?php echo e($btnStyle); ?>">
                         <?php if($link->is_featured): ?><span>⭐</span><?php endif; ?>
+                        <?php echo \App\Support\Brands::render($link->url, $link->icon, 'w-5 h-5 flex-shrink-0'); ?>
+
                         <?php echo e($link->title); ?>
 
                         <span class="opacity-0 group-hover:opacity-60 transition-opacity">&rarr;</span>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
+use App\Support\Brands;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,7 +38,7 @@ class LinkController extends Controller
         $link = $request->user()->links()->create([
             'title' => $validated['title'],
             'url' => $validated['url'],
-            'icon' => $validated['icon'] ?? 'link',
+            'icon' => $this->resolveIcon($validated['icon'] ?? 'link', $validated['url']),
             'position' => $maxPosition + 1,
             'is_active' => true,
         ]);
@@ -55,7 +56,11 @@ class LinkController extends Controller
             'icon' => ['nullable', 'string', 'in:'.implode(',', Link::AVAILABLE_ICONS)],
         ]);
 
-        $link->update($validated);
+        $link->update([
+            'title' => $validated['title'],
+            'url' => $validated['url'],
+            'icon' => $this->resolveIcon($validated['icon'] ?? $link->icon, $validated['url']),
+        ]);
 
         return $this->respond($request, $link, 'Link berhasil diperbarui.');
     }
@@ -108,6 +113,15 @@ class LinkController extends Controller
     private function authorizeOwnership(Link $link): void
     {
         abort_unless($link->user_id === Auth::id(), 403);
+    }
+
+    private function resolveIcon(string $icon, string $url): string
+    {
+        if (! in_array($icon, ['link', 'globe', ''], true)) {
+            return $icon;
+        }
+
+        return Brands::detectSlug($url);
     }
 
     /**

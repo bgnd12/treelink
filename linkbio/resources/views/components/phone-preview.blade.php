@@ -24,7 +24,7 @@
                 <div class="flex justify-center flex-wrap gap-2 mt-4">
                     @foreach (array_filter($profile->social_links ?? []) as $platform => $url)
                         <span class="w-7 h-7 rounded-full {{ $btnBg }} flex items-center justify-center text-xs">
-                            {{ ['instagram' => '◎', 'tiktok' => '♪', 'youtube' => '▶', 'facebook' => 'f', 'twitter' => '𝕏', 'whatsapp' => '◉'][$platform] ?? strtoupper(substr($platform, 0, 1)) }}
+                            {!! \App\Support\Brands::markup($platform === 'website' ? 'globe' : ($platform === 'email' ? 'mail' : $platform), 'w-3.5 h-3.5') !!}
                         </span>
                     @endforeach
                 </div>
@@ -34,6 +34,7 @@
                 @forelse ($links->where('is_active', true) as $link)
                     <div class="w-full py-2.5 px-4 {{ $btnClasses }} {{ $btnBg }} text-xs font-semibold truncate {{ $profile->animations_enabled ? 'animate-fade-up' : '' }} {{ $featuredLink?->id === $link->id ? 'ring-2 ring-yellow-300 scale-[1.03]' : '' }}">
                         @if ($featuredLink?->id === $link->id)⭐ @endif
+                        {!! \App\Support\Brands::render($link->url, $link->icon, 'w-4 h-4 inline-block align-[-2px]') !!}
                         {{ $link->title }}
                     </div>
                 @empty

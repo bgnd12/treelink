@@ -20,6 +20,8 @@ export default function editor(initial = {}) {
         cardStyles: initial.cardStyles || {},
         buttonStyles: initial.buttonStyles || [],
         icons: initial.icons || [],
+        iconSvgs: initial.iconSvgs || {},
+        brandHosts: initial.brandHosts || {},
         socials: initial.socials || [],
         urlPrefix: (initial.publicUrl || '').replace((initial.profile || {}).username || '', ''),
 
@@ -191,6 +193,48 @@ export default function editor(initial = {}) {
             const g = parseInt(clean.slice(2, 4), 16);
             const b = parseInt(clean.slice(4, 6), 16);
             return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6 ? '#111827' : '#ffffff';
+        },
+
+        // ---- brand icons ----------------------------------------------------
+        hostOf(url) {
+            try {
+                return (new URL(String(url || ''))).hostname.toLowerCase().replace(/^www\./, '');
+            } catch (e) {
+                return '';
+            }
+        },
+
+        brandKeyOf(url) {
+            const u = String(url || '').toLowerCase().trim();
+            if (u.startsWith('mailto:')) return 'mail';
+            if (u.startsWith('tel:') || u.startsWith('sms:')) return 'phone';
+            if (u.startsWith('whatsapp:')) return 'whatsapp';
+            const host = this.hostOf(u);
+            if (!host) return 'link';
+            for (const [domain, slug] of Object.entries(this.brandHosts)) {
+                if (host === domain || host.endsWith('.' + domain)) return slug;
+            }
+            return 'favicon';
+        },
+
+        faviconOf(url) {
+            const host = this.hostOf(url);
+            return host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : '';
+        },
+
+        linkIcon(link, cls = 'w-6 h-6') {
+            if (!link) return '';
+            const key = link.icon && !['link', 'globe'].includes(link.icon) ? link.icon : this.brandKeyOf(link.url || '');
+            if (key === 'favicon') {
+                const src = this.faviconOf(link.url);
+                return src ? `<img src="${src}" alt="" class="${cls} flex-shrink-0" loading="lazy" referrerpolicy="no-referrer">` : '';
+            }
+            return (this.iconSvgs[key] || this.iconSvgs['link'] || '').replace('{class}', cls);
+        },
+
+        socialIcon(key, cls = 'w-4 h-4') {
+            const mapped = key === 'website' ? 'globe' : key === 'email' ? 'mail' : key;
+            return (this.iconSvgs[mapped] || '').replace('{class}', cls);
         },
 
         // ---- lifecycle -------------------------------------------------------

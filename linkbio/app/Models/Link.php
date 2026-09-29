@@ -48,6 +48,7 @@ class Link extends Model
     public const AVAILABLE_ICONS = [
         'link', 'instagram', 'tiktok', 'youtube', 'whatsapp', 'github',
         'twitter', 'facebook', 'linkedin', 'globe', 'mail', 'spotify',
+        'telegram', 'discord', 'pinterest', 'twitch', 'paypal', 'phone',
         'shop', 'calendar', 'music', 'camera', 'file', 'map-pin',
     ];
 }

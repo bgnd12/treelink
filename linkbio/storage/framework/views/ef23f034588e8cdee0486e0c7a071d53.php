@@ -91,8 +91,8 @@
                                     <span class="drag-handle cursor-grab active:cursor-grabbing text-ink-300 text-lg select-none">⠿</span>
 
                                     
-                                    <span class="w-9 h-9 rounded-xl bg-ink-50 flex items-center justify-center text-xs uppercase font-bold text-ink-600 flex-shrink-0">
-                                        <span x-text="(link.icon || 'l').slice(0,1)"></span>
+                                    <span class="w-9 h-9 rounded-xl bg-ink-50 flex items-center justify-center text-ink-600 flex-shrink-0">
+                                        <span x-html="linkIcon(link, 'w-5 h-5')"></span>
                                     </span>
 
                                     
