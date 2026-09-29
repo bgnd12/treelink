@@ -20,7 +20,7 @@
                             <input type="file" name="avatar" accept="image/*" class="hidden"
                                    @change="avatarPreview = URL.createObjectURL($event.target.files[0])">
                         </label>
-                        <p class="text-xs text-ink-400 mt-2">JPG, PNG. Maksimal 2MB.</p>
+                        <p class="text-xs text-ink-400 mt-2">JPG, PNG. Maksimal 1MB.</p>
                         @error('avatar')<p class="text-xs text-rose-600 mt-1">{{ $message }}</p>@enderror
                     </div>
                 </div>

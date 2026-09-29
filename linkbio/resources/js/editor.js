@@ -17,6 +17,7 @@ export default function editor(initial = {}) {
         fonts: initial.fonts || {},
         patterns: initial.patterns || {},
         backgroundTypes: initial.backgroundTypes || {},
+        cardStyles: initial.cardStyles || {},
         buttonStyles: initial.buttonStyles || [],
         icons: initial.icons || [],
         socials: initial.socials || [],

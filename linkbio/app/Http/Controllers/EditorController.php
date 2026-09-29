@@ -44,6 +44,7 @@ class EditorController extends Controller
                 'themes' => Profile::AVAILABLE_THEMES,
                 'headerLayouts' => Profile::HEADER_LAYOUTS,
                 'backgroundTypes' => Profile::BACKGROUND_TYPES,
+                'cardStyles' => Profile::CARD_STYLES,
                 'patterns' => Profile::PATTERNS,
                 'buttonStyles' => Profile::BUTTON_STYLES,
                 'fonts' => Profile::FONT_LABELS,
@@ -121,6 +122,13 @@ class EditorController extends Controller
             'background_value' => ['nullable', 'string', 'max:255'],
             'background_image' => ['nullable', 'image', 'max:4096'],
             'remove_background_image' => ['nullable', 'boolean'],
+            'card_enabled' => ['nullable', 'boolean'],
+            'card_style' => ['nullable', Rule::in(array_keys(Profile::CARD_STYLES))],
+            'card_color' => ['nullable', 'string', 'max:20', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'card_opacity' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'card_radius' => ['nullable', 'integer', 'min:0', 'max:999'],
+            'card_border_width' => ['nullable', 'integer', 'min:0', 'max:32'],
+            'card_shadow' => ['nullable', 'boolean'],
         ]);
 
         $profile = $request->user()->getOrCreateProfile();
@@ -135,6 +143,13 @@ class EditorController extends Controller
             'font' => $validated['font'] ?? $profile->font,
             'background_type' => $validated['background_type'] ?? $profile->background_type,
             'background_value' => ($validated['background_value'] ?? null) ?: null,
+            'card_enabled' => $request->boolean('card_enabled'),
+            'card_style' => $validated['card_style'] ?? $profile->card_style,
+            'card_color' => ($validated['card_color'] ?? null) ?: null,
+            'card_opacity' => $validated['card_opacity'] ?? null,
+            'card_radius' => $validated['card_radius'] ?? null,
+            'card_border_width' => $validated['card_border_width'] ?? 1,
+            'card_shadow' => (bool) ($validated['card_shadow'] ?? false),
         ];
 
         if ($request->boolean('remove_background_image')) {

@@ -26,6 +26,13 @@ class Profile extends Model
         'background_type',
         'background_value',
         'background_image_path',
+        'card_enabled',
+        'card_style',
+        'card_color',
+        'card_opacity',
+        'card_radius',
+        'card_border_width',
+        'card_shadow',
         'header_layout',
         'animation_enabled',
         'social_links',
@@ -43,8 +50,13 @@ class Profile extends Model
             'animations_enabled' => 'boolean',
             'animation_enabled' => 'boolean',
             'button_shadow' => 'boolean',
+            'card_enabled' => 'boolean',
+            'card_shadow' => 'boolean',
             'button_radius' => 'integer',
             'button_border_width' => 'integer',
+            'card_opacity' => 'integer',
+            'card_radius' => 'integer',
+            'card_border_width' => 'integer',
         ];
     }
 
@@ -112,6 +124,129 @@ class Profile extends Model
         return self::FONT_FAMILIES[$this->font] ?? self::FONT_FAMILIES['sans'];
     }
 
+    // ---------------------------------------------------------------- card --
+
+    /**
+     * Corner radius of the public page card, in pixels.
+     */
+    public function cardRadiusPx(): int
+    {
+        return $this->card_radius !== null
+            ? max(0, (int) $this->card_radius)
+            : 32;
+    }
+
+    /**
+     * Card fill colour. When the user has not picked one, it follows the theme
+     * so the default keeps looking right on light and dark pages alike.
+     */
+    public function cardColorHex(bool $isLightTheme): string
+    {
+        $hex = ltrim((string) $this->card_color, '#');
+
+        if (strlen($hex) === 6 && ctype_xdigit($hex)) {
+            return '#'.$hex;
+        }
+
+        return $isLightTheme ? '#ffffff' : '#0f172a';
+    }
+
+    /**
+     * Fill opacity as a 0-100 percentage, defaulted per style.
+     */
+    public function cardOpacityPercent(bool $isLightTheme): int
+    {
+        if ($this->card_opacity !== null) {
+            return max(0, min(100, (int) $this->card_opacity));
+        }
+
+        return match ($this->cardStyle()) {
+            'solid' => 100,
+            'outline' => 0,
+            default => $isLightTheme ? 96 : 55,
+        };
+    }
+
+    public function cardStyle(): string
+    {
+        return isset(self::CARD_STYLES[$this->card_style]) ? $this->card_style : 'glass';
+    }
+
+    /**
+     * The `background` shorthand for the card element.
+     */
+    public function cardBackgroundCss(bool $isLightTheme): string
+    {
+        $hex = $this->cardColorHex($isLightTheme);
+        $opacity = $this->cardOpacityPercent($isLightTheme);
+
+        return $opacity >= 100 ? $hex : $hex.self::alphaHex($opacity);
+    }
+
+    /**
+     * The `border` shorthand for the card element.
+     */
+    public function cardBorderCss(bool $isLightTheme): string
+    {
+        $width = max(0, (int) ($this->card_border_width ?? 1));
+        $contrast = $isLightTheme ? '000000' : 'ffffff';
+
+        if ($this->cardStyle() === 'outline') {
+            $hex = $this->hasCardColor() ? ltrim((string) $this->card_color, '#') : $contrast;
+            $alpha = 45;
+        } else {
+            $hex = $contrast;
+            $alpha = 18;
+        }
+
+        return "{$width}px solid #{$hex}".self::alphaHex($alpha);
+    }
+
+    public function cardShadowCss(): string
+    {
+        if (! $this->card_shadow) {
+            return 'none';
+        }
+
+        return '0 30px 70px -24px rgba(15,23,42,.45), 0 2px 6px rgba(15,23,42,.06)';
+    }
+
+    /**
+     * Readable text colour for the content sitting on top of the card.
+     */
+    public function cardTextColor(bool $isLightTheme): string
+    {
+        $hex = ltrim($this->cardColorHex($isLightTheme), '#');
+        $opacity = $this->cardOpacityPercent($isLightTheme) / 100;
+
+        // Blend the card colour with whatever sits behind it (a light page
+        // under a translucent card) before measuring, otherwise a 55% dark
+        // card would still be measured as if it were fully opaque.
+        $cardLuma = 0.299 * hexdec(substr($hex, 0, 2))
+            + 0.587 * hexdec(substr($hex, 2, 2))
+            + 0.114 * hexdec(substr($hex, 4, 2));
+
+        $pageLuma = $isLightTheme ? 255 : 0;
+        $luma = $opacity * $cardLuma + (1 - $opacity) * $pageLuma;
+
+        return $luma > 150 ? '#111827' : '#ffffff';
+    }
+
+    private function hasCardColor(): bool
+    {
+        $hex = ltrim((string) $this->card_color, '#');
+
+        return strlen($hex) === 6 && ctype_xdigit($hex);
+    }
+
+    /**
+     * Turn a 0-100 opacity into a two digit hex alpha suffix.
+     */
+    private static function alphaHex(int $opacity): string
+    {
+        return str_pad(dechex((int) round(max(0, min(100, $opacity)) * 255 / 100)), 2, '0', STR_PAD_LEFT);
+    }
+
     public const AVAILABLE_THEMES = [
         'aurora' => ['label' => 'Aurora', 'from' => 'from-brand-500', 'to' => 'to-indigo-600', 'text' => 'text-white', 'accent' => '#ffffff', 'pattern_bg' => '#3f1c99'],
         'sunset' => ['label' => 'Sunset', 'from' => 'from-orange-400', 'to' => 'to-pink-600', 'text' => 'text-white', 'accent' => '#ffffff', 'pattern_bg' => '#9a3412'],
@@ -122,6 +257,12 @@ class Profile extends Model
     ];
 
     public const BUTTON_STYLES = ['rounded', 'pill', 'square', 'outline'];
+
+    public const CARD_STYLES = [
+        'glass' => ['label' => 'Kaca', 'desc' => 'Transparan, latar halaman terlihat'],
+        'solid' => ['label' => 'Solid', 'desc' => 'Warna pekat, opak penuh'],
+        'outline' => ['label' => 'Outline', 'desc' => 'Tanpa isian, hanya garis tepi'],
+    ];
 
     public const HEADER_LAYOUTS = [
         'classic' => ['label' => 'Classic', 'desc' => 'Avatar bulat di atas'],

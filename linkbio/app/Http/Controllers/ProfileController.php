@@ -41,7 +41,7 @@ class ProfileController extends Controller
             ],
             'display_name' => ['nullable', 'string', 'max:100'],
             'bio' => ['nullable', 'string', 'max:280'],
-            'avatar' => ['nullable', 'image', 'max:2048'],
+            'avatar' => ['nullable', 'image', 'max:1024'],
             'social_links' => ['nullable', 'array'],
             'social_links.*' => ['nullable', 'string', 'max:255'],
         ]);

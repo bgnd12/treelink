@@ -53,6 +53,24 @@
         $animate = (bool) $profile->animation_enabled;
         $hoverClass = 'transition-all duration-200 hover:-translate-y-0.5';
         $shadowClass = $profile->button_shadow ? ' hover:shadow-lg' : '';
+
+        // Card ----------------------------------------------------------------------
+        // The whole profile can live inside one card that floats over the page
+        // background. When the card is on, the readable text colour is derived
+        // from the card itself so a light card on a dark page still reads well.
+        $themeIsLight = $theme['text'] !== 'text-white';
+        $cardOn = (bool) $profile->card_enabled;
+        $isLight = $cardOn ? $profile->cardTextColor($themeIsLight) === '#111827' : $themeIsLight;
+
+        $cardStyle = 'background:'.$profile->cardBackgroundCss($themeIsLight).';'
+            .'color:'.$profile->cardTextColor($themeIsLight).';'
+            .'border:'.$profile->cardBorderCss($themeIsLight).';'
+            .'box-shadow:'.$profile->cardShadowCss().';'
+            .'border-radius:'.$profile->cardRadiusPx().'px;';
+
+        if ($profile->cardStyle() === 'glass') {
+            $cardStyle .= 'backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);';
+        }
     @endphp
 </head>
 <body class="min-h-screen {{ $theme['text'] }} {{ $bgClass }}" style="{{ $bgStyle }} font-family:{{ $fontFamily }}">
@@ -61,13 +79,18 @@
         <div class="fixed inset-0 bg-black/35"></div>
     @endif
 
-    <div class="relative min-h-screen flex flex-col items-center px-5 py-14 sm:py-20 {{ $animate ? 'animate-fade-up' : '' }}">
+    <div class="relative min-h-screen flex flex-col items-center px-4 py-8 sm:py-14 {{ $animate ? 'animate-fade-up' : '' }}">
         <div class="w-full max-w-md mx-auto text-center">
+            @if ($cardOn)
+                <div class="overflow-hidden px-6 pt-9 pb-8" style="{{ $cardStyle }}">
+            @else
+                <div class="-mx-4 -my-8 sm:-my-14 px-4 py-8 sm:py-14">
+            @endif
 
             {{-- ============ HEADER LAYOUT ============ --}}
             @if ($layout === 'banner')
-                <div class="-mt-8">
-                    <div class="h-28 rounded-b-3xl {{ $isLight ? 'bg-black/10' : 'bg-white/15 backdrop-blur' }}"></div>
+                <div class="{{ $cardOn ? '-mx-6 -mt-9' : '-mt-8' }}">
+                    <div class="h-28 {{ $cardOn ? '' : 'rounded-b-3xl' }} {{ $isLight ? 'bg-black/10' : 'bg-white/15 backdrop-blur' }}"></div>
                     <img src="{{ $profile->avatar_url }}" alt="{{ $profileUser->name }}"
                          class="w-24 h-24 rounded-full object-cover mx-auto -mt-12 border-4 {{ $isLight ? 'border-gray-200 shadow-xl' : 'border-white/80 shadow-xl' }}">
                     <h1 class="mt-3 text-xl font-bold">{{ $profile->display_name ?: $profileUser->name }}</h1>
@@ -177,6 +200,7 @@
             <p class="mt-10 text-xs opacity-50">
                 Dibuat dengan <a href="{{ route('home') }}" class="underline hover:opacity-80">TreeLink</a>
             </p>
+            </div>
         </div>
     </div>
 
