@@ -59,7 +59,7 @@
                         {{-- Add link --}}
                         <div class="rounded-2xl border border-ink-100 bg-ink-50/40 p-4">
                             <form @submit.prevent="addLink()" class="grid sm:grid-cols-[2fr_2fr_1fr_auto] gap-3">
-                                <input type="text" x-model="linkForm.title" placeholder="Judul (Instagram)"
+                                <input type="text" x-model="linkForm.title" placeholder="Judul"
                                        class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
                                 <input type="text" x-model="linkForm.url" placeholder="https://instagram.com"
                                        class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
@@ -180,7 +180,7 @@
                             <form @submit.prevent="addProduct()" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
                                 <input type="text" x-model="productForm.name" placeholder="Nama produk"
                                        class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition">
-                                <input type="text" x-model="productForm.url" placeholder="https://... (URL produk)"
+                                <input type="text" x-model="productForm.url" placeholder="URL produk"
                                        class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition">
                                 <input type="number" step="0.01" min="0" x-model="productForm.price" placeholder="Harga (opsional)"
                                        class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition">

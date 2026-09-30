@@ -14,7 +14,7 @@
              place while the untouched parts of the page reset to their normal state. --}}
         @php
             $failedSource = old('source');
-            $failedSlugId = $errors->get('slug_id')[0] ?? null;
+            $failedSlugId = old('slug_id');
             $failedSlugId = $failedSlugId !== null ? (int) $failedSlugId : null;
             $failedLink = $failedSlugId !== null ? $shortLinks->firstWhere('id', $failedSlugId) : null;
 
@@ -79,7 +79,7 @@
                  trip while the rest of the list keeps rendering normally. --}}
             <div class="bg-white rounded-2xl shadow-sm border border-ink-100 p-5"
                  x-data="{
-                     editing: @js($rowFailed && $failedSlugId === $link->id),
+                     editing: @js($rowFailed && $failedSlugId === (int) $link->id),
                      draft: {
                          slug: @js($rowSlugValue),
                          destination_url: @js($rowDestValue),
