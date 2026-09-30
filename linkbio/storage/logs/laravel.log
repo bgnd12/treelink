@@ -2890,3 +2890,27 @@ Did you mean one of these?
 #19 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
 #20 {main}
 "} 
+[2026-09-29 09:00:30] local.ERROR: PHP Parse error: Syntax error, unexpected T_NS_SEPARATOR on line 1 {"exception":"[object] (Psy\\Exception\\ParseErrorException(code: 0): PHP Parse error: Syntax error, unexpected T_NS_SEPARATOR on line 1 at C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Exception/ParseErrorException.php:44)
+[stacktrace]
+#0 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/CodeCleaner.php(657): Psy/Exception/ParseErrorException::fromParseError(Object(PhpParser/Error))
+#1 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/CodeCleaner.php(273): Psy/CodeCleaner->parse('<?php foreach (...', false)
+#2 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Shell.php(1399): Psy/CodeCleaner->clean(Array, false)
+#3 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Shell.php(1506): Psy/Shell->appendCode('foreach (App//Mo...', true, false)
+#4 C:/laragon/www/treelink/linkbio/vendor/psy/psysh/src/Shell.php(2215): Psy/Shell->setCode('foreach (App//Mo...', true)
+#5 C:/laragon/www/treelink/linkbio/vendor/laravel/tinker/src/Console/TinkerCommand.php(77): Psy/Shell->execute('foreach (App//Mo...')
+#6 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Laravel/Tinker/Console/TinkerCommand->handle()
+#7 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#8 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(95): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#9 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#10 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Container/Container.php(696): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#11 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(213): Illuminate/Container/Container->call(Array)
+#12 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Command/Command.php(341): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#13 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Console/Command.php(182): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#14 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(1117): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#15 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(356): Symfony/Component/Console/Application->doRunCommand(Object(Laravel/Tinker/Console/TinkerCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#16 C:/laragon/www/treelink/linkbio/vendor/symfony/console/Application.php(195): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#17 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(198): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#18 C:/laragon/www/treelink/linkbio/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1235): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#19 C:/laragon/www/treelink/linkbio/artisan(13): Illuminate/Foundation/Application->handleCommand(Object(Symfony/Component/Console/Input/ArgvInput))
+#20 {main}
+"} 

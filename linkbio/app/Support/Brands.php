@@ -132,7 +132,9 @@ class Brands
         $res = self::resolve($url, $manualIcon);
 
         if (! empty($res['favicon'])) {
-            return '<img src="'.e($res['favicon']).'" alt="" class="'.$class.' flex-shrink-0" loading="lazy" referrerpolicy="no-referrer">';
+            $imgClass = str_contains($class, 'flex-shrink-0') ? $class : trim($class.' flex-shrink-0');
+
+            return '<img src="'.e($res['favicon']).'" alt="" class="'.$imgClass.'" loading="lazy" referrerpolicy="no-referrer">';
         }
 
         return self::markup($res['slug'], $class);

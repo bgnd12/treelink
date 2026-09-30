@@ -24,7 +24,7 @@
                 <div class="flex justify-center flex-wrap gap-2 mt-4">
                     <?php $__currentLoopData = array_filter($profile->social_links ?? []); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $platform => $url): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <span class="w-7 h-7 rounded-full <?php echo e($btnBg); ?> flex items-center justify-center text-xs">
-                            <?php echo e(['instagram' => '◎', 'tiktok' => '♪', 'youtube' => '▶', 'facebook' => 'f', 'twitter' => '𝕏', 'whatsapp' => '◉'][$platform] ?? strtoupper(substr($platform, 0, 1))); ?>
+                            <?php echo \App\Support\Brands::markup($platform === 'website' ? 'globe' : ($platform === 'email' ? 'mail' : $platform), 'w-3.5 h-3.5'); ?>
 
                         </span>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -35,6 +35,8 @@
                 <?php $__empty_1 = true; $__currentLoopData = $links->where('is_active', true); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $link): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <div class="w-full py-2.5 px-4 <?php echo e($btnClasses); ?> <?php echo e($btnBg); ?> text-xs font-semibold truncate <?php echo e($profile->animations_enabled ? 'animate-fade-up' : ''); ?> <?php echo e($featuredLink?->id === $link->id ? 'ring-2 ring-yellow-300 scale-[1.03]' : ''); ?>">
                         <?php if($featuredLink?->id === $link->id): ?>⭐ <?php endif; ?>
+                        <?php echo \App\Support\Brands::render($link->url, $link->icon, 'w-4 h-4 inline-block align-[-2px]'); ?>
+
                         <?php echo e($link->title); ?>
 
                     </div>
