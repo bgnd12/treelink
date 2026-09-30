@@ -237,6 +237,22 @@ export default function editor(initial = {}) {
             return (this.iconSvgs[mapped] || '').replace('{class}', cls);
         },
 
+        iconSvgFor(key, cls = 'w-4 h-4') {
+            return (this.iconSvgs[key] || this.iconSvgs['link'] || '').replace('{class}', cls);
+        },
+
+        iconLabel(key) {
+            const labels = {
+                link: 'Link', instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube',
+                whatsapp: 'WhatsApp', github: 'GitHub', twitter: 'X / Twitter', facebook: 'Facebook',
+                linkedin: 'LinkedIn', globe: 'Website', mail: 'Email', spotify: 'Spotify',
+                telegram: 'Telegram', discord: 'Discord', pinterest: 'Pinterest', twitch: 'Twitch',
+                paypal: 'PayPal', phone: 'Telepon', shop: 'Belanja', calendar: 'Kalender',
+                music: 'Musik', camera: 'Kamera', file: 'File', 'map-pin': 'Lokasi',
+            };
+            return labels[key] || (key ? key.charAt(0).toUpperCase() + key.slice(1).replace(/-/g, ' ') : 'Link');
+        },
+
         // ---- lifecycle -------------------------------------------------------
         init() {
             this.$nextTick(() => {
@@ -255,6 +271,12 @@ export default function editor(initial = {}) {
 
         token() {
             return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        },
+
+        // Route templates ship a `__ID__` placeholder so no digit in the host
+        // (e.g. the :8000 port) can ever be mistaken for the model id.
+        url(template, id) {
+            return String(template || '').replace('__ID__', encodeURIComponent(id));
         },
 
         toast(msg, type = 'ok') {
@@ -345,7 +367,7 @@ export default function editor(initial = {}) {
         saveEditLink() {
             const d = this.editDraft;
             if (!d || !d.title.trim() || !d.url.trim()) return;
-            this.jsonReq(window.linkUpdateUrl.replace('0', d.id), 'PUT', { title: d.title, url: d.url, icon: d.icon })
+            this.jsonReq(this.url(window.linkUpdateUrl, d.id), 'PUT', { title: d.title, url: d.url, icon: d.icon })
                 .then((res) => {
                     const idx = this.links.findIndex((l) => l.id === res.link.id);
                     if (idx >= 0) this.links.splice(idx, 1, { ...res.link, _open: false });
@@ -357,7 +379,7 @@ export default function editor(initial = {}) {
         },
 
         toggleLink(link) {
-            this.req(window.linkToggleUrl.replace('0', link.id), { method: 'PATCH' })
+            this.req(this.url(window.linkToggleUrl, link.id), { method: 'PATCH' })
                 .then((res) => {
                     const idx = this.links.findIndex((l) => l.id === res.link.id);
                     if (idx >= 0) this.links.splice(idx, 1, { ...res.link, _open: false });
@@ -367,7 +389,7 @@ export default function editor(initial = {}) {
 
         deleteLink(link) {
             if (!confirm(`Hapus link "${link.title}"?`)) return;
-            this.req(window.linkDestroyUrl.replace('0', link.id), { method: 'DELETE' })
+            this.req(this.url(window.linkDestroyUrl, link.id), { method: 'DELETE' })
                 .then(() => {
                     this.links = this.links.filter((l) => l.id !== link.id);
                     if (this.featuredLinkId === link.id) this.featuredLinkId = null;
@@ -408,7 +430,7 @@ export default function editor(initial = {}) {
         saveEditProduct() {
             const d = this.editDraft;
             if (!d || !d.name.trim() || !d.url.trim()) return;
-            this.persistProduct(window.productUpdateUrl.replace('0', d.id), 'PUT')
+            this.persistProduct(this.url(window.productUpdateUrl, d.id), 'PUT')
                 .then((res) => {
                     const idx = this.products.findIndex((p) => p.id === res.product.id);
                     if (idx >= 0) this.products.splice(idx, 1, { ...res.product, _open: false });
@@ -420,7 +442,7 @@ export default function editor(initial = {}) {
         },
 
         toggleProduct(product) {
-            this.req(window.productToggleUrl.replace('0', product.id), { method: 'PATCH' })
+            this.req(this.url(window.productToggleUrl, product.id), { method: 'PATCH' })
                 .then((res) => {
                     const idx = this.products.findIndex((p) => p.id === res.product.id);
                     if (idx >= 0) this.products.splice(idx, 1, { ...res.product, _open: false });
@@ -430,7 +452,7 @@ export default function editor(initial = {}) {
 
         deleteProduct(product) {
             if (!confirm(`Hapus produk "${product.name}"?`)) return;
-            this.req(window.productDestroyUrl.replace('0', product.id), { method: 'DELETE' })
+            this.req(this.url(window.productDestroyUrl, product.id), { method: 'DELETE' })
                 .then(() => {
                     this.products = this.products.filter((p) => p.id !== product.id);
                     this.toast('Produk dihapus');

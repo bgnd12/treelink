@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('url');
+            $table->text('url');
             $table->decimal('price', 12, 2)->nullable();
             $table->string('image_path')->nullable();
             $table->unsignedInteger('position')->default(0);

@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('title');
-            $table->string('url');
+            $table->text('url');
             $table->string('icon')->default('link');
             $table->unsignedInteger('position')->default(0);
             $table->boolean('is_active')->default(true);

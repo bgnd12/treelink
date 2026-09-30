@@ -72,9 +72,10 @@ class Brands
         $icon = self::ICONS[$slug] ?? self::ICONS['link'];
 
         return '<svg class="'.$class.'" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">'
-            .$icon['paths']
+            .'<path d="'.$icon['paths'].'"/>'
             .'</svg>';
     }
+
 
     public static function label(string $slug): string
     {

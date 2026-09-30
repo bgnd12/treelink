@@ -12,10 +12,6 @@
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             Tersimpan otomatis · <span x-text="savedAt"></span>
         </div>
-        <a href="<?php echo e($user->publicUrl()); ?>" target="_blank"
-           class="ml-auto px-4 py-2 rounded-full bg-ink-900 text-white text-xs font-semibold hover:bg-ink-700 transition">
-            ↗ Buka halaman publik
-        </a>
     </div>
 
     
@@ -63,16 +59,34 @@
                         
                         <div class="rounded-2xl border border-ink-100 bg-ink-50/40 p-4">
                             <form @submit.prevent="addLink()" class="grid sm:grid-cols-[2fr_2fr_1fr_auto] gap-3">
-                                <input type="text" x-model="linkForm.title" placeholder="Judul (cth: Instagram Saya)"
+                                <input type="text" x-model="linkForm.title" placeholder="Judul (Instagram)"
                                        class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
-                                <input type="text" x-model="linkForm.url" placeholder="https://instagram.com/kamu"
+                                <input type="text" x-model="linkForm.url" placeholder="https://instagram.com"
                                        class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
-                                <select x-model="linkForm.icon"
-                                        class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-brand-500">
-                                    <template x-for="icon in icons" :key="icon">
-                                        <option :value="icon" x-text="icon"></option>
-                                    </template>
-                                </select>
+                                
+                                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                                    <button type="button" @click="open = !open"
+                                            class="w-full flex items-center gap-2 px-3 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none hover:border-brand-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
+                                        <span class="flex-shrink-0 text-ink-600" x-html="iconSvgFor(linkForm.icon, 'w-4 h-4')"></span>
+                                        <span class="flex-1 text-left text-ink-700 font-medium truncate" x-text="iconLabel(linkForm.icon)"></span>
+                                        <svg class="w-4 h-4 text-ink-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                    <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                                         class="absolute z-50 mt-1 w-56 max-h-64 overflow-y-auto bg-white rounded-2xl border border-ink-100 shadow-xl py-1" style="min-width: 13rem;">
+                                        <template x-for="icon in icons" :key="icon">
+                                            <button type="button"
+                                                    @click="linkForm.icon = icon; open = false"
+                                                    class="w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-brand-50 transition"
+                                                    :class="linkForm.icon === icon ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-ink-700'">
+                                                <span class="flex-shrink-0" x-html="iconSvgFor(icon, 'w-4 h-4')"></span>
+                                                <span x-text="iconLabel(icon)"></span>
+                                                <span x-show="linkForm.icon === icon" class="ml-auto">
+                                                    <svg class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                </span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </div>
                                 <button type="submit" class="px-5 py-3 rounded-xl bg-brand-600 text-white text-sm font-bold hover:bg-brand-700 transition shadow-soft"
                                         :disabled="saving">
                                     + Tambah
@@ -106,11 +120,30 @@
                                         <div class="flex flex-col sm:flex-row gap-2">
                                             <input type="text" x-model="editDraft.title" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 text-sm outline-none focus:border-brand-500">
                                             <input type="text" x-model="editDraft.url" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 text-sm outline-none focus:border-brand-500">
-                                            <select x-model="editDraft.icon" class="px-3 py-2 rounded-lg border border-ink-200 text-sm outline-none">
-                                                <template x-for="icon in icons" :key="icon">
-                                                    <option :value="icon" x-text="icon"></option>
-                                                </template>
-                                            </select>
+                                            
+                                            <div class="relative" x-data="{ openEdit: false }" @click.outside="openEdit = false">
+                                                <button type="button" @click="openEdit = !openEdit"
+                                                        class="flex items-center gap-2 px-3 py-2 rounded-lg border border-ink-200 bg-white text-sm outline-none hover:border-brand-400 transition whitespace-nowrap">
+                                                    <span class="flex-shrink-0 text-ink-600" x-html="iconSvgFor(editDraft.icon, 'w-4 h-4')"></span>
+                                                    <span class="text-ink-700 font-medium" x-text="iconLabel(editDraft.icon)"></span>
+                                                    <svg class="w-3.5 h-3.5 text-ink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                                </button>
+                                                <div x-show="openEdit" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                                                     class="absolute z-50 mt-1 w-52 max-h-64 overflow-y-auto bg-white rounded-2xl border border-ink-100 shadow-xl py-1" style="min-width: 13rem; right: 0;">
+                                                    <template x-for="icon in icons" :key="icon">
+                                                        <button type="button"
+                                                                @click="editDraft.icon = icon; openEdit = false"
+                                                                class="w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-brand-50 transition"
+                                                                :class="editDraft.icon === icon ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-ink-700'">
+                                                            <span class="flex-shrink-0" x-html="iconSvgFor(icon, 'w-4 h-4')"></span>
+                                                            <span x-text="iconLabel(icon)"></span>
+                                                            <span x-show="editDraft.icon === icon" class="ml-auto">
+                                                                <svg class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                            </span>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </div>
                                             <button @click="saveEditLink()" class="px-4 py-2 rounded-lg bg-brand-600 text-white text-xs font-bold">Simpan</button>
                                             <button @click="cancelEdit()" class="px-4 py-2 rounded-lg bg-ink-100 text-ink-600 text-xs font-bold">Batal</button>
                                         </div>
@@ -379,7 +412,7 @@
                                         class="ml-2 px-5 py-3 rounded-xl bg-rose-50 text-rose-600 text-sm font-semibold hover:bg-rose-100 transition">
                                     Hapus
                                 </button>
-                                <p class="text-xs text-ink-400 mt-3">JPG/PNG, maks 4MB. Gambar akan menjadi latar halamanmu.</p>
+                                <p class="text-xs text-ink-400 mt-3">JPG/PNG, maks GB. Gambar akan menjadi latar halamanmu.</p>
                             </div>
                         </div>
                     </div>
@@ -536,7 +569,7 @@
                                         <span class="uppercase text-[10px] font-bold text-ink-400 mr-1.5" x-text="s.label.slice(0,1)"></span>
                                         <span x-text="s.label"></span>
                                     </label>
-                                    <input type="text" x-model="s.url" @input="enhanceChanged()" placeholder="https://..."
+                                    <input type="text" x-model="s.url" @input="enhanceChanged()" placeholder="https"
                                            class="w-full px-4 py-3 rounded-xl border border-ink-200 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
                                 </div>
                             </template>
@@ -626,14 +659,14 @@
 <?php $__env->startSection('scripts'); ?>
 <script>
     window.linkStoreUrl = <?php echo json_encode(route('dashboard.links.store'), 15, 512) ?>;
-    window.linkUpdateUrl = <?php echo json_encode(route('dashboard.links.update', 0), 512) ?>;
-    window.linkToggleUrl = <?php echo json_encode(route('dashboard.links.toggle', 0), 512) ?>;
-    window.linkDestroyUrl = <?php echo json_encode(route('dashboard.links.destroy', 0), 512) ?>;
+    window.linkUpdateUrl = <?php echo json_encode(route('dashboard.links.update', '__ID__'), 512) ?>;
+    window.linkToggleUrl = <?php echo json_encode(route('dashboard.links.toggle', '__ID__'), 512) ?>;
+    window.linkDestroyUrl = <?php echo json_encode(route('dashboard.links.destroy', '__ID__'), 512) ?>;
     window.linkReorderUrl = <?php echo json_encode(route('dashboard.links.reorder'), 15, 512) ?>;
     window.productStoreUrl = <?php echo json_encode(route('dashboard.products.store'), 15, 512) ?>;
-    window.productUpdateUrl = <?php echo json_encode(route('dashboard.products.update', 0), 512) ?>;
-    window.productToggleUrl = <?php echo json_encode(route('dashboard.products.toggle', 0), 512) ?>;
-    window.productDestroyUrl = <?php echo json_encode(route('dashboard.products.destroy', 0), 512) ?>;
+    window.productUpdateUrl = <?php echo json_encode(route('dashboard.products.update', '__ID__'), 512) ?>;
+    window.productToggleUrl = <?php echo json_encode(route('dashboard.products.toggle', '__ID__'), 512) ?>;
+    window.productDestroyUrl = <?php echo json_encode(route('dashboard.products.destroy', '__ID__'), 512) ?>;
     window.productReorderUrl = <?php echo json_encode(route('dashboard.products.reorder'), 15, 512) ?>;
     window.headerUrl = <?php echo json_encode(route('dashboard.header'), 15, 512) ?>;
     window.designUrl = <?php echo json_encode(route('dashboard.design'), 15, 512) ?>;
