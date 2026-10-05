@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
+use App\Models\ShortLink;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class PublicProfileController extends Controller
@@ -24,23 +26,39 @@ class PublicProfileController extends Controller
         'pulse', 'livewire', 'webhooks', 'docs', 'help', 'about',
     ];
 
-    /** Route constraint: a valid username that is not a reserved word. */
-    public const USERNAME_PATTERN = '^(?!(?:'
-        .'admin|dashboard|login|register|logout|lang|forgot-password|reset-password|email'
-        .'|verify-email|api|storage|build|up|assets|css|js|images|img|telescope|horizon'
-        .'|sanctum|nova|pulse|livewire|webhooks|docs|help|about'
-        .")$)[A-Za-z0-9_.]+$";
+    /**
+     * The same list as RESERVED_USERNAMES, as a regex alternation, so the route
+     * constraint can never drift away from what registration rejects.
+     */
+    public const RESERVED_PATTERN = 'admin|dashboard|login|register|logout|lang'
+        .'|forgot-password|reset-password|email|verify-email'
+        .'|api|storage|build|up|assets|css|js|images|img'
+        .'|telescope|horizon|sanctum|nova|pulse|livewire'
+        .'|webhooks|docs|help|about';
+
+    /**
+     * Route constraint: a valid username that is not a reserved word.
+     *
+     * The character class must stay a superset of the "Custom Address"
+     * character class (alpha_dash: letters, numbers, dashes, underscores),
+     * otherwise a saved custom address would 404 the moment it is opened.
+     * The reserved-word guard is case-insensitive so /ADMIN cannot slip past it.
+     */
+    public const USERNAME_PATTERN = '^(?!(?i:'.self::RESERVED_PATTERN.')$)[A-Za-z0-9_.-]+$';
 
     public function show(Request $request, string $username)
     {
-        // First check if this is a short link slug
-        $shortLink = \App\Models\ShortLink::where('slug', $username)->where('is_active', true)->first();
+        // A custom address is resolved first, case-insensitively, so /My-Event
+        // and /my-event both land on the same destination.
+        $normalized = Str::lower($username);
+
+        $shortLink = ShortLink::whereRaw('LOWER(slug) = ?', [$normalized])->where('is_active', true)->first();
         if ($shortLink) {
             $shortLink->increment('clicks');
             return redirect()->away($shortLink->destination_url);
         }
 
-        $user = User::where('username', strtolower($username))
+        $user = User::where('username', $normalized)
             ->where('is_active', true)
             ->firstOrFail();
 

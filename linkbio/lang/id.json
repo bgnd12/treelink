@@ -104,6 +104,7 @@
     "Create your first short link above.": "Buat short link pertamamu di atas.",
     "Please enter a custom address for your short link.": "Masukkan alamat kustom untuk short link kamu.",
     "The address \":input\" is already taken by someone else. Please use a different address.": "Alamat \":input\" sudah dipakai akun lain. Silakan gunakan alamat yang berbeda.",
+    "The address \":input\" is already used as a public profile username. Please use a different address.": "Alamat \":input\" sudah dipakai sebagai username profil publik. Silakan gunakan alamat yang berbeda.",
     "The address may only contain letters, numbers, dashes and underscores.": "Alamat hanya boleh berisi huruf, angka, tanda hubung, dan garis bawah.",
     "The address may not be longer than :max characters.": "Alamat tidak boleh lebih dari :max karakter.",
     "Please enter the destination URL.": "Masukkan URL tujuan.",

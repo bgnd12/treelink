@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\LinkIdController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProfileController;
@@ -57,6 +58,9 @@ Route::post('logout', [LoginController::class, 'destroy'])
 */
 Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [EditorController::class, 'index'])->name('index');
+    Route::get('shop', [ProductController::class, 'index'])->name('shop');
+    Route::get('shop/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::get('shop/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
 
     Route::post('header', [EditorController::class, 'header'])->name('header');
     Route::post('design', [EditorController::class, 'design'])->name('design');
@@ -86,6 +90,17 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
 
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::prefix('linkid')->name('linkid.')->group(function () {
+        Route::get('discover', [LinkIdController::class, 'discover'])->name('discover');
+        Route::get('my-collaboration', function() { return view('dashboard.linkid.my-collaboration'); })->name('my-collaboration');
+        Route::get('requests', function() {
+            $requests = auth()->user()->linkIdRequests()->get();
+
+            return view('dashboard.linkid.requests', ['requests' => $requests]);
+        })->name('requests');
+        Route::get('messages', function() { return view('dashboard.linkid.messages'); })->name('messages');
+    });
 
     Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
     Route::get('analytics/chart-data', [AnalyticsController::class, 'chartData'])->name('analytics.chart-data');
@@ -121,6 +136,10 @@ Route::get('{username}/l/{link}', [PublicProfileController::class, 'redirectLink
     ->where('link', '[0-9]+')
     ->where('username', PublicProfileController::USERNAME_PATTERN)
     ->name('public.link.redirect');
+
+Route::post('{username}/linkid/request', [App\Http\Controllers\LinkIdRequestController::class, 'store'])
+    ->where('username', PublicProfileController::USERNAME_PATTERN)
+    ->name('public.linkid.request');
 
 Route::get('{username}', [PublicProfileController::class, 'show'])
     ->where('username', PublicProfileController::USERNAME_PATTERN)

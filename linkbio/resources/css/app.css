@@ -615,4 +615,42 @@ html {
             top: 15rem;
         }
     }
+
+    .dashboard-shell {
+        --treelink-navy: #1e2a5b;
+        --treelink-lime: #c8ff4d;
+        background: #f8f9f7;
+        color: #14213d;
+    }
+
+    .dashboard-shell .bg-brand-600 {
+        background-color: var(--treelink-lime);
+        color: var(--treelink-navy);
+    }
+
+    .dashboard-shell .hover\:bg-brand-700:hover {
+        background-color: #ddff91;
+        color: var(--treelink-navy);
+    }
+
+    .dashboard-shell .bg-brand-50 {
+        background-color: #f1f3e9;
+    }
+
+    .dashboard-shell .text-brand-600,
+    .dashboard-shell .text-brand-700 {
+        color: #4f46e5;
+    }
+
+    .dashboard-shell .border-brand-200 {
+        border-color: #dce1da;
+    }
+
+    .dashboard-shell .focus\:border-brand-500:focus {
+        border-color: #7c8a55;
+    }
+
+    .dashboard-shell .focus\:ring-brand-100:focus {
+        --tw-ring-color: #edf0e7;
+    }
 }

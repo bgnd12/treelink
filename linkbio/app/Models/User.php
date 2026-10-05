@@ -72,6 +72,11 @@ class User extends Authenticatable
         return $this->hasMany(Product::class)->orderBy('position');
     }
 
+    public function linkIdRequests(): HasMany
+    {
+        return $this->hasMany(LinkIdRequest::class, 'recipient_user_id')->latest();
+    }
+
     public function profileViews(): HasMany
     {
         return $this->hasMany(ProfileView::class);

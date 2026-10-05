@@ -16,6 +16,9 @@ class Product extends Model
         'name',
         'url',
         'price',
+        'description',
+        'category',
+        'stock',
         'image_path',
         'position',
         'is_active',
@@ -31,6 +34,7 @@ class Product extends Model
         return [
             'price' => 'decimal:2',
             'position' => 'integer',
+            'stock' => 'integer',
             'is_active' => 'boolean',
         ];
     }

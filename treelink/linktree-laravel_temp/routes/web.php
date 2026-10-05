@@ -72,6 +72,19 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard.')->group(functi
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/settings', [ProfileController::class, 'updateSettings'])->name('settings.update');
+
+    Route::view('/shop', 'dashboard.shop')->name('shop.index');
+    Route::view('/analytics', 'dashboard.analytics')->name('analytics.index');
+    Route::view('/tools', 'dashboard.tools')->name('tools.index');
+    Route::view('/settings', 'dashboard.settings')->name('settings.index');
+    Route::view('/editor', 'dashboard.editor')->name('editor');
+    Route::view('/short-links', 'dashboard.short-links')->name('short-links.index');
+    Route::view('/linkid/discover', 'dashboard.linkid.discover')->name('linkid.discover');
+    Route::view('/linkid/collaborations', 'dashboard.linkid.collaborations')->name('linkid.collaborations');
+    Route::view('/linkid/collaboration', 'dashboard.linkid.collaborations')->name('linkid.collaboration');
+    Route::view('/linkid/requests', 'dashboard.linkid.requests')->name('linkid.requests');
+    Route::view('/linkid/messages', 'dashboard.messages')->name('linkid.messages');
+    Route::view('/messages', 'dashboard.messages')->name('messages');
 });
 
 /*

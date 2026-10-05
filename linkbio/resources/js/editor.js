@@ -674,6 +674,9 @@ export default function editor(initial = {}) {
             return this.jsonReq(window.enhanceUrl, 'POST', {
                 social_links,
                 featured_link_id: this.featuredLinkId || null,
+                linkid_active: this.profile.is_linkid_active ? 1 : 0,
+                linkid_types: Array.isArray(this.profile.linkid_types) ? this.profile.linkid_types : [],
+                linkid_description: this.profile.linkid_description || '',
                 seo_title: this.profile.seo_title || '',
                 seo_description: this.profile.seo_description || '',
                 animation_enabled: this.profile.animation_enabled ? 1 : 0,

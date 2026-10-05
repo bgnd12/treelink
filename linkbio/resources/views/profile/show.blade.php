@@ -80,7 +80,7 @@
     @endif
 
     <div class="relative min-h-screen flex flex-col items-center px-4 py-8 sm:py-14 {{ $animate ? 'animate-fade-up' : '' }}">
-        <div class="w-full max-w-md mx-auto text-center">
+        <div class="w-full max-w-5xl mx-auto text-center">
             @if ($cardOn)
                 <div class="overflow-hidden px-6 pt-9 pb-8" style="{{ $cardStyle }}">
             @else
@@ -143,8 +143,10 @@
                 </div>
             @endif
 
+            <div class="mt-8 grid gap-8 md:grid-cols-2 md:items-start md:text-left">
             {{-- Links --}}
-            <div class="mt-8 space-y-3.5">
+            <section class="space-y-3.5">
+                <h2 class="text-xs font-bold uppercase tracking-[0.2em] opacity-70">Links</h2>
                 @forelse ($links as $link)
                     <a href="{{ route('public.link.redirect', ['username' => $profileUser->username, 'link' => $link->id]) }}"
                        target="_blank" rel="noopener"
@@ -158,33 +160,95 @@
                 @empty
                     <p class="opacity-60 text-sm py-8">Belum ada link yang tersedia.</p>
                 @endforelse
-            </div>
+            </section>
 
             {{-- Shop / Products --}}
             @if ($products->count())
-                <div class="mt-10">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.25em] opacity-70 mb-4">Shop</p>
-                    <div class="space-y-3.5">
+                <section>
+                    <div class="mb-3 flex items-center justify-between">
+                        <h2 class="text-xs font-bold uppercase tracking-[0.2em] opacity-70">Shop</h2>
+                        <span class="text-xs opacity-60">{{ $products->count() }} produk</span>
+                    </div>
+                    <div class="grid gap-3 sm:grid-cols-2">
                         @foreach ($products as $product)
                             <a href="{{ $product->url }}" target="_blank" rel="noopener"
-                               class="flex items-center gap-4 w-full p-3 font-semibold {{ $hoverClass }}{{ $shadowClass }}"
+                               class="flex min-w-0 flex-col overflow-hidden text-left font-semibold {{ $hoverClass }}{{ $shadowClass }}"
                                style="{{ $btnStyle }}">
                                 @if ($product->image_url)
                                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
-                                         class="w-12 h-12 rounded-xl object-cover flex-shrink-0">
+                                         class="aspect-[1.6] w-full object-cover">
                                 @else
-                                    <span class="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                                    <span class="flex aspect-[1.6] w-full items-center justify-center text-xl"
                                           style="{{ $isLight ? 'background:rgba(0,0,0,.10)' : 'background:rgba(0,0,0,.22)' }}">🛍️</span>
                                 @endif
-                                <span class="flex-1 min-w-0 text-left">
-                                    <span class="block text-sm truncate">{{ $product->name }}</span>
+                                <span class="block w-full p-3">
+                                    @if($product->category)<span class="block text-[10px] font-bold uppercase tracking-[0.15em] opacity-60">{{ $product->category }}</span>@endif
+                                    <span class="mt-1 block truncate text-sm">{{ $product->name }}</span>
                                     @if ($product->price_label)
                                         <span class="block text-xs opacity-75">{{ $product->price_label }}</span>
                                     @endif
+                                    @if($product->stock !== null)
+                                        <span class="mt-1 block text-[11px] opacity-60">{{ $product->stock > 0 ? 'Stok '.$product->stock : 'Stok habis' }}</span>
+                                    @endif
                                 </span>
-                                <span class="opacity-70">&rarr;</span>
                             </a>
                         @endforeach
+                    </div>
+                </section>
+            @endif
+            </div>
+
+            @if ($profile->is_linkid_active)
+                @php
+                    $linkIdTypes = collect($profile->linkid_types ?? [])->filter(fn ($value) => is_string($value) && trim($value) !== '')->values()->all();
+                @endphp
+                <div id="linkid" class="mt-8 w-full" x-data="{ openCollabModal: false }">
+                    <div class="rounded-2xl border border-white/30 bg-white/10 backdrop-blur-sm p-4 text-left">
+                        <p class="text-[11px] font-bold uppercase tracking-[0.24em] opacity-80">LinkID</p>
+                        <h2 class="mt-2 text-lg font-extrabold">Collaborate with me</h2>
+                        @if ($profile->linkid_description)
+                            <p class="mt-2 text-sm opacity-80">{{ $profile->linkid_description }}</p>
+                        @endif
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            @foreach ($linkIdTypes as $type)
+                                <span class="px-2.5 py-1 rounded-full bg-white/15 text-xs font-semibold">{{ $type }}</span>
+                            @endforeach
+                        </div>
+                        <div class="mt-4 flex gap-2">
+                            <button type="button" @click="openCollabModal = true" class="flex-1 py-2.5 rounded-xl bg-white text-ink-900 font-bold text-sm shadow-sm">Ajak Kolaborasi</button>
+                        </div>
+                    </div>
+
+                    <div x-show="openCollabModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                        <div @click.outside="openCollabModal = false" class="bg-white text-ink-900 rounded-2xl w-full max-w-md p-6 text-left shadow-2xl relative">
+                            <button @click="openCollabModal = false" class="absolute top-4 right-4 text-ink-400 hover:text-ink-600 text-xl font-bold">&times;</button>
+                            <h3 class="font-bold text-xl mb-4">Ajak Kolaborasi</h3>
+                            <form method="POST" action="{{ route('public.linkid.request', $profileUser->username) }}">
+                                @csrf
+                                <div class="mb-4">
+                                    <label class="mb-2 block text-sm font-semibold">Nama</label>
+                                    <input name="requester_name" required maxlength="120" value="{{ old('requester_name', auth()->user()?->name) }}" class="mb-4 w-full rounded-xl border-ink-200 text-sm focus:border-brand-500 focus:ring-brand-500" placeholder="Nama kamu">
+                                    <label class="mb-2 block text-sm font-semibold">Email</label>
+                                    <input name="requester_email" type="email" required maxlength="255" value="{{ old('requester_email', auth()->user()?->email) }}" class="w-full rounded-xl border-ink-200 text-sm focus:border-brand-500 focus:ring-brand-500" placeholder="nama@email.com">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold mb-2">Jenis Kolaborasi</label>
+                                    <select name="type" required class="w-full rounded-xl border-ink-200 focus:border-brand-500 focus:ring-brand-500 text-sm">
+                                        <option value="general">Umum</option>
+                                        @foreach ($linkIdTypes as $type)
+                                            <option value="{{ strtolower(str_replace(' ', '-', $type)) }}">{{ $type }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold mb-2">Pesan</label>
+                                    <textarea name="message" required rows="4" class="w-full rounded-xl border-ink-200 focus:border-brand-500 focus:ring-brand-500 text-sm" placeholder="Ceritakan detail kolaborasi..."></textarea>
+                                </div>
+                                <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition">
+                                    Kirim Request
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endif

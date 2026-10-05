@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ShortLink;
+use App\Models\User;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -26,7 +28,7 @@ class ShortLinkController extends Controller
         if (!$slug) {
             do {
                 $slug = Str::lower(Str::random(6));
-            } while (ShortLink::where('slug', $slug)->exists());
+            } while ($this->addressIsTaken($slug));
         }
 
         auth()->user()->shortLinks()->create([
@@ -69,21 +71,12 @@ class ShortLinkController extends Controller
         return back()->with('status', __('Short link status updated.'));
     }
 
-    public function resolve($slug)
-    {
-        $shortLink = ShortLink::where('slug', $slug)->first();
-        
-        if (!$shortLink || !$shortLink->is_active) {
-            abort(404);
-        }
-
-        $shortLink->increment('clicks');
-        return redirect()->away($shortLink->destination_url);
-    }
-
     /**
      * Slugs are unique across the whole platform, so the same address can never
-     * be claimed twice - not even by a different account.
+     * be claimed twice - not even by a different account. They also have to stay
+     * routable: alpha_dash (letters, numbers, dashes, underscores) is a subset
+     * of PublicProfileController::USERNAME_PATTERN, and the address is matched
+     * case-insensitively so /My-Event and /my-event cannot both be claimed.
      */
     private function slugRules(?ShortLink $ignore = null): array
     {
@@ -93,12 +86,50 @@ class ShortLinkController extends Controller
             $unique = $unique->ignore($ignore->id);
         }
 
-        return [Rule::requiredIf($ignore !== null), 'string', 'alpha_dash', 'max:50', $unique];
+        return [
+            Rule::requiredIf($ignore !== null),
+            'string',
+            'alpha_dash',
+            'max:50',
+            $unique,
+            $this->addressNotReservedByAProfile(),
+        ];
+    }
+
+    /**
+     * A custom address is resolved before a public profile, so it must never be
+     * allowed to take over the address of an existing username.
+     */
+    private function addressNotReservedByAProfile(): Closure
+    {
+        return function (string $attribute, $value, Closure $fail) {
+            if (!is_string($value) || $value === '') {
+                return;
+            }
+
+            if (User::whereRaw('LOWER(username) = ?', [Str::lower($value)])->exists()) {
+                $fail(__('The address ":input" is already used as a public profile username. Please use a different address.', [
+                    'input' => $value,
+                ]));
+            }
+        };
     }
 
     private function destinationUrlRules(): array
     {
         return ['required', 'url', 'max:2048'];
+    }
+
+    /**
+     * An address is unusable when it is already a custom address of somebody,
+     * or the public profile username of somebody.
+     */
+    private function addressIsTaken(string $slug): bool
+    {
+        $slug = Str::lower($slug);
+
+        return ShortLink::whereRaw('LOWER(slug) = ?', [$slug])->exists()
+            || User::whereRaw('LOWER(username) = ?', [$slug])->exists();
     }
 
     /**

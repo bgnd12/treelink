@@ -130,6 +130,51 @@
                 </div>
             </div>
 
+            @if (!empty($shopProducts))
+                <div class="mt-8">
+                    <div class="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.2em] opacity-60">
+                        <span class="h-px flex-1" style="{{ $line }}"></span>
+                        <span>Shop</span>
+                        <span class="h-px flex-1" style="{{ $line }}"></span>
+                    </div>
+
+                    <div class="mt-4 space-y-2.5">
+                        @foreach ($shopProducts as $shopProduct)
+                            <div class="flex items-center gap-3 rounded-2xl border border-white/40 bg-white/10 p-2 text-left">
+                                <img src="{{ $shopProduct['image'] }}" alt="{{ $shopProduct['name'] }}" class="h-12 w-12 rounded-xl object-cover">
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate text-sm font-semibold">{{ $shopProduct['name'] }}</p>
+                                    <p class="text-[11px] opacity-80">{{ $shopProduct['price'] }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            @if (!empty($linkIdTypes))
+                <div class="mt-8">
+                    <div class="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.2em] opacity-60">
+                        <span class="h-px flex-1" style="{{ $line }}"></span>
+                        <span>LinkID</span>
+                        <span class="h-px flex-1" style="{{ $line }}"></span>
+                    </div>
+
+                    <div class="mt-4 rounded-2xl border border-white/40 bg-white/10 p-4 text-left">
+                        <p class="text-sm font-bold">Collaborate with me</p>
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            @foreach ($linkIdTypes as $type)
+                                <span class="rounded-full border border-current/20 px-2 py-1 text-[10px] font-semibold opacity-90">{{ $type }}</span>
+                            @endforeach
+                        </div>
+                        <div class="mt-4 flex gap-2">
+                            <button class="flex-1 rounded-full bg-violet-600 px-3 py-2 text-[11px] font-bold text-white">Ajak Kolaborasi</button>
+                            <button class="flex-1 rounded-full border border-current/30 px-3 py-2 text-[11px] font-bold">Lihat Profil LinkID</button>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             {{-- Share button --}}
             @if ($settings['show_share'])
                 <div class="mt-8">

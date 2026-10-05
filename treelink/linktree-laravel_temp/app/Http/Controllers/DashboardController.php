@@ -64,6 +64,6 @@ class DashboardController extends Controller
             ],
         ];
 
-        return view('dashboard.editor', compact('user', 'profile', 'links', 'editor'));
+        return view('dashboard.overview', compact('user', 'profile', 'links'));
     }
 }

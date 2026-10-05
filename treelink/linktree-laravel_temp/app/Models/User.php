@@ -53,11 +53,15 @@ class User extends Authenticatable
      */
     public function getOrCreateProfile(): Profile
     {
-        if ($this->profile === null) {
-            $this->profile()->create();
+        $profile = $this->profile()->first();
+
+        if ($profile === null) {
+            $profile = $this->profile()->create();
         }
 
-        return $this->profile;
+        $this->setRelation('profile', $profile);
+
+        return $profile;
     }
 
     /**

@@ -1,6 +1,6 @@
 export default function editor(initial = {}) {
     return {
-        tab: initial.tab ?? 'content',
+        tab: initial.tab ?? 'profile',
         content_tab: initial.content_tab ?? 'links',
         profile: initial.profile ?? {
             name: '',

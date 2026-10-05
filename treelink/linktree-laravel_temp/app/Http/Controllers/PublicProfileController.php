@@ -16,10 +16,19 @@ class PublicProfileController extends Controller
         $profile = $user->getOrCreateProfile();
         $links = $user->links()->where('is_active', true)->get();
 
+        $shopProducts = [
+            ['name' => 'Starter Kit', 'price' => 'Rp299.000', 'image' => 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80'],
+            ['name' => 'Brand Mentoring', 'price' => 'Rp550.000', 'image' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80'],
+        ];
+
+        $linkIdTypes = ['Content Creator', 'Brand', 'Product', 'Event'];
+
         return view('public.show', [
             'profileUser' => $user,
             'profile' => $profile,
             'links' => $links,
+            'shopProducts' => $shopProducts,
+            'linkIdTypes' => $linkIdTypes,
         ]);
     }
 
