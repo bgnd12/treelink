@@ -61,10 +61,10 @@ class ProfileController extends Controller
 
         if ($request->hasFile('avatar')) {
             if ($profile->avatar_path) {
-                Storage::disk('public')->delete($profile->avatar_path);
+                Storage::disk(config('filesystems.default'))->delete($profile->avatar_path);
             }
 
-            $profileData['avatar_path'] = $request->file('avatar')->store('avatars', 'public');
+            $profileData['avatar_path'] = $request->file('avatar')->store('avatars', config('filesystems.default'));
         }
 
         $profile->update($profileData);

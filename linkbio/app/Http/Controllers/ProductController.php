@@ -192,13 +192,13 @@ class ProductController extends Controller
             return null;
         }
 
-        return $request->file('image')->store('products', 'public');
+        return $request->file('image')->store('products', config('filesystems.default'));
     }
 
     private function deleteImage(Product $product): void
     {
         if ($product->image_path) {
-            Storage::disk('public')->delete($product->image_path);
+            Storage::disk(config('filesystems.default'))->delete($product->image_path);
         }
     }
 

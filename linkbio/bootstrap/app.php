@@ -4,7 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
@@ -24,3 +24,24 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+if (env('VERCEL')) {
+    $runtimeStoragePath = sys_get_temp_dir().'/treelink';
+    $app->useStoragePath($runtimeStoragePath);
+
+    foreach ([
+        'app/private',
+        'framework/cache/data',
+        'framework/sessions',
+        'framework/views',
+        'logs',
+    ] as $directory) {
+        $path = $runtimeStoragePath.'/'.$directory;
+
+        if (! is_dir($path) && ! mkdir($path, 0775, true) && ! is_dir($path)) {
+            throw new RuntimeException('Unable to create Vercel runtime directory: '.$path);
+        }
+    }
+}
+
+return $app;

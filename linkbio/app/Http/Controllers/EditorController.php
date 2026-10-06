@@ -93,10 +93,10 @@ class EditorController extends Controller
 
         if ($request->hasFile('avatar')) {
             if ($profile->avatar_path) {
-                Storage::disk('public')->delete($profile->avatar_path);
+                Storage::disk(config('filesystems.default'))->delete($profile->avatar_path);
             }
 
-            $attributes['avatar_path'] = $request->file('avatar')->store('avatars', 'public');
+            $attributes['avatar_path'] = $request->file('avatar')->store('avatars', config('filesystems.default'));
         }
 
         $profile->update($attributes);
@@ -157,16 +157,16 @@ class EditorController extends Controller
 
         if ($request->boolean('remove_background_image')) {
             if ($profile->background_image_path) {
-                Storage::disk('public')->delete($profile->background_image_path);
+                Storage::disk(config('filesystems.default'))->delete($profile->background_image_path);
             }
 
             $attributes['background_image_path'] = null;
         } elseif ($request->hasFile('background_image')) {
             if ($profile->background_image_path) {
-                Storage::disk('public')->delete($profile->background_image_path);
+                Storage::disk(config('filesystems.default'))->delete($profile->background_image_path);
             }
 
-            $attributes['background_image_path'] = $request->file('background_image')->store('backgrounds', 'public');
+            $attributes['background_image_path'] = $request->file('background_image')->store('backgrounds', config('filesystems.default'));
         }
 
         $profile->update($attributes);

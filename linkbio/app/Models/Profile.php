@@ -73,7 +73,7 @@ class Profile extends Model
     public function getAvatarUrlAttribute(): string
     {
         if ($this->avatar_path) {
-            return Storage::disk('public')->url($this->avatar_path);
+            return Storage::disk(config('filesystems.default'))->url($this->avatar_path);
         }
 
         $name = urlencode($this->display_name ?: ($this->user->name ?? 'U'));
@@ -87,7 +87,7 @@ class Profile extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->background_image_path);
+        return Storage::disk(config('filesystems.default'))->url($this->background_image_path);
     }
 
     /**
