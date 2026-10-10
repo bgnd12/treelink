@@ -26,7 +26,7 @@ foreach ($attributes->all() as $__key => $__value) {
     if (array_key_exists($__key, $__defined_vars)) unset($$__key);
 }
 
-unset($__defined_vars); ?>
+unset($__defined_vars, $__key, $__value); ?>
 
 <div>
     <label for="<?php echo e($name); ?>" class="block text-sm font-semibold text-ink-800 mb-1.5"><?php echo e($label); ?></label>

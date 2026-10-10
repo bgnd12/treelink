@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Conversation;
+use App\Support\UnreadMessages;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,6 +18,11 @@ class LinkIdMessageController extends Controller
             'selectedConversation' => null,
             'otherParticipant' => null,
         ]);
+    }
+
+    public function unread(Request $request, UnreadMessages $unreadMessages): JsonResponse
+    {
+        return response()->json($unreadMessages->for($request->user()));
     }
 
     public function show(Request $request, Conversation $conversation): View
@@ -53,9 +60,27 @@ class LinkIdMessageController extends Controller
 
     private function conversations(Request $request)
     {
-        return $request->user()->conversations()
+        $conversations = $request->user()->conversations()
             ->with(['participants.profile', 'lastMessage.user', 'product'])
             ->get();
+
+        $unreadCounts = \Illuminate\Support\Facades\DB::table('messages')
+            ->join('conversation_user', 'conversation_user.conversation_id', '=', 'messages.conversation_id')
+            ->where('conversation_user.user_id', $request->user()->id)
+            ->where('messages.user_id', '<>', $request->user()->id)
+            ->where(function ($query) {
+                $query->whereNull('conversation_user.last_read_at')
+                    ->orWhereColumn('messages.created_at', '>', 'conversation_user.last_read_at');
+            })
+            ->select('messages.conversation_id', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            ->groupBy('messages.conversation_id')
+            ->pluck('count', 'conversation_id');
+
+        $conversations->each(function ($conv) use ($unreadCounts) {
+            $conv->unread_count = $unreadCounts[$conv->id] ?? 0;
+        });
+
+        return $conversations;
     }
 
     private function authorizeParticipant(Request $request, Conversation $conversation): void

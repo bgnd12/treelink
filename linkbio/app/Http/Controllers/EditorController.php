@@ -76,7 +76,7 @@ class EditorController extends Controller
             ],
             'bio' => ['nullable', 'string', 'max:280'],
             'header_layout' => ['nullable', Rule::in(array_keys(Profile::HEADER_LAYOUTS))],
-            'avatar' => ['nullable', 'image', 'max:2048'],
+            'avatar' => ['nullable', 'image', 'max:5242880'],
         ], [
             'username.unique' => 'Username tersebut sudah dipakai.',
             'username.alpha_dash' => 'Username hanya boleh huruf, angka, tanda hubung, dan garis bawah.',

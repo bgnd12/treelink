@@ -9,40 +9,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 </head>
-<body class="font-sans antialiased bg-ink-50 text-ink-900" x-data="{ sidebarOpen: false }">
+<body class="dashboard-shell font-sans antialiased bg-[#f8f9f7] text-[#14213d]" x-data="{ sidebarOpen: false }">
 
     <div class="min-h-screen flex">
         
         <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-               class="fixed lg:sticky top-0 inset-y-0 left-0 z-40 w-72 bg-white border-r border-ink-100 flex flex-col transition-transform duration-300 h-screen">
+               class="fixed lg:sticky top-0 inset-y-0 left-0 z-40 w-64 bg-white border-r border-ink-100 flex flex-col transition-transform duration-300 h-screen">
             <div class="h-16 flex items-center px-6 border-b border-ink-100">
-                <a href="<?php echo e(route('dashboard.index')); ?>" class="flex items-center gap-2 font-extrabold text-lg text-ink-900">
-                    <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white text-sm">🔗</span>
+                <a href="<?php echo e(route('dashboard.index')); ?>" class="flex items-center gap-2.5 font-extrabold text-lg text-ink-900">
+                    <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c8ff4d] text-sm font-black text-[#1e2a5b]">T</span>
                     TreeLink
                 </a>
             </div>
 
             <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
                 <?php
+                    $unreadMessageCount = app(\App\Support\UnreadMessages::class)->for(auth()->user())['count'];
                     $navItems = [
-                        ['route' => 'dashboard.index', 'label' => __('My TreeLink'), 'icon' => '🌳'],
-                        ['route' => '#', 'label' => __('Earn'), 'icon' => '💰'], // Placeholder route
-                        ['route' => '#', 'label' => __('Audience'), 'icon' => '👥'], // Placeholder route
-                        ['route' => 'dashboard.analytics.index', 'label' => __('Insights'), 'icon' => '📈'],
-                        ['route' => '#', 'label' => __('Tools'), 'icon' => '🧰'], // Placeholder route
-                        ['route' => 'dashboard.short-links.index', 'label' => '  ↳ ' . __('Short Links'), 'icon' => ''],
-                        ['route' => 'dashboard.index', 'label' => '  ↳ ' . __('Link-in-Bio'), 'icon' => ''],
+                        ['route' => 'dashboard.index', 'label' => __('My TreeLink'), 'icon' => '🧭'],
+                        ['route' => 'dashboard.links.index', 'label' => __('Links'), 'icon' => '🔗'],
+                        ['route' => 'dashboard.shop', 'label' => __('Shop'), 'icon' => '🛍️'],
+                        ['route' => 'dashboard.marketplace', 'label' => __('Jelajahi Shop'), 'icon' => '⌕', 'nested' => true],
+                        ['label' => __('LinkID'), 'icon' => '🤝', 'section' => true],
+                        ['route' => 'dashboard.linkid.discover', 'label' => __('Discover'), 'icon' => '↗', 'nested' => true],
+                        ['route' => 'dashboard.linkid.my-collaboration', 'label' => __('My Collaboration'), 'icon' => '✓', 'nested' => true],
+                        ['route' => 'dashboard.linkid.requests', 'label' => __('Requests'), 'icon' => '✉', 'nested' => true],
+                        ['route' => 'dashboard.linkid.messages', 'label' => __('Messages'), 'icon' => '💬', 'nested' => true, 'badge' => $unreadMessageCount],
+                        ['route' => 'dashboard.analytics.index', 'label' => __('Analytics'), 'icon' => '📈'],
                         ['route' => 'dashboard.settings.index', 'label' => __('Settings'), 'icon' => '⚙️'],
                     ];
                 ?>
 
                 <?php $__currentLoopData = $navItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <a href="<?php echo e($item['route'] !== '#' ? route($item['route']) : '#'); ?>"
-                       class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition
-                       <?php echo e($item['route'] !== '#' && request()->routeIs($item['route']) ? 'bg-brand-50 text-brand-700' : 'text-ink-600 hover:bg-ink-50 hover:text-ink-900'); ?>">
-                        <?php if($item['icon']): ?><span class="text-base"><?php echo e($item['icon']); ?></span><?php endif; ?>
-                        <?php echo e($item['label']); ?>
+                    <?php if(!empty($item['section'])): ?>
+                        <div class="px-3 pt-4 pb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-ink-400">
+                            <?php echo e($item['label']); ?>
 
+                        </div>
+                        <?php continue; ?>
+                    <?php endif; ?>
+
+                    <a href="<?php echo e(!empty($item['route']) ? route($item['route']) : '#'); ?>"
+                       aria-current="<?php echo e(!empty($item['route']) && request()->routeIs($item['route']) ? 'page' : 'false'); ?>"
+                       class="flex items-center gap-3 border-l-2 px-4 py-2.5 rounded-r-xl text-sm font-semibold transition <?php echo e(!empty($item['route']) && request()->routeIs($item['route']) ? 'border-[#c8ff4d] bg-[#f1f3e9] text-[#1e2a5b]' : 'border-transparent text-ink-600 hover:bg-ink-50 hover:text-ink-900'); ?> <?php echo e(!empty($item['nested']) ? 'ml-3' : ''); ?>">
+                        <?php if($item['icon']): ?><span class="text-base <?php echo e(!empty($item['nested']) ? 'text-ink-500' : ''); ?>"><?php echo e($item['icon']); ?></span><?php endif; ?>
+                        <span class="flex-1"><?php echo e($item['label']); ?></span>
+                        <?php if(array_key_exists('badge', $item)): ?>
+                            <span id="messages-unread-badge" class="min-w-5 h-5 px-1.5 rounded-full bg-brand-600 text-[10px] font-bold text-white flex items-center justify-center" <?php if($item['badge'] < 1): ?> hidden <?php endif; ?>><?php echo e($item['badge'] > 99 ? '99+' : $item['badge']); ?></span>
+                        <?php endif; ?>
                     </a>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
@@ -56,7 +70,7 @@
             </nav>
 
             <div class="p-4 border-t border-ink-100">
-                <a href="<?php echo e(auth()->user()->publicUrl()); ?>" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-ink-50 hover:bg-ink-100 transition text-sm font-semibold text-ink-700">
+                <a href="<?php echo e(auth()->user()->publicUrl()); ?>" target="_blank" class="flex items-center gap-3 px-3 py-3 rounded-xl bg-[#f6f7f3] hover:bg-[#edf0e7] transition text-sm font-semibold text-ink-700">
                     <img src="<?php echo e(auth()->user()->getOrCreateProfile()->avatar_url); ?>" class="w-8 h-8 rounded-full object-cover" alt="Avatar">
                     <div class="flex-1 min-w-0">
                         <p class="truncate"><?php echo e(auth()->user()->name); ?></p>
@@ -92,13 +106,33 @@
                         <a href="<?php echo e(route('locale.set', 'id')); ?>" class="px-2 py-1 rounded-full <?php echo e(App::getLocale() === 'id' ? 'bg-ink-100 text-ink-900' : 'text-ink-500 hover:text-ink-900'); ?>">ID</a>
                         <a href="<?php echo e(route('locale.set', 'en')); ?>" class="px-2 py-1 rounded-full <?php echo e(App::getLocale() === 'en' ? 'bg-ink-100 text-ink-900' : 'text-ink-500 hover:text-ink-900'); ?>">EN</a>
                     </div>
+                    <div class="relative" x-data="{ openAccount: false }">
+                        <button type="button" @click="openAccount = !openAccount" class="flex items-center gap-3 rounded-full border border-ink-200 bg-ink-50 px-2.5 py-1.5 text-left transition hover:border-ink-300">
+                            <img src="<?php echo e(auth()->user()->getOrCreateProfile()->avatar_url); ?>" alt="<?php echo e(auth()->user()->name); ?>" class="h-9 w-9 rounded-full object-cover">
+                            <span class="hidden sm:block">
+                                <span class="block text-sm font-semibold text-ink-900"><?php echo e(auth()->user()->name); ?></span>
+                                <span class="block text-[11px] text-ink-500"><?php echo e(auth()->user()->username); ?></span>
+                            </span>
+                            <span class="text-ink-500">▾</span>
+                        </button>
+
+                        <div x-show="openAccount" @click.outside="openAccount = false" x-cloak class="absolute right-0 mt-3 w-56 rounded-2xl border border-ink-200 bg-white p-2 shadow-xl">
+                            <a href="<?php echo e(route('dashboard.profile.edit')); ?>" class="block rounded-xl px-3 py-2 text-sm font-medium text-ink-700 hover:bg-ink-50">Profile</a>
+                            <a href="<?php echo e(route('dashboard.settings.index')); ?>" class="block rounded-xl px-3 py-2 text-sm font-medium text-ink-700 hover:bg-ink-50">Account Settings</a>
+                            <a href="<?php echo e(route('dashboard.index')); ?>" class="block rounded-xl px-3 py-2 text-sm font-medium text-ink-700 hover:bg-ink-50">My TreeLink</a>
+                            <form method="POST" action="<?php echo e(route('logout')); ?>" class="mt-1 border-t border-ink-100 pt-2">
+                                <?php echo csrf_field(); ?>
+                                <button type="submit" class="block w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-rose-600 hover:bg-rose-50">Logout</button>
+                            </form>
+                        </div>
+                    </div>
                     <button type="button" onclick="copyProfileUrl()"
                             class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full border border-ink-200 text-sm font-semibold text-ink-700 hover:border-ink-400 transition">
                         <span id="copy-icon">🔗</span>
                         <span id="copy-label"><?php echo e(__('Copy Profile URL')); ?></span>
                     </button>
-                    <a href="<?php echo e(auth()->user()->publicUrl()); ?>" target="_blank"
-                       class="px-4 py-2 rounded-full bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition">
+                          <a href="<?php echo e(auth()->user()->publicUrl()); ?>" target="_blank"
+                              class="px-4 py-2 rounded-full bg-[#c8ff4d] text-[#1e2a5b] text-sm font-bold hover:bg-[#ddff91] transition">
                         <?php echo e(__('View Page')); ?>
 
                     </a>
@@ -127,6 +161,18 @@
         </div>
     </div>
 
+    <div id="incoming-message-toast" class="fixed right-4 top-20 z-50 hidden w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl" role="status" aria-live="polite">
+        <div class="flex items-start gap-3 p-4">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f1f3e9] text-lg text-[#1e2a5b]">💬</span>
+            <a id="incoming-message-link" href="<?php echo e(route('dashboard.linkid.messages')); ?>" class="min-w-0 flex-1">
+                <span id="incoming-message-sender" class="block truncate text-sm font-bold text-slate-900">Pesan baru</span>
+                <span id="incoming-message-preview" class="mt-1 block line-clamp-2 text-xs leading-5 text-slate-500"></span>
+            </a>
+            <button type="button" id="dismiss-message-toast" aria-label="Tutup notifikasi pesan" class="text-lg leading-none text-slate-400 hover:text-slate-700">&times;</button>
+        </div>
+        <div class="h-1 bg-[#c8ff4d]"></div>
+    </div>
+
     <script>
         function copyProfileUrl() {
             const url = <?php echo json_encode(auth()->user()->publicUrl(), 15, 512) ?>;
@@ -139,6 +185,60 @@
                 }, 2000);
             });
         }
+
+        (() => {
+            const badge = document.getElementById('messages-unread-badge');
+            const toast = document.getElementById('incoming-message-toast');
+            const senderLabel = document.getElementById('incoming-message-sender');
+            const previewLabel = document.getElementById('incoming-message-preview');
+            const messageLink = document.getElementById('incoming-message-link');
+            const unreadUrl = <?php echo json_encode(route('dashboard.linkid.messages.unread'), 15, 512) ?>;
+            const threadUrl = <?php echo json_encode(route('dashboard.linkid.messages.show', '__CONVERSATION__'), 512) ?>;
+            let unreadCount = <?php echo json_encode($unreadMessageCount, 15, 512) ?>;
+            let latestMessageId = null;
+            let toastTimer;
+
+            document.getElementById('dismiss-message-toast')?.addEventListener('click', () => toast?.classList.add('hidden'));
+
+            async function refreshUnreadMessages() {
+                if (document.visibilityState === 'hidden') return;
+
+                try {
+                    const response = await fetch(unreadUrl, {
+                        headers: { Accept: 'application/json' },
+                        credentials: 'same-origin',
+                        cache: 'no-store',
+                    });
+                    if (!response.ok) return;
+
+                    const data = await response.json();
+                    const nextCount = Number(data.count || 0);
+
+                    if (badge) {
+                        badge.textContent = nextCount > 99 ? '99+' : String(nextCount);
+                        badge.hidden = nextCount < 1;
+                    }
+
+                    if (data.latest && nextCount > unreadCount && String(data.latest.id) !== String(latestMessageId)) {
+                        senderLabel.textContent = `Pesan baru dari ${data.latest.sender_name}`;
+                        previewLabel.textContent = data.latest.preview;
+                        messageLink.href = threadUrl.replace('__CONVERSATION__', encodeURIComponent(data.latest.conversation_id));
+                        toast.classList.remove('hidden');
+                        clearTimeout(toastTimer);
+                        toastTimer = setTimeout(() => toast.classList.add('hidden'), 8000);
+                    }
+
+                    unreadCount = nextCount;
+                    latestMessageId = data.latest?.id ?? latestMessageId;
+                } catch (error) {
+                    console.error('Gagal memeriksa pesan baru:', error);
+                }
+            }
+
+            window.setInterval(refreshUnreadMessages, 10000);
+            document.addEventListener('visibilitychange', refreshUnreadMessages);
+            window.addEventListener('focus', refreshUnreadMessages);
+        })();
     </script>
     <?php echo $__env->yieldContent('scripts'); ?>
 </body>

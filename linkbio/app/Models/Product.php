@@ -50,7 +50,7 @@ class Product extends Model
             return null;
         }
 
-        return Storage::disk(config('filesystems.default'))->url($this->image_path);
+        return url('storage/'.$this->image_path);
     }
 
     public function getPriceLabelAttribute(): ?string

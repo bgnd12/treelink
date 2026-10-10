@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="overflow-hidden rounded-2xl border border-ink-100 bg-white shadow-card">
-    <div class="grid min-h-[620px] lg:grid-cols-[310px_minmax(0,1fr)]">
+    <div class="grid grid-rows-1 h-[calc(100vh-10rem)] max-h-[720px] min-h-[540px] lg:grid-cols-[310px_minmax(0,1fr)]">
         <aside class="border-b border-ink-100 bg-ink-50/40 lg:border-b-0 lg:border-r">
             <div class="border-b border-ink-100 p-5">
                 <h2 class="text-lg font-extrabold text-ink-900">Messages</h2>
@@ -26,9 +26,14 @@
                             @endif
                             <span class="min-w-0 flex-1">
                                 <span class="block truncate text-sm font-bold text-ink-900">{{ $contact->name }}</span>
-                                <span class="mt-0.5 block truncate text-xs text-ink-500">{{ $conversation->product ? 'Produk: '.$conversation->product->name : ($lastMessage?->body ?? 'Percakapan dimulai') }}</span>
+                                <span class="mt-0.5 block truncate text-xs text-ink-500">{{ $lastMessage?->body ?? 'Percakapan dimulai' }}</span>
                             </span>
-                            @if($lastMessage)<span class="shrink-0 text-[10px] text-ink-400">{{ $lastMessage->created_at->format('H:i') }}</span>@endif
+                            <div class="flex flex-col items-end gap-1">
+                                @if($lastMessage)<span class="shrink-0 text-[10px] text-ink-400">{{ $lastMessage->created_at->format('H:i') }}</span>@endif
+                                @if($conversation->unread_count > 0)
+                                    <span class="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#25d366] px-1 text-[10px] font-bold text-white">{{ $conversation->unread_count > 99 ? '99+' : $conversation->unread_count }}</span>
+                                @endif
+                            </div>
                         </a>
                     @endif
                 @empty
@@ -40,7 +45,7 @@
             </div>
         </aside>
 
-        <section class="flex min-h-[500px] flex-col bg-white">
+        <section id="chat-section" class="flex h-full min-h-0 flex-col overflow-hidden bg-white">
             @if($selectedConversation && $otherParticipant)
                 <header class="flex items-center gap-3 border-b border-ink-100 px-5 py-4">
                     @if($otherParticipant->profile?->avatar_path)
@@ -58,7 +63,7 @@
                     <a href="{{ $otherParticipant->publicUrl() }}" target="_blank" rel="noopener" class="ml-auto text-xs font-semibold text-brand-700 hover:underline">Lihat profil</a>
                 </header>
 
-                <div class="flex-1 space-y-4 overflow-y-auto bg-[#fbfcfa] p-4 sm:p-6">
+                <div id="chat-container" class="min-h-0 flex-1 space-y-4 overflow-y-auto bg-[#fbfcfa] p-4 sm:p-6">
                     @forelse($selectedConversation->messages as $message)
                         <div class="flex {{ $message->user_id === auth()->id() ? 'justify-end' : 'justify-start' }}">
                             <div class="max-w-[85%] rounded-2xl px-4 py-3 sm:max-w-[72%] {{ $message->user_id === auth()->id() ? 'rounded-br-md bg-[#1e2a5b] text-white' : 'rounded-bl-md border border-ink-100 bg-white text-ink-800' }}">
@@ -69,7 +74,6 @@
                     @empty
                         <div class="flex h-full min-h-48 items-center justify-center text-center text-sm text-ink-500">Kirim pesan pertama untuk memulai percakapan.</div>
                     @endforelse
-                    <span id="latest-message"></span>
                 </div>
 
                 <form method="POST" action="{{ route('dashboard.linkid.messages.store', $selectedConversation) }}" class="border-t border-ink-100 p-4 sm:p-5">
@@ -94,4 +98,82 @@
         </section>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+(function () {
+    'use strict';
+
+    var container = document.getElementById('chat-container');
+    if (!container) return;
+
+    /* Hanya scroll #chat-container — TIDAK pernah menyentuh window */
+    function scrollToBottom() {
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function isNearBottom() {
+        return container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+    }
+
+    /* Jalankan saat DOM + layout sudah stabil */
+    function init() {
+        scrollToBottom();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+            requestAnimationFrame(function () {
+                init();
+                setTimeout(init, 150);
+            });
+        });
+    } else {
+        requestAnimationFrame(function () {
+            init();
+            setTimeout(init, 150);
+        });
+    }
+
+    /* Gambar yang selesai load setelah render */
+    container.querySelectorAll('img').forEach(function (img) {
+        if (!img.complete) {
+            img.addEventListener('load', function () {
+                if (isNearBottom()) scrollToBottom();
+            });
+        }
+    });
+
+    /* Kirim pesan → flag sessionStorage → scroll setelah redirect kembali */
+    var section = document.getElementById('chat-section');
+    var form = section ? section.querySelector('form') : null;
+    if (form) {
+        form.addEventListener('submit', function () {
+            try { sessionStorage.setItem('tl_chat_bottom', '1'); } catch (e) {}
+        });
+    }
+    try {
+        if (sessionStorage.getItem('tl_chat_bottom') === '1') {
+            sessionStorage.removeItem('tl_chat_bottom');
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function () {
+                    requestAnimationFrame(init);
+                });
+            } else {
+                requestAnimationFrame(init);
+            }
+        }
+    } catch (e) {}
+
+    /* Resize window: pertahankan posisi bottom */
+    window.addEventListener('resize', function () {
+        if (isNearBottom()) scrollToBottom();
+    });
+
+    /* Global API untuk polling/realtime */
+    window.chatScrollToBottom = scrollToBottom;
+    window.chatScrollToBottomIfNear = function () { if (isNearBottom()) scrollToBottom(); };
+})();
+</script>
 @endsection

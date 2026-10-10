@@ -104,6 +104,7 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
         Route::post('requests/{linkIdRequest}/accept', [App\Http\Controllers\LinkIdRequestController::class, 'accept'])->name('requests.accept');
         Route::post('requests/{linkIdRequest}/decline', [App\Http\Controllers\LinkIdRequestController::class, 'decline'])->name('requests.decline');
         Route::get('messages', [LinkIdMessageController::class, 'index'])->name('messages');
+        Route::get('messages/unread', [LinkIdMessageController::class, 'unread'])->name('messages.unread');
         Route::get('messages/{conversation}', [LinkIdMessageController::class, 'show'])->name('messages.show');
         Route::post('messages/{conversation}', [LinkIdMessageController::class, 'store'])->name('messages.store');
     });

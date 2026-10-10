@@ -84,10 +84,6 @@ class MarketplaceController extends Controller
                     $buyer->id => ['last_read_at' => now()],
                     $sellerId => ['last_read_at' => now()],
                 ]);
-                $conversation->messages()->create([
-                    'user_id' => $buyer->id,
-                    'body' => 'Halo, saya tertarik dengan produk '.$product->name.'. Apakah masih tersedia?',
-                ]);
                 $conversation->touch();
 
                 return $conversation;

@@ -610,6 +610,45 @@
                     
                     <div class="rounded-2xl border border-ink-100 p-5 space-y-5">
                         <div>
+                            <h3 class="font-bold text-ink-900 mb-1">LinkID</h3>
+                            <p class="text-sm text-ink-500 mb-4">Aktifkan kolaborasi agar LinkID muncul di public profile.</p>
+                        </div>
+
+                        <label class="flex items-center justify-between rounded-2xl bg-ink-50 p-4 cursor-pointer">
+                            <div>
+                                <p class="text-sm font-bold text-ink-800">Tampilkan LinkID di public profile</p>
+                                <p class="text-xs text-ink-400">Pengunjung bisa mengirim request kolaborasi.</p>
+                            </div>
+                            <div class="relative">
+                                <input type="checkbox" x-model="profile.is_linkid_active" @change="enhanceChanged()" class="peer sr-only">
+                                <div class="w-12 h-7 rounded-full transition peer-checked:bg-brand-600 bg-ink-200 relative">
+                                    <span class="absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition peer-checked:left-[22px]"></span>
+                                </div>
+                            </div>
+                        </label>
+
+                        <div x-show="profile.is_linkid_active" x-cloak>
+                            <label class="block text-sm font-semibold text-ink-800 mb-1.5">Jenis kolaborasi</label>
+                            <div class="flex flex-wrap gap-2">
+                                <template x-for="option in ['Content Creator','Product','Brand','Event','Creator']" :key="option">
+                                    <label class="inline-flex items-center gap-2 rounded-full border border-ink-200 bg-white px-3 py-2 text-xs font-semibold text-ink-700">
+                                        <input type="checkbox" :value="option" x-model="profile.linkid_types" @change="enhanceChanged()" class="rounded border-ink-300 text-brand-600">
+                                        <span x-text="option"></span>
+                                    </label>
+                                </template>
+                            </div>
+
+                            <div class="mt-4">
+                                <label class="block text-sm font-semibold text-ink-800 mb-1.5">Deskripsi LinkID</label>
+                                <textarea x-model="profile.linkid_description" @input="enhanceChanged()" rows="3" maxlength="300" placeholder="Contoh: Saya terbuka untuk campaign, produk, dan sesi kolaborasi kreatif."
+                                          class="w-full px-4 py-3 rounded-xl border border-ink-200 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="rounded-2xl border border-ink-100 p-5 space-y-5">
+                        <div>
                             <h3 class="font-bold text-ink-900 mb-1">SEO</h3>
                             <p class="text-sm text-ink-500 mb-4">Kontrol cara halamanmu muncul saat dibagikan.</p>
                         </div>

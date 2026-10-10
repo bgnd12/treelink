@@ -27,9 +27,4 @@
         </button>
     </form>
 
-    <div class="mt-6 p-4 rounded-xl bg-ink-50 text-xs text-ink-500">
-        <p class="font-semibold text-ink-700 mb-1">Akun demo untuk uji coba:</p>
-        <p>Admin: admin@TreeLink.test / password</p>
-        <p>User: demo@TreeLink.test / password</p>
-    </div>
 @endsection

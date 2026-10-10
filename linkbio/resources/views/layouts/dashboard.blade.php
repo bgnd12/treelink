@@ -24,6 +24,7 @@
 
             <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
                 @php
+                    $unreadMessageCount = app(\App\Support\UnreadMessages::class)->for(auth()->user())['count'];
                     $navItems = [
                         ['route' => 'dashboard.index', 'label' => __('My TreeLink'), 'icon' => '🧭'],
                         ['route' => 'dashboard.links.index', 'label' => __('Links'), 'icon' => '🔗'],
@@ -33,7 +34,7 @@
                         ['route' => 'dashboard.linkid.discover', 'label' => __('Discover'), 'icon' => '↗', 'nested' => true],
                         ['route' => 'dashboard.linkid.my-collaboration', 'label' => __('My Collaboration'), 'icon' => '✓', 'nested' => true],
                         ['route' => 'dashboard.linkid.requests', 'label' => __('Requests'), 'icon' => '✉', 'nested' => true],
-                        ['route' => 'dashboard.linkid.messages', 'label' => __('Messages'), 'icon' => '💬', 'nested' => true],
+                        ['route' => 'dashboard.linkid.messages', 'label' => __('Messages'), 'icon' => '💬', 'nested' => true, 'badge' => $unreadMessageCount],
                         ['route' => 'dashboard.analytics.index', 'label' => __('Analytics'), 'icon' => '📈'],
                         ['route' => 'dashboard.settings.index', 'label' => __('Settings'), 'icon' => '⚙️'],
                     ];
@@ -52,8 +53,8 @@
                        class="flex items-center gap-3 border-l-2 px-4 py-2.5 rounded-r-xl text-sm font-semibold transition {{ !empty($item['route']) && request()->routeIs($item['route']) ? 'border-[#c8ff4d] bg-[#f1f3e9] text-[#1e2a5b]' : 'border-transparent text-ink-600 hover:bg-ink-50 hover:text-ink-900' }} {{ !empty($item['nested']) ? 'ml-3' : '' }}">
                         @if($item['icon'])<span class="text-base {{ !empty($item['nested']) ? 'text-ink-500' : '' }}">{{ $item['icon'] }}</span>@endif
                         <span class="flex-1">{{ $item['label'] }}</span>
-                        @if(!empty($item['badge']))
-                            <span class="min-w-5 h-5 px-1.5 rounded-full bg-brand-600 text-[10px] font-bold text-white flex items-center justify-center">{{ $item['badge'] }}</span>
+                        @if(array_key_exists('badge', $item))
+                            <span id="messages-unread-badge" class="min-w-5 h-5 px-1.5 rounded-full bg-brand-600 text-[10px] font-bold text-white flex items-center justify-center" @if($item['badge'] < 1) hidden @endif>{{ $item['badge'] > 99 ? '99+' : $item['badge'] }}</span>
                         @endif
                     </a>
                 @endforeach
@@ -157,6 +158,18 @@
         </div>
     </div>
 
+    <div id="incoming-message-toast" class="fixed right-4 top-20 z-50 hidden w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl" role="status" aria-live="polite">
+        <div class="flex items-start gap-3 p-4">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f1f3e9] text-lg text-[#1e2a5b]">💬</span>
+            <a id="incoming-message-link" href="{{ route('dashboard.linkid.messages') }}" class="min-w-0 flex-1">
+                <span id="incoming-message-sender" class="block truncate text-sm font-bold text-slate-900">Pesan baru</span>
+                <span id="incoming-message-preview" class="mt-1 block line-clamp-2 text-xs leading-5 text-slate-500"></span>
+            </a>
+            <button type="button" id="dismiss-message-toast" aria-label="Tutup notifikasi pesan" class="text-lg leading-none text-slate-400 hover:text-slate-700">&times;</button>
+        </div>
+        <div class="h-1 bg-[#c8ff4d]"></div>
+    </div>
+
     <script>
         function copyProfileUrl() {
             const url = @json(auth()->user()->publicUrl());
@@ -169,6 +182,60 @@
                 }, 2000);
             });
         }
+
+        (() => {
+            const badge = document.getElementById('messages-unread-badge');
+            const toast = document.getElementById('incoming-message-toast');
+            const senderLabel = document.getElementById('incoming-message-sender');
+            const previewLabel = document.getElementById('incoming-message-preview');
+            const messageLink = document.getElementById('incoming-message-link');
+            const unreadUrl = @json(route('dashboard.linkid.messages.unread'));
+            const threadUrl = @json(route('dashboard.linkid.messages.show', '__CONVERSATION__'));
+            let unreadCount = @json($unreadMessageCount);
+            let latestMessageId = null;
+            let toastTimer;
+
+            document.getElementById('dismiss-message-toast')?.addEventListener('click', () => toast?.classList.add('hidden'));
+
+            async function refreshUnreadMessages() {
+                if (document.visibilityState === 'hidden') return;
+
+                try {
+                    const response = await fetch(unreadUrl, {
+                        headers: { Accept: 'application/json' },
+                        credentials: 'same-origin',
+                        cache: 'no-store',
+                    });
+                    if (!response.ok) return;
+
+                    const data = await response.json();
+                    const nextCount = Number(data.count || 0);
+
+                    if (badge) {
+                        badge.textContent = nextCount > 99 ? '99+' : String(nextCount);
+                        badge.hidden = nextCount < 1;
+                    }
+
+                    if (data.latest && nextCount > unreadCount && String(data.latest.id) !== String(latestMessageId)) {
+                        senderLabel.textContent = `Pesan baru dari ${data.latest.sender_name}`;
+                        previewLabel.textContent = data.latest.preview;
+                        messageLink.href = threadUrl.replace('__CONVERSATION__', encodeURIComponent(data.latest.conversation_id));
+                        toast.classList.remove('hidden');
+                        clearTimeout(toastTimer);
+                        toastTimer = setTimeout(() => toast.classList.add('hidden'), 8000);
+                    }
+
+                    unreadCount = nextCount;
+                    latestMessageId = data.latest?.id ?? latestMessageId;
+                } catch (error) {
+                    console.error('Gagal memeriksa pesan baru:', error);
+                }
+            }
+
+            window.setInterval(refreshUnreadMessages, 10000);
+            document.addEventListener('visibilitychange', refreshUnreadMessages);
+            window.addEventListener('focus', refreshUnreadMessages);
+        })();
     </script>
     @yield('scripts')
 </body>

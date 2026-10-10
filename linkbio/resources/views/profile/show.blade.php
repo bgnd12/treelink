@@ -143,7 +143,9 @@
                 </a>
                 @auth
                     @if(auth()->id() !== $profileUser->id)
-                        @php($isFollowingProfile = auth()->user()->following()->whereKey($profileUser->id)->exists())
+                        @php
+                            $isFollowingProfile = auth()->user()->following()->whereKey($profileUser->id)->exists();
+                        @endphp
                         <form method="POST" action="{{ route('dashboard.accounts.follow.toggle', $profileUser) }}">
                             @csrf
                             <button type="submit" class="px-4 py-2 text-xs font-bold transition {{ $hoverClass }}" style="{{ $btnStyle }}">{{ $isFollowingProfile ? 'Mengikuti' : 'Ikuti' }}</button>
