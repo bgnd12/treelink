@@ -48,6 +48,9 @@ export default function editor(initial = {}) {
 
         _sortables: {},
         _timers: {},
+        // Remembers the last dark preset so the Light/Dark switch can restore
+        // it after a trip through the light (`minimal`) theme.
+        _lastDarkTheme: null,
 
         // ---- getters ---------------------------------------------------------
         get theme() {
@@ -176,6 +179,14 @@ export default function editor(initial = {}) {
             return this.profile.theme_text !== 'text-white';
         },
 
+        // Whether the currently selected preset is a dark theme. Mirrors the
+        // backend's `themeIsLight` derivation and drives the stickman switch.
+        get isDarkMode() {
+            const meta = this.themes[this.profile.theme];
+            const text = meta ? meta.text : (this.profile.theme_text || 'text-white');
+            return text === 'text-white';
+        },
+
         // Inside the card the readable colour is decided by the card itself,
         // so a light card on a dark page still renders dark text.
         get isLight() {
@@ -222,7 +233,26 @@ export default function editor(initial = {}) {
             return host ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64` : '';
         },
 
-        linkIcon(link, cls = 'w-6 h-6') {
+        brandBoxStyle(link) {
+            if (!link) return 'background:#f1f5f9;color:#475569;';
+            const key = link.icon && !['link', 'globe'].includes(link.icon) ? link.icon : this.brandKeyOf(link.url || '');
+            const bgMap = {
+                youtube: 'background:#ff0000;color:#ffffff;',
+                tiktok: 'background:#000000;color:#ffffff;',
+                instagram: 'background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#ffffff;',
+                whatsapp: 'background:#25d366;color:#ffffff;',
+                twitter: 'background:#000000;color:#ffffff;',
+                facebook: 'background:#1877f2;color:#ffffff;',
+                github: 'background:#24292e;color:#ffffff;',
+                linkedin: 'background:#0a66c2;color:#ffffff;',
+                spotify: 'background:#1db954;color:#ffffff;',
+                discord: 'background:#5865f2;color:#ffffff;',
+                telegram: 'background:#229ed9;color:#ffffff;',
+            };
+            return bgMap[key] || 'background:#f8fafc;color:#475569;border:1px solid #e2e8f0;';
+        },
+
+        linkIcon(link, cls = 'w-5 h-5') {
             if (!link) return '';
             const key = link.icon && !['link', 'globe'].includes(link.icon) ? link.icon : this.brandKeyOf(link.url || '');
             if (key === 'favicon') {
@@ -255,6 +285,7 @@ export default function editor(initial = {}) {
 
         // ---- lifecycle -------------------------------------------------------
         init() {
+            if (this.isDarkMode) this._lastDarkTheme = this.profile.theme;
             this.$nextTick(() => {
                 this.makeSortable('linksList', 'links');
                 this.makeSortable('productsList', 'products');
@@ -563,10 +594,44 @@ export default function editor(initial = {}) {
         },
 
         onThemeChange() {
+            if (this.isDarkMode) this._lastDarkTheme = this.profile.theme;
             if (this.profile.background_type === 'gradient') {
                 this.profile.background_value = `${this.theme.from} ${this.theme.to}`;
             }
+            this._syncThemeMode();
             this.queue('design');
+        },
+
+        // First dark preset in the registry, used as a sane default when the
+        // user flips the stickman on before ever choosing a dark theme.
+        _firstDarkTheme() {
+            return Object.keys(this.themes).find((key) => this.themes[key].text === 'text-white') || 'aurora';
+        },
+
+        /**
+         * Bridge for the stickman switch: maps its binary Light/Dark state onto
+         * the existing preset themes and saves through the normal design flow.
+         */
+        themeModeChanged(dark) {
+            if (dark === this.isDarkMode) return;
+
+            if (dark) {
+                this.profile.theme = this._lastDarkTheme || this._firstDarkTheme();
+            } else {
+                this._lastDarkTheme = this.profile.theme;
+                this.profile.theme = 'minimal';
+            }
+
+            const meta = this.themes[this.profile.theme] || {};
+            if (meta.from) this.profile.theme_from = meta.from;
+            if (meta.to) this.profile.theme_to = meta.to;
+            if (meta.text) this.profile.theme_text = meta.text;
+
+            this.onThemeChange();
+        },
+
+        _syncThemeMode() {
+            window.dispatchEvent(new CustomEvent('treelink-theme-mode-sync', { detail: { dark: this.isDarkMode } }));
         },
 
         onBackgroundTypeChange() {

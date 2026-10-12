@@ -67,7 +67,7 @@
             <div class="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @php
                         $features = [
-                            ['icon' => '✦', 'title' => 'Connect with New Friends', 'desc' => 'Meet people who share your interests and goals.'],
+                            ['icon' => '✦', 'title' => 'Sell & Earn', 'desc' => 'Meet people who share your interests and goals.'],
                             ['icon' => '▣', 'title' => 'Access Mentors & Learning', 'desc' => 'Learn from people who have already walked the path.'],
                             ['icon' => '⌁', 'title' => 'Join Communities', 'desc' => 'Discover communities built around your passions.'],
                             ['icon' => '◎', 'title' => 'Achieve Your Goals Together', 'desc' => 'Turn small conversations into meaningful progress.'],

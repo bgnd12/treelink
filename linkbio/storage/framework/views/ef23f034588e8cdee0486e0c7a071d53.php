@@ -4,7 +4,9 @@
 <?php $__env->startSection('page-title', 'Edit Profil'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="max-w-[1500px] mx-auto" x-data="editor(<?php echo \Illuminate\Support\Js::from($editorData)->toHtml() ?>)">
+<?php ($__isDarkTheme = ($editorData['profile']['theme_text'] ?? 'text-white') === 'text-white'); ?>
+<div class="max-w-[1500px] mx-auto" x-data="editor(<?php echo \Illuminate\Support\Js::from($editorData)->toHtml() ?>)"
+     @theme-mode-changed="themeModeChanged($event.detail.dark)">
 
     
     <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
@@ -22,72 +24,83 @@
         </div>
     </div>
 
-    <div class="grid lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] gap-8 items-start">
+    <div class="grid lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_410px] gap-8 items-start">
 
         
-        <div class="bg-white rounded-3xl border border-ink-100 shadow-card overflow-hidden">
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.04)] overflow-hidden">
 
             
-            <div class="grid grid-cols-4 border-b border-ink-100 bg-ink-50/50">
+            <div class="grid grid-cols-4 border-b border-slate-100 bg-white">
                 <?php $__currentLoopData = [
-                    'content' => ['label' => 'Content', 'icon' => '✦'],
-                    'header' => ['label' => 'Header', 'icon' => '◉'],
-                    'design' => ['label' => 'Design', 'icon' => '◐'],
-                    'enhance' => ['label' => 'Enhance', 'icon' => '⬡'],
+                    'content' => ['label' => 'Content', 'icon' => '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>'],
+                    'header' => ['label' => 'Header', 'icon' => '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>'],
+                    'design' => ['label' => 'Design', 'icon' => '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>'],
+                    'enhance' => ['label' => 'Enhance', 'icon' => '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>'],
                 ]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $tab): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <button type="button" @click="setTab('<?php echo e($key); ?>')"
-                            class="flex items-center justify-center gap-2 px-3 py-4 text-sm font-bold transition border-b-2 -mb-px"
-                            :class="activeTab === '<?php echo e($key); ?>' ? 'border-brand-600 text-brand-700 bg-white' : 'border-transparent text-ink-400 hover:text-ink-700'">
-                        <span class="text-base"><?php echo e($tab['icon']); ?></span>
-                        <span class="hidden sm:inline"><?php echo e($tab['label']); ?></span>
+                            class="flex items-center justify-center gap-2.5 px-4 py-4 text-sm font-bold transition border-b-2 -mb-px"
+                            :class="activeTab === '<?php echo e($key); ?>' ? 'border-blue-600 text-blue-600 bg-white' : 'border-transparent text-slate-400 hover:text-slate-700'">
+                        <?php echo $tab['icon']; ?>
+
+                        <span><?php echo e($tab['label']); ?></span>
                     </button>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
 
-            <div class="p-5 sm:p-7">
+            <div class="p-6 sm:p-8">
 
                 
                 <section x-show="activeTab === 'content'" x-cloak class="space-y-8">
 
                     
                     <div>
-                        <div class="flex items-center gap-3 mb-4">
-                            <h2 class="font-extrabold text-ink-900 text-lg">Links</h2>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-brand-50 text-brand-700" x-text="links.length"></span>
+                        <div class="flex items-center gap-2.5 mb-5">
+                            <h2 class="font-extrabold text-[#14213d] text-lg">Links</h2>
+                            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#edf2fe] text-[#3b82f6]" x-text="links.length"></span>
                         </div>
 
                         
-                        <div class="rounded-2xl border border-ink-100 bg-ink-50/40 p-4">
-                            <form @submit.prevent="addLink()" class="grid sm:grid-cols-[2fr_2fr_1fr_auto] gap-3">
-                                <input type="text" x-model="linkForm.title" placeholder="Judul"
-                                       class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
-                                <input type="text" x-model="linkForm.url" placeholder="https://instagram.com"
-                                       class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
-                                
-                                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                                    <button type="button" @click="open = !open"
-                                            class="w-full flex items-center gap-2 px-3 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none hover:border-brand-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
-                                        <span class="flex-shrink-0 text-ink-600" x-html="iconSvgFor(linkForm.icon, 'w-4 h-4')"></span>
-                                        <span class="flex-1 text-left text-ink-700 font-medium truncate" x-text="iconLabel(linkForm.icon)"></span>
-                                        <svg class="w-4 h-4 text-ink-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-                                    </button>
-                                    <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                                         class="absolute z-50 mt-1 w-56 max-h-64 overflow-y-auto bg-white rounded-2xl border border-ink-100 shadow-xl py-1" style="min-width: 13rem;">
-                                        <template x-for="icon in icons" :key="icon">
-                                            <button type="button"
-                                                    @click="linkForm.icon = icon; open = false"
-                                                    class="w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-brand-50 transition"
-                                                    :class="linkForm.icon === icon ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-ink-700'">
-                                                <span class="flex-shrink-0" x-html="iconSvgFor(icon, 'w-4 h-4')"></span>
-                                                <span x-text="iconLabel(icon)"></span>
-                                                <span x-show="linkForm.icon === icon" class="ml-auto">
-                                                    <svg class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                </span>
-                                            </button>
-                                        </template>
+                        <div class="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs mb-5">
+                            <form @submit.prevent="addLink()" class="grid sm:grid-cols-[1.5fr_1.5fr_1.2fr_auto] gap-3.5 items-end">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Judul Link</label>
+                                    <input type="text" x-model="linkForm.title" placeholder="Contoh: YouTube"
+                                           class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5">URL</label>
+                                    <input type="text" x-model="linkForm.url" placeholder="https://..."
+                                           class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Tipe</label>
+                                    
+                                    <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                                        <button type="button" @click="open = !open"
+                                                class="w-full flex items-center justify-between gap-2 px-3.5 py-3 rounded-xl border border-slate-200 bg-white text-sm outline-none hover:border-slate-300 focus:border-blue-500 transition">
+                                            <div class="flex items-center gap-2 truncate">
+                                                <span class="flex-shrink-0 text-slate-600" x-html="iconSvgFor(linkForm.icon, 'w-4 h-4')"></span>
+                                                <span class="text-slate-700 font-medium truncate" x-text="iconLabel(linkForm.icon)"></span>
+                                            </div>
+                                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                        </button>
+                                        <div x-show="open" x-transition class="absolute z-50 mt-1 w-56 max-h-64 overflow-y-auto bg-white rounded-2xl border border-slate-100 shadow-xl py-1" style="min-width: 13rem;">
+                                            <template x-for="icon in icons" :key="icon">
+                                                <button type="button"
+                                                        @click="linkForm.icon = icon; open = false"
+                                                        class="w-full flex items-center gap-3 px-3.5 py-2 text-sm hover:bg-slate-50 transition"
+                                                        :class="linkForm.icon === icon ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-700'">
+                                                    <span class="flex-shrink-0" x-html="iconSvgFor(icon, 'w-4 h-4')"></span>
+                                                    <span x-text="iconLabel(icon)"></span>
+                                                    <span x-show="linkForm.icon === icon" class="ml-auto">
+                                                        <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                    </span>
+                                                </button>
+                                            </template>
+                                        </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="px-5 py-3 rounded-xl bg-brand-600 text-white text-sm font-bold hover:bg-brand-700 transition shadow-soft"
+                                <button type="submit" class="px-6 py-3 rounded-xl bg-[#c8ff4d] hover:bg-[#bcf040] text-[#14213d] text-sm font-extrabold transition shadow-xs whitespace-nowrap"
                                         :disabled="saving">
                                     + Tambah
                                 </button>
@@ -96,100 +109,102 @@
                         </div>
 
                         
-                        <ul x-ref="linksList" class="mt-4 space-y-2.5">
+                        <ul x-ref="linksList" class="mt-4 space-y-3">
                             <template x-for="link in links" :key="link.id">
-                                <li class="group flex items-center gap-3 p-3.5 rounded-2xl border border-ink-100 bg-white transition"
+                                <li class="group flex items-center gap-4 p-4 rounded-2xl border border-slate-200/80 bg-white transition hover:border-slate-300 shadow-xs"
                                     :class="!link.is_active ? 'opacity-55' : ''">
 
                                     
-                                    <span class="drag-handle cursor-grab active:cursor-grabbing text-ink-300 text-lg select-none">⠿</span>
+                                    <span class="drag-handle cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 text-lg select-none px-1">⠿</span>
 
                                     
-                                    <span class="w-9 h-9 rounded-xl bg-ink-50 flex items-center justify-center text-ink-600 flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-2xs overflow-hidden"
+                                         :style="brandBoxStyle(link)">
                                         <span x-html="linkIcon(link, 'w-5 h-5')"></span>
-                                    </span>
+                                    </div>
 
                                     
                                     <div class="flex-1 min-w-0" x-show="editingLinkId !== link.id">
-                                        <p class="font-semibold text-sm text-ink-900 truncate" x-text="link.title"></p>
-                                        <p class="text-xs text-ink-400 truncate" x-text="link.url"></p>
+                                        <p class="font-bold text-sm text-[#14213d] truncate" x-text="link.title"></p>
+                                        <p class="text-xs text-slate-400 truncate mt-0.5" x-text="link.url"></p>
                                     </div>
 
                                     
                                     <div class="flex-1 min-w-0" x-show="editingLinkId === link.id" x-cloak>
                                         <div class="flex flex-col sm:flex-row gap-2">
-                                            <input type="text" x-model="editDraft.title" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 text-sm outline-none focus:border-brand-500">
-                                            <input type="text" x-model="editDraft.url" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 text-sm outline-none focus:border-brand-500">
-                                            
-                                            <div class="relative" x-data="{ openEdit: false }" @click.outside="openEdit = false">
-                                                <button type="button" @click="openEdit = !openEdit"
-                                                        class="flex items-center gap-2 px-3 py-2 rounded-lg border border-ink-200 bg-white text-sm outline-none hover:border-brand-400 transition whitespace-nowrap">
-                                                    <span class="flex-shrink-0 text-ink-600" x-html="iconSvgFor(editDraft.icon, 'w-4 h-4')"></span>
-                                                    <span class="text-ink-700 font-medium" x-text="iconLabel(editDraft.icon)"></span>
-                                                    <svg class="w-3.5 h-3.5 text-ink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-                                                </button>
-                                                <div x-show="openEdit" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                                                     class="absolute z-50 mt-1 w-52 max-h-64 overflow-y-auto bg-white rounded-2xl border border-ink-100 shadow-xl py-1" style="min-width: 13rem; right: 0;">
-                                                    <template x-for="icon in icons" :key="icon">
-                                                        <button type="button"
-                                                                @click="editDraft.icon = icon; openEdit = false"
-                                                                class="w-full flex items-center gap-3 px-3 py-2 text-sm hover:bg-brand-50 transition"
-                                                                :class="editDraft.icon === icon ? 'bg-brand-50 text-brand-700 font-semibold' : 'text-ink-700'">
-                                                            <span class="flex-shrink-0" x-html="iconSvgFor(icon, 'w-4 h-4')"></span>
-                                                            <span x-text="iconLabel(icon)"></span>
-                                                            <span x-show="editDraft.icon === icon" class="ml-auto">
-                                                                <svg class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                            </span>
-                                                        </button>
-                                                    </template>
-                                                </div>
-                                            </div>
-                                            <button @click="saveEditLink()" class="px-4 py-2 rounded-lg bg-brand-600 text-white text-xs font-bold">Simpan</button>
-                                            <button @click="cancelEdit()" class="px-4 py-2 rounded-lg bg-ink-100 text-ink-600 text-xs font-bold">Batal</button>
+                                            <input type="text" x-model="editDraft.title" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm outline-none focus:border-blue-500">
+                                            <input type="text" x-model="editDraft.url" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm outline-none focus:border-blue-500">
+                                            <button @click="saveEditLink()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold">Simpan</button>
+                                            <button @click="cancelEdit()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">Batal</button>
                                         </div>
                                     </div>
 
                                     
-                                    <div class="flex items-center gap-2 flex-shrink-0">
-                                        <button @click="startEditLink(link)" class="w-9 h-9 rounded-xl text-ink-400 hover:text-brand-600 hover:bg-brand-50 transition flex items-center justify-center" title="Edit">
+                                    <div class="flex items-center gap-3.5 flex-shrink-0">
+                                        <button @click="startEditLink(link)" class="text-slate-400 hover:text-blue-600 transition" title="Edit">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                         </button>
-                                        <button @click="toggleLink(link)" class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="link.is_active ? 'text-emerald-600 hover:bg-emerald-50' : 'text-ink-300 hover:bg-ink-50'" title="Aktif/nonaktif">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"></path></svg>
+
+                                        
+                                        <button type="button" @click="toggleLink(link)"
+                                                class="w-12 h-6.5 rounded-full transition-colors relative cursor-pointer focus:outline-none p-0.5 flex items-center"
+                                                :class="link.is_active ? 'bg-[#22c55e]' : 'bg-slate-200'" title="Aktif/nonaktif">
+                                            <span class="block w-5.5 h-5.5 rounded-full bg-white shadow-sm transition-transform duration-200 transform"
+                                                  :class="link.is_active ? 'translate-x-5.5' : 'translate-x-0'"></span>
                                         </button>
-                                        <button @click="deleteLink(link)" class="w-9 h-9 rounded-xl text-ink-300 hover:text-rose-600 hover:bg-rose-50 transition flex items-center justify-center" title="Hapus">
+
+                                        <button @click="deleteLink(link)" class="text-rose-400 hover:text-rose-600 transition" title="Hapus">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         </button>
                                     </div>
                                 </li>
                             </template>
-                            <li x-show="!links.length" class="text-center py-10 text-ink-400 text-sm">Belum ada link. Tambahkan link pertamamu di atas!</li>
+                            <li x-show="!links.length" class="text-center py-10 text-slate-400 text-sm">Belum ada link. Tambahkan link pertamamu di atas!</li>
                         </ul>
-                        <p x-show="links.length" class="mt-2 text-xs text-ink-400">Seret <span class="font-semibold">⠿</span> untuk mengatur urutan.</p>
+                        <p x-show="links.length" class="mt-2 text-xs text-slate-400">Seret <span class="font-semibold">⠿</span> untuk mengatur urutan.</p>
                     </div>
 
                     
-                    <div class="pt-6 border-t border-ink-100">
-                        <div class="flex items-center gap-3 mb-4">
-                            <h2 class="font-extrabold text-ink-900 text-lg">Shop</h2>
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700" x-text="products.length"></span>
+                    <div class="pt-8 border-t border-slate-100">
+                        <div class="flex items-center gap-2.5 mb-5">
+                            <h2 class="font-extrabold text-[#14213d] text-lg">Shop</h2>
+                            <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#edf2fe] text-[#3b82f6]" x-text="products.length"></span>
                         </div>
 
                         
-                        <div class="rounded-2xl border border-ink-100 bg-ink-50/40 p-4">
-                            <form @submit.prevent="addProduct()" class="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-                                <input type="text" x-model="productForm.name" placeholder="Nama produk"
-                                       class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition">
-                                <input type="text" x-model="productForm.url" placeholder="URL produk"
-                                       class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition">
-                                <input type="number" step="0.01" min="0" x-model="productForm.price" placeholder="Harga (opsional)"
-                                       class="px-4 py-3 rounded-xl border border-ink-200 bg-white text-sm outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition">
-                                <label class="flex items-center gap-2 px-4 py-3 rounded-xl border border-dashed border-ink-300 bg-white cursor-pointer hover:border-emerald-400 transition text-sm text-ink-500">
-                                    <span x-show="!productForm.imagePreview">📷 Gambar</span>
-                                    <span x-show="productForm.imagePreview" class="flex items-center gap-2"><img :src="productForm.imagePreview" class="w-6 h-6 rounded object-cover"> Dipilih</span>
-                                    <input type="file" accept="image/*" class="hidden" @change="productImageSelected($event)">
-                                </label>
-                                <button type="submit" class="sm:col-span-2 xl:col-span-4 py-3 rounded-xl bg-ink-900 text-white text-sm font-bold hover:bg-ink-800 transition" :disabled="saving">
+                        <div class="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs mb-5">
+                            <form @submit.prevent="addProduct()" class="space-y-4">
+                                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama produk</label>
+                                        <input type="text" x-model="productForm.name" placeholder="Contoh: Casing imut"
+                                               class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1.5">URL produk</label>
+                                        <input type="text" x-model="productForm.url" placeholder="https://..."
+                                               class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Harga (opsional)</label>
+                                        <input type="number" step="0.01" min="0" x-model="productForm.price" placeholder="Rp 0"
+                                               class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition placeholder:text-slate-400">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Gambar</label>
+                                        <label class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border border-dashed border-slate-300 bg-white cursor-pointer hover:border-blue-400 transition text-xs text-slate-500 h-[46px]">
+                                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            <div class="truncate flex-1">
+                                                <p class="font-bold text-slate-700 truncate" x-show="!productForm.imagePreview">Pilih gambar</p>
+                                                <p class="text-[10px] text-slate-400 truncate" x-show="!productForm.imagePreview">JPG, PNG (maks. 2MB)</p>
+                                                <p class="font-bold text-emerald-600 truncate" x-show="productForm.imagePreview">Dipilih</p>
+                                            </div>
+                                            <input type="file" accept="image/*" class="hidden" @change="productImageSelected($event)">
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="w-full py-3.5 rounded-xl bg-[#18263f] hover:bg-[#121e33] text-white text-sm font-bold transition shadow-xs flex items-center justify-center gap-2"
+                                        :disabled="saving">
                                     + Tambahkan Produk
                                 </button>
                             </form>
@@ -197,53 +212,56 @@
                         </div>
 
                         
-                        <ul x-ref="productsList" class="mt-4 space-y-2.5">
+                        <ul x-ref="productsList" class="mt-4 space-y-3">
                             <template x-for="product in products" :key="product.id">
-                                <li class="flex items-center gap-3 p-3.5 rounded-2xl border border-ink-100 bg-white transition"
+                                <li class="flex items-center gap-4 p-4 rounded-2xl border border-slate-200/80 bg-white transition hover:border-slate-300 shadow-xs"
                                     :class="!product.is_active ? 'opacity-55' : ''">
-                                    <span class="drag-handle cursor-grab active:cursor-grabbing text-ink-300 text-lg select-none">⠿</span>
+                                    <span class="drag-handle cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 text-lg select-none px-1">⠿</span>
 
-                                    <div class="w-11 h-11 rounded-xl overflow-hidden bg-ink-50 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-11 h-11 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 border border-slate-100">
                                         <img x-show="product.image_url" :src="product.image_url" class="w-full h-full object-cover">
                                         <span x-show="!product.image_url" class="text-lg">🛍️</span>
                                     </div>
 
                                     <div class="flex-1 min-w-0" x-show="editingProductId !== product.id">
-                                        <p class="font-semibold text-sm text-ink-900 truncate" x-text="product.name"></p>
-                                        <p class="text-xs text-ink-400 truncate">
-                                            <span x-text="product.price_label || 'Tanpa harga'"></span> · <span x-text="product.url"></span>
+                                        <p class="font-bold text-sm text-[#14213d] truncate" x-text="product.name"></p>
+                                        <p class="text-xs text-slate-400 truncate mt-0.5">
+                                            <span x-text="product.price_label || 'Rp 0'"></span>
                                         </p>
                                     </div>
 
                                     <div class="flex-1 min-w-0" x-show="editingProductId === product.id" x-cloak>
                                         <div class="flex flex-col sm:flex-row gap-2">
-                                            <input type="text" x-model="editDraft.name" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 text-sm outline-none focus:border-emerald-500">
-                                            <input type="text" x-model="editDraft.url" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 text-sm outline-none focus:border-emerald-500">
-                                            <input type="number" step="0.01" x-model="editDraft.price" class="w-24 px-3 py-2 rounded-lg border border-ink-200 text-sm outline-none" placeholder="Harga">
-                                            <label class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-dashed border-ink-300 cursor-pointer text-xs text-ink-500">
-                                                📷 <input type="file" accept="image/*" class="hidden" @change="editProductImageSelected($event)">
-                                            </label>
-                                            <button @click="saveEditProduct()" class="px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-bold">Simpan</button>
-                                            <button @click="cancelEdit()" class="px-4 py-2 rounded-lg bg-ink-100 text-ink-600 text-xs font-bold">Batal</button>
+                                            <input type="text" x-model="editDraft.name" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm outline-none focus:border-blue-500">
+                                            <input type="text" x-model="editDraft.url" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm outline-none focus:border-blue-500">
+                                            <input type="number" step="0.01" x-model="editDraft.price" class="w-24 px-3 py-2 rounded-xl border border-slate-200 text-sm outline-none" placeholder="Harga">
+                                            <button @click="saveEditProduct()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold">Simpan</button>
+                                            <button @click="cancelEdit()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">Batal</button>
                                         </div>
                                     </div>
 
-                                    <div class="flex items-center gap-2 flex-shrink-0">
-                                        <button @click="startEditProduct(product)" class="w-9 h-9 rounded-xl text-ink-400 hover:text-emerald-600 hover:bg-emerald-50 transition flex items-center justify-center">
+                                    <div class="flex items-center gap-3.5 flex-shrink-0">
+                                        <button @click="startEditProduct(product)" class="text-slate-400 hover:text-blue-600 transition" title="Edit">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                         </button>
-                                        <button @click="toggleProduct(product)" class="w-9 h-9 rounded-xl flex items-center justify-center transition" :class="product.is_active ? 'text-emerald-600 hover:bg-emerald-50' : 'text-ink-300 hover:bg-ink-50'">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"></path></svg>
+
+                                        
+                                        <button type="button" @click="toggleProduct(product)"
+                                                class="w-12 h-6.5 rounded-full transition-colors relative cursor-pointer focus:outline-none p-0.5 flex items-center"
+                                                :class="product.is_active ? 'bg-[#22c55e]' : 'bg-slate-200'" title="Aktif/nonaktif">
+                                            <span class="block w-5.5 h-5.5 rounded-full bg-white shadow-sm transition-transform duration-200 transform"
+                                                  :class="product.is_active ? 'translate-x-5.5' : 'translate-x-0'"></span>
                                         </button>
-                                        <button @click="deleteProduct(product)" class="w-9 h-9 rounded-xl text-ink-300 hover:text-rose-600 hover:bg-rose-50 transition flex items-center justify-center">
+
+                                        <button @click="deleteProduct(product)" class="text-rose-400 hover:text-rose-600 transition" title="Hapus">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                         </button>
                                     </div>
                                 </li>
                             </template>
-                            <li x-show="!products.length" class="text-center py-8 text-ink-400 text-sm">Belum ada produk. Tambahkan produk pertamamu untuk fitur Shop.</li>
+                            <li x-show="!products.length" class="text-center py-8 text-slate-400 text-sm">Belum ada produk. Tambahkan produk pertamamu untuk fitur Shop.</li>
                         </ul>
-                        <p x-show="products.length" class="mt-2 text-xs text-ink-400">Produk aktif tampil di halaman publik sebagai section <span class="font-semibold">Shop</span>.</p>
+                        <p x-show="products.length" class="mt-2 text-xs text-slate-400">Produk aktif tampil di halaman publik sebagai section <span class="font-semibold">Shop</span>.</p>
                     </div>
                 </section>
 
@@ -321,6 +339,34 @@
 
                 
                 <section x-show="activeTab === 'design'" x-cloak class="space-y-6">
+
+                    
+                    <div class="rounded-2xl border border-ink-100 p-5">
+                        <h3 class="font-bold text-ink-900 mb-1">Mode Terang / Gelap</h3>
+                        <p class="text-sm text-ink-500 mb-5">Ubah tema halaman publikmu dengan sekali klik. Pilih preset warna lengkap di bawah untuk kustomisasi.</p>
+                        <div class="flex justify-center">
+                            <?php if (isset($component)) { $__componentOriginal2090438866f3dcdb76cd8b070bcc302d = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal2090438866f3dcdb76cd8b070bcc302d = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.theme-toggle','data' => ['initialDark' => $__isDarkTheme]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('theme-toggle'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['initial-dark' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($__isDarkTheme)]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal2090438866f3dcdb76cd8b070bcc302d)): ?>
+<?php $attributes = $__attributesOriginal2090438866f3dcdb76cd8b070bcc302d; ?>
+<?php unset($__attributesOriginal2090438866f3dcdb76cd8b070bcc302d); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal2090438866f3dcdb76cd8b070bcc302d)): ?>
+<?php $component = $__componentOriginal2090438866f3dcdb76cd8b070bcc302d; ?>
+<?php unset($__componentOriginal2090438866f3dcdb76cd8b070bcc302d); ?>
+<?php endif; ?>
+                        </div>
+                    </div>
 
                     
                     <div class="rounded-2xl border border-ink-100 p-5">
@@ -682,11 +728,13 @@
         </div>
 
         
-        <div class="lg:sticky lg:top-20">
-            <div class="rounded-3xl bg-white border border-ink-100 shadow-card p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-bold text-ink-700">Preview</p>
-                    <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600">Live</span>
+        <div class="lg:sticky lg:top-24">
+            <div class="rounded-3xl bg-white border border-slate-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.04)] p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <p class="text-base font-extrabold text-[#14213d]">Preview</p>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-[#edf8dd] text-[#22c55e] flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#22c55e]"></span> Live
+                    </span>
                 </div>
                 <?php echo $__env->make('components.editor-phone-preview', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
             </div>
