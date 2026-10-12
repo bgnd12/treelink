@@ -82,6 +82,31 @@ class Brands
         return self::ICONS[$slug]['label'] ?? ucfirst(str_replace('-', ' ', $slug));
     }
 
+    public static function brandStyle(string $slug): string
+    {
+        $colors = [
+            'youtube' => 'background:#ff0000;color:#ffffff;',
+            'tiktok' => 'background:#000000;color:#ffffff;',
+            'instagram' => 'background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);color:#ffffff;',
+            'whatsapp' => 'background:#25d366;color:#ffffff;',
+            'spotify' => 'background:#1db954;color:#ffffff;',
+            'twitter' => 'background:#000000;color:#ffffff;',
+            'github' => 'background:#24292e;color:#ffffff;',
+            'facebook' => 'background:#1877f2;color:#ffffff;',
+            'discord' => 'background:#5865f2;color:#ffffff;',
+            'telegram' => 'background:#229ed9;color:#ffffff;',
+            'linkedin' => 'background:#0a66c2;color:#ffffff;',
+            'pinterest' => 'background:#bd081c;color:#ffffff;',
+            'twitch' => 'background:#9146ff;color:#ffffff;',
+            'paypal' => 'background:#003087;color:#ffffff;',
+            'shop' => 'background:#f97316;color:#ffffff;',
+            'mail' => 'background:#ef4444;color:#ffffff;',
+            'phone' => 'background:#10b981;color:#ffffff;',
+        ];
+
+        return $colors[$slug] ?? 'background:#f1f5f9;color:#475569;';
+    }
+
     public static function resolve(string $url, ?string $manualIcon = null): array
     {
         if ($manualIcon !== null && $manualIcon !== '' && ! in_array($manualIcon, ['link', 'globe'], true) && isset(self::ICONS[$manualIcon])) {

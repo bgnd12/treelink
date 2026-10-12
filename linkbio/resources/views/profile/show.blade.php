@@ -79,12 +79,12 @@
         <div class="fixed inset-0 bg-black/35"></div>
     @endif
 
-    <div class="relative min-h-screen flex flex-col items-center px-4 py-8 sm:py-14 {{ $animate ? 'animate-fade-up' : '' }}">
-        <div class="w-full max-w-5xl mx-auto text-center">
+    <div class="relative min-h-screen flex flex-col items-center px-4 py-8 sm:py-12 {{ $animate ? 'animate-fade-up' : '' }}">
+        <div class="w-full max-w-md sm:max-w-lg mx-auto text-center">
             @if ($cardOn)
-                <div class="overflow-hidden px-6 pt-9 pb-8" style="{{ $cardStyle }}">
+                <div class="overflow-hidden px-5 sm:px-6 pt-9 pb-8" style="{{ $cardStyle }}">
             @else
-                <div class="-mx-4 -my-8 sm:-my-14 px-4 py-8 sm:py-14">
+                <div class="-mx-4 -my-8 sm:-my-12 px-4 py-8 sm:py-12">
             @endif
 
             @if(session('status'))
@@ -158,10 +158,10 @@
 
             {{-- Social icons --}}
             @if (count($socials))
-                <div class="flex justify-center flex-wrap gap-3 mt-5">
+                <div class="flex justify-center flex-wrap gap-2.5 mt-5">
                     @foreach ($socials as $platform => $url)
                         <a href="{{ str_starts_with($platform, 'email') ? 'mailto:'.$url : $url }}" target="_blank" rel="noopener"
-                           class="w-10 h-10 rounded-full {{ $hoverClass }} flex items-center justify-center text-sm font-bold {{ $hoverClass }}"
+                           class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold {{ $hoverClass }}"
                            style="{{ $isLight ? 'background:rgba(0,0,0,.12);color:#111827' : 'background:rgba(255,255,255,.22);color:#fff' }}"
                            title="{{ \App\Models\Profile::SOCIAL_PLATFORMS[$platform]['label'] ?? ucfirst($platform) }}">
                             {!! \App\Support\Brands::markup($platform === 'website' ? 'globe' : ($platform === 'email' ? 'mail' : $platform), 'w-4 h-4') !!}
@@ -170,60 +170,75 @@
                 </div>
             @endif
 
-            <div class="mt-8 grid gap-8 md:grid-cols-2 md:items-start md:text-left">
-            {{-- Links --}}
-            <section class="space-y-3.5">
-                <h2 class="text-xs font-bold uppercase tracking-[0.2em] opacity-70">Links</h2>
+            {{-- Links Section --}}
+            <div class="mt-6 space-y-3 text-left">
                 @forelse ($links as $link)
+                    @php
+                        $resolvedBrand = \App\Support\Brands::resolve($link->url, $link->icon);
+                        $brandStyle = \App\Support\Brands::brandStyle($resolvedBrand['slug']);
+                        $linkRadius = $profile->button_style === 'pill' ? 'border-radius:9999px;' : ($profile->button_style === 'square' ? 'border-radius:0.75rem;' : 'border-radius:1rem;');
+                    @endphp
                     <a href="{{ route('public.link.redirect', ['username' => $profileUser->username, 'link' => $link->id]) }}"
                        target="_blank" rel="noopener"
-                       class="group flex items-center justify-center gap-2.5 w-full py-3.5 px-5 font-semibold text-sm {{ $hoverClass }}{{ $shadowClass }}"
-                       style="{{ $btnStyle }}">
-                        @if ($link->is_featured)<span>⭐</span>@endif
-                        {!! \App\Support\Brands::render($link->url, $link->icon, 'w-5 h-5 flex-shrink-0') !!}
-                        {{ $link->title }}
-                        <span class="opacity-0 group-hover:opacity-60 transition-opacity">&rarr;</span>
+                       class="group flex items-center gap-3.5 w-full py-3.5 px-4 font-bold text-sm bg-white text-[#14213d] shadow-sm {{ $hoverClass }} {{ $link->is_featured ? 'ring-2 ring-blue-500' : '' }}"
+                       style="{{ $linkRadius }}">
+                        
+                        {{-- Brand badge container on left --}}
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden"
+                             style="{{ $brandStyle }}">
+                            {!! \App\Support\Brands::render($link->url, $link->icon, 'w-4 h-4') !!}
+                        </div>
+
+                        {{-- Link Title --}}
+                        <span class="flex-1 min-w-0 text-left truncate text-slate-800 font-bold text-[14px]">{{ $link->title }}</span>
+
+                        @if ($link->is_featured)
+                            <span class="text-xs flex-shrink-0">⭐</span>
+                        @endif
+                        <span class="text-slate-400 font-bold text-base flex-shrink-0 group-hover:translate-x-0.5 transition-transform">›</span>
                     </a>
                 @empty
-                    <p class="opacity-60 text-sm py-8">Belum ada link yang tersedia.</p>
+                    <p class="opacity-60 text-sm py-6 text-center">Belum ada link yang tersedia.</p>
                 @endforelse
-            </section>
+            </div>
 
-            {{-- Shop / Products --}}
+            {{-- Shop / Products Section (White Card Container with 2-Column Grid) --}}
             @if ($products->count())
-                <section>
-                    <div class="mb-3 flex items-center justify-between">
-                        <h2 class="text-xs font-bold uppercase tracking-[0.2em] opacity-70">Shop</h2>
-                        <span class="text-xs opacity-60">{{ $products->count() }} produk</span>
+                <div class="mt-4 rounded-3xl bg-white p-4 text-left shadow-sm">
+                    {{-- Shop Card Header --}}
+                    <div class="flex items-center justify-between mb-3.5">
+                        <div class="flex items-center gap-1.5 font-bold text-xs text-[#14213d]">
+                            <svg class="w-4 h-4 text-[#14213d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                            </svg>
+                            <span>Shop</span>
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-400 flex items-center gap-0.5">
+                            {{ $products->count() }} Produk
+                        </span>
                     </div>
-                    <div class="grid gap-3 sm:grid-cols-2">
+
+                    {{-- 2-Column Product Grid --}}
+                    <div class="grid grid-cols-2 gap-3">
                         @foreach ($products as $product)
                             <a href="{{ $product->url }}" target="_blank" rel="noopener"
-                               class="flex min-w-0 flex-col overflow-hidden text-left font-semibold {{ $hoverClass }}{{ $shadowClass }}"
-                               style="{{ $btnStyle }}">
-                                @if ($product->image_url)
-                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
-                                         class="aspect-[1.6] w-full object-cover">
-                                @else
-                                    <span class="flex aspect-[1.6] w-full items-center justify-center text-xl"
-                                          style="{{ $isLight ? 'background:rgba(0,0,0,.10)' : 'background:rgba(0,0,0,.22)' }}">🛍️</span>
+                               class="group flex flex-col cursor-pointer transition-transform duration-150 hover:-translate-y-0.5">
+                                <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center relative p-2 shadow-2xs">
+                                    @if ($product->image_url)
+                                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
+                                    @else
+                                        <span class="text-2xl">🛍️</span>
+                                    @endif
+                                </div>
+                                <p class="font-bold text-xs text-[#14213d] truncate mt-2">{{ $product->name }}</p>
+                                @if ($product->price_label)
+                                    <p class="text-[11px] text-slate-500 font-semibold">{{ $product->price_label }}</p>
                                 @endif
-                                <span class="block w-full p-3">
-                                    @if($product->category)<span class="block text-[10px] font-bold uppercase tracking-[0.15em] opacity-60">{{ $product->category }}</span>@endif
-                                    <span class="mt-1 block truncate text-sm">{{ $product->name }}</span>
-                                    @if ($product->price_label)
-                                        <span class="block text-xs opacity-75">{{ $product->price_label }}</span>
-                                    @endif
-                                    @if($product->stock !== null)
-                                        <span class="mt-1 block text-[11px] opacity-60">{{ $product->stock > 0 ? 'Stok '.$product->stock : 'Stok habis' }}</span>
-                                    @endif
-                                </span>
                             </a>
                         @endforeach
                     </div>
-                </section>
+                </div>
             @endif
-            </div>
 
             @if ($profile->is_linkid_active)
                 @php
@@ -286,16 +301,18 @@
             @endif
 
             {{-- Share button --}}
-            <div class="mt-10 flex items-center justify-center gap-3">
+            <div class="mt-8 flex items-center justify-center gap-3">
                 <button type="button" onclick="shareProfile()"
-                        class="flex items-center gap-2 px-5 py-2.5 rounded-full {{ $hoverClass }}"
-                        style="{{ $btnStyle }}">
-                    <span>🔗</span> Bagikan Halaman Ini
+                        class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-[#14213d] shadow-sm font-bold text-xs {{ $hoverClass }} border border-slate-100 hover:shadow-md">
+                    <svg class="w-3.5 h-3.5 text-[#14213d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                    <span>Bagikan Halaman Ini</span>
                 </button>
             </div>
 
-            <p class="mt-10 text-xs opacity-50">
-                Dibuat dengan <a href="{{ route('home') }}" class="underline hover:opacity-80">TreeLink</a>
+            <p class="mt-8 text-xs opacity-60 flex items-center justify-center gap-1 font-medium">
+                Dibuat dengan <a href="{{ route('home') }}" class="font-bold underline hover:opacity-80">TreeLink</a>
             </p>
             </div>
         </div>

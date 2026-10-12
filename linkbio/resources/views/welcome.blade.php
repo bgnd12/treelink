@@ -64,12 +64,28 @@
 
             <div class="mt-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @php
-                        $features = [
-                            ['icon' => '✦', 'title' => 'Connect with New Friends', 'desc' => 'Meet people who share your interests and goals.'],
-                            ['icon' => '▣', 'title' => 'Access Mentors & Learning', 'desc' => 'Learn from people who have already walked the path.'],
-                            ['icon' => '⌁', 'title' => 'Join Communities', 'desc' => 'Discover communities built around your passions.'],
-                            ['icon' => '◎', 'title' => 'Achieve Your Goals Together', 'desc' => 'Turn small conversations into meaningful progress.'],
-                        ];
+                    $features = [
+                        [
+                            'icon' => '🛍️',
+                            'title' => 'Sell & Earn',
+                            'desc' => 'Sell and promote products easily on a single page.',
+                        ],
+                        [
+                            'icon' => '🪪',
+                            'title' => 'Personal Identity',
+                            'desc' => 'Create a digital bio showcasing your profile, skills, achievements, and portfolio.',
+                        ],
+                        [
+                            'icon' => '🔗',
+                            'title' => 'All Links in One Place',
+                            'desc' => 'Combine all your social media links and websites into one single link.',
+                        ],
+                        [
+                            'icon' => '📈',
+                            'title' => 'Track Your Growth',
+                            'desc' => 'Monitor visit and click statistics to track the growth of your profile and business.',
+                        ],
+                    ];
                 @endphp
 
                 @foreach ($features as $feature)
