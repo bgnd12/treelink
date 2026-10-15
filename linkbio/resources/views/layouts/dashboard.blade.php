@@ -33,10 +33,9 @@
                         ['route' => 'dashboard.index', 'label' => __('My TreeLink'), 'icon' => 'home'],
                         ['route' => 'dashboard.links.index', 'label' => __('Links'), 'icon' => 'link'],
                         ['route' => 'dashboard.shop', 'label' => __('Shop'), 'icon' => 'shop'],
-                        ['route' => 'dashboard.linkid.discover', 'label' => __('Discover'), 'icon' => 'discover'],
+                        ['route' => 'dashboard.orders.index', 'label' => __('Orders'), 'icon' => 'orders'],
+                        ['route' => 'dashboard.purchases.index', 'label' => __('My Purchases'), 'icon' => 'cart'],
                         ['label' => __('LINKED'), 'section' => true],
-                        ['route' => 'dashboard.linkid.my-collaboration', 'label' => __('My Collaboration'), 'icon' => 'collab'],
-                        ['route' => 'dashboard.linkid.requests', 'label' => __('Requests'), 'icon' => 'requests'],
                         ['route' => 'dashboard.linkid.messages', 'label' => __('Messages'), 'icon' => 'messages', 'badge' => $unreadMessageCount],
                         ['route' => 'dashboard.analytics.index', 'label' => __('Analytics'), 'icon' => 'analytics'],
                         ['route' => 'dashboard.settings.index', 'label' => __('Settings'), 'icon' => 'settings'],
@@ -66,12 +65,10 @@
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                             @elseif($item['icon'] === 'shop')
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                            @elseif($item['icon'] === 'discover')
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            @elseif($item['icon'] === 'collab')
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            @elseif($item['icon'] === 'requests')
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            @elseif($item['icon'] === 'orders')
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                            @elseif($item['icon'] === 'cart')
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                             @elseif($item['icon'] === 'messages')
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                             @elseif($item['icon'] === 'analytics')

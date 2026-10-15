@@ -7,7 +7,6 @@ use App\Models\Profile;
 use App\Support\Brands;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -185,9 +184,6 @@ class EditorController extends Controller
         $validated = $request->validate([
             'social_links' => ['nullable', 'array'],
             'featured_link_id' => ['nullable', 'integer'],
-            'linkid_active' => ['nullable', 'boolean'],
-            'linkid_types' => ['nullable', 'array'],
-            'linkid_description' => ['nullable', 'string', 'max:300'],
             'seo_title' => ['nullable', 'string', 'max:60'],
             'seo_description' => ['nullable', 'string', 'max:300'],
             'animation_enabled' => ['nullable', 'boolean'],
@@ -209,9 +205,6 @@ class EditorController extends Controller
 
         $profile->update([
             'social_links' => $socialLinks,
-            'is_linkid_active' => (bool) ($validated['linkid_active'] ?? false),
-            'linkid_types' => array_values(array_filter((array) ($validated['linkid_types'] ?? []), fn ($type) => is_string($type) && trim($type) !== '')),
-            'linkid_description' => ($validated['linkid_description'] ?? null) ?: null,
             'featured_link_id' => $featuredLinkId,
             'seo_title' => ($validated['seo_title'] ?? null) ?: null,
             'seo_description' => ($validated['seo_description'] ?? null) ?: null,

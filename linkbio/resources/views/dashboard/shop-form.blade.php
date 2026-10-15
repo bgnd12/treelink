@@ -5,8 +5,6 @@
 
 @section('content')
 <div class="mx-auto max-w-4xl">
-    <a href="{{ route('dashboard.shop') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition hover:text-slate-900"><span aria-hidden="true">←</span> Kembali ke My Shop</a>
-
     <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div class="border-b border-slate-100 px-5 py-5 sm:px-7">
             <p class="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">My Shop</p>
@@ -55,8 +53,8 @@
                 </div>
 
                 <div>
-                    <label for="product_url" class="mb-1.5 block text-xs font-bold text-slate-700">Link Pembelian <span class="text-rose-500">*</span></label>
-                    <input id="product_url" name="url" type="url" value="{{ old('url', $product?->url) }}" required maxlength="2048" placeholder="https://contoh.com/produk" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-[#879366] focus:ring-4 focus:ring-[#edf0e7]">
+                    <label for="product_url" class="mb-1.5 block text-xs font-bold text-slate-700">Link Pembelian <span class="font-normal text-slate-400">(opsional)</span></label>
+                    <input id="product_url" name="url" type="url" value="{{ old('url', $product?->url) }}" maxlength="2048" placeholder="Kosongkan untuk jual langsung di TreeLink" class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-[#879366] focus:ring-4 focus:ring-[#edf0e7]">
                     @error('url')<p class="mt-1 text-xs text-rose-600">{{ $message }}</p>@enderror
                 </div>
 

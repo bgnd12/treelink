@@ -221,13 +221,16 @@
                     {{-- 2-Column Product Grid --}}
                     <div class="grid grid-cols-2 gap-3">
                         @foreach ($products as $product)
-                            <a href="{{ $product->url }}" target="_blank" rel="noopener"
+                            <a href="{{ route('public.product.show', ['username' => $profileUser->username, 'product' => $product->id]) }}"
                                class="group flex flex-col cursor-pointer transition-transform duration-150 hover:-translate-y-0.5">
                                 <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center relative p-2 shadow-2xs">
                                     @if ($product->image_url)
                                         <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
                                     @else
                                         <span class="text-2xl">🛍️</span>
+                                    @endif
+                                    @if ($product->stock === 0)
+                                        <span class="absolute left-1.5 top-1.5 rounded-full bg-rose-600 px-2 py-0.5 text-[9px] font-bold text-white">Habis</span>
                                     @endif
                                 </div>
                                 <p class="font-bold text-xs text-[#14213d] truncate mt-2">{{ $product->name }}</p>
@@ -236,66 +239,6 @@
                                 @endif
                             </a>
                         @endforeach
-                    </div>
-                </div>
-            @endif
-
-            @if ($profile->is_linkid_active)
-                @php
-                    $linkIdTypes = collect($profile->linkid_types ?? [])->filter(fn ($value) => is_string($value) && trim($value) !== '')->values()->all();
-                @endphp
-                <div id="linkid" class="mt-8 w-full" x-data="{ openCollabModal: false }">
-                    @if($errors->any())
-                        <div class="mb-3 rounded-xl bg-rose-50 px-4 py-3 text-left text-sm text-rose-700">
-                            @foreach($errors->all() as $error)<p>{{ $error }}</p>@endforeach
-                        </div>
-                    @endif
-                    <div class="rounded-2xl border border-white/30 bg-white/10 backdrop-blur-sm p-4 text-left">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.24em] opacity-80">LinkID</p>
-                        <h2 class="mt-2 text-lg font-extrabold">Collaborate with me</h2>
-                        @if ($profile->linkid_description)
-                            <p class="mt-2 text-sm opacity-80">{{ $profile->linkid_description }}</p>
-                        @endif
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            @foreach ($linkIdTypes as $type)
-                                <span class="px-2.5 py-1 rounded-full bg-white/15 text-xs font-semibold">{{ $type }}</span>
-                            @endforeach
-                        </div>
-                        <div class="mt-4 flex gap-2">
-                            <button type="button" @click="openCollabModal = true" class="flex-1 py-2.5 rounded-xl bg-white text-ink-900 font-bold text-sm shadow-sm">Ajak Kolaborasi</button>
-                        </div>
-                    </div>
-
-                    <div x-show="openCollabModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                        <div @click.outside="openCollabModal = false" class="bg-white text-ink-900 rounded-2xl w-full max-w-md p-6 text-left shadow-2xl relative">
-                            <button @click="openCollabModal = false" class="absolute top-4 right-4 text-ink-400 hover:text-ink-600 text-xl font-bold">&times;</button>
-                            <h3 class="font-bold text-xl mb-4">Ajak Kolaborasi</h3>
-                            <form method="POST" action="{{ route('public.linkid.request', $profileUser->username) }}">
-                                @csrf
-                                <div class="mb-4">
-                                    <label class="mb-2 block text-sm font-semibold">Nama</label>
-                                    <input name="requester_name" required maxlength="120" value="{{ old('requester_name', auth()->user()?->name) }}" class="mb-4 w-full rounded-xl border-ink-200 text-sm focus:border-brand-500 focus:ring-brand-500" placeholder="Nama kamu">
-                                    <label class="mb-2 block text-sm font-semibold">Email</label>
-                                    <input name="requester_email" type="email" required maxlength="255" value="{{ old('requester_email', auth()->user()?->email) }}" class="w-full rounded-xl border-ink-200 text-sm focus:border-brand-500 focus:ring-brand-500" placeholder="nama@email.com">
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-sm font-semibold mb-2">Jenis Kolaborasi</label>
-                                    <select name="type" required class="w-full rounded-xl border-ink-200 focus:border-brand-500 focus:ring-brand-500 text-sm">
-                                        <option value="general">Umum</option>
-                                        @foreach ($linkIdTypes as $type)
-                                            <option value="{{ strtolower(str_replace(' ', '-', $type)) }}">{{ $type }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="block text-sm font-semibold mb-2">Pesan</label>
-                                    <textarea name="message" required rows="4" class="w-full rounded-xl border-ink-200 focus:border-brand-500 focus:ring-brand-500 text-sm" placeholder="Ceritakan detail kolaborasi..."></textarea>
-                                </div>
-                                <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition">
-                                    Kirim Request
-                                </button>
-                            </form>
-                        </div>
                     </div>
                 </div>
             @endif

@@ -24,6 +24,7 @@ class PublicProfileController extends Controller
         'api', 'storage', 'build', 'up', 'assets', 'css', 'js',
         'images', 'img', 'telescope', 'horizon', 'sanctum', 'nova',
         'pulse', 'livewire', 'webhooks', 'docs', 'help', 'about',
+        'cart', 'checkout', 'order',
     ];
 
     /**
@@ -34,7 +35,7 @@ class PublicProfileController extends Controller
         .'|forgot-password|reset-password|email|verify-email'
         .'|api|storage|build|up|assets|css|js|images|img'
         .'|telescope|horizon|sanctum|nova|pulse|livewire'
-        .'|webhooks|docs|help|about';
+        .'|webhooks|docs|help|about|cart|checkout|order';
 
     /**
      * Route constraint: a valid username that is not a reserved word.
@@ -55,6 +56,7 @@ class PublicProfileController extends Controller
         $shortLink = ShortLink::whereRaw('LOWER(slug) = ?', [$normalized])->where('is_active', true)->first();
         if ($shortLink) {
             $shortLink->increment('clicks');
+
             return redirect()->away($shortLink->destination_url);
         }
 

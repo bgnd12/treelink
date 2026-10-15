@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 
 class Profile extends Model
 {
@@ -36,9 +35,6 @@ class Profile extends Model
         'header_layout',
         'animation_enabled',
         'social_links',
-        'is_linkid_active',
-        'linkid_types',
-        'linkid_description',
         'featured_link_id',
         'animations_enabled',
         'seo_title',
@@ -49,8 +45,6 @@ class Profile extends Model
     {
         return [
             'social_links' => 'array',
-            'is_linkid_active' => 'boolean',
-            'linkid_types' => 'array',
             'featured_link_id' => 'integer',
             'animations_enabled' => 'boolean',
             'animation_enabled' => 'boolean',

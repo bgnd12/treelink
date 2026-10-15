@@ -1,23 +1,29 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AppearanceController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\LinkController;
-use App\Http\Controllers\LinkIdController;
 use App\Http\Controllers\LinkIdMessageController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MarketplaceController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProfileController;
-use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\PublicShopController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ShortLinkController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('lang/{locale}', [LocaleController::class, 'setLocale'])
@@ -71,11 +77,11 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
     Route::post('design', [EditorController::class, 'design'])->name('design');
     Route::post('enhance', [EditorController::class, 'enhance'])->name('enhance');
 
-    Route::get('short-links', [App\Http\Controllers\ShortLinkController::class, 'index'])->name('short-links.index');
-    Route::post('short-links', [App\Http\Controllers\ShortLinkController::class, 'store'])->name('short-links.store');
-    Route::put('short-links/{shortLink}', [App\Http\Controllers\ShortLinkController::class, 'update'])->name('short-links.update');
-    Route::delete('short-links/{shortLink}', [App\Http\Controllers\ShortLinkController::class, 'destroy'])->name('short-links.destroy');
-    Route::patch('short-links/{shortLink}/toggle', [App\Http\Controllers\ShortLinkController::class, 'toggle'])->name('short-links.toggle');
+    Route::get('short-links', [ShortLinkController::class, 'index'])->name('short-links.index');
+    Route::post('short-links', [ShortLinkController::class, 'store'])->name('short-links.store');
+    Route::put('short-links/{shortLink}', [ShortLinkController::class, 'update'])->name('short-links.update');
+    Route::delete('short-links/{shortLink}', [ShortLinkController::class, 'destroy'])->name('short-links.destroy');
+    Route::patch('short-links/{shortLink}/toggle', [ShortLinkController::class, 'toggle'])->name('short-links.toggle');
 
     Route::get('links', [LinkController::class, 'index'])->name('links.index');
     Route::post('links', [LinkController::class, 'store'])->name('links.store');
@@ -89,6 +95,16 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
     Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::patch('products/{product}/toggle', [ProductController::class, 'toggle'])->name('products.toggle');
     Route::post('products/reorder', [ProductController::class, 'reorder'])->name('products.reorder');
+    Route::post('products/{product}/reviews', [ReviewController::class, 'store'])->name('products.reviews.store');
+    Route::delete('products/{product}/reviews/{review}', [ReviewController::class, 'destroy'])->name('products.reviews.destroy');
+    Route::patch('products/{product}/reviews/{review}/toggle', [ReviewController::class, 'toggle'])->name('products.reviews.toggle');
+
+    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+    Route::patch('orders/{order}/payment', [OrderController::class, 'updatePayment'])->name('orders.payment');
+
+    Route::get('purchases', [PurchaseController::class, 'index'])->name('purchases.index');
+    Route::get('purchases/{order}', [PurchaseController::class, 'show'])->name('purchases.show');
 
     Route::get('appearance', [AppearanceController::class, 'edit'])->name('appearance.edit');
     Route::post('appearance', [AppearanceController::class, 'update'])->name('appearance.update');
@@ -98,11 +114,6 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
     Route::post('accounts/{user}/follow', [FollowController::class, 'toggle'])->name('accounts.follow.toggle');
 
     Route::prefix('linkid')->name('linkid.')->group(function () {
-        Route::get('discover', [LinkIdController::class, 'discover'])->name('discover');
-        Route::get('my-collaboration', [App\Http\Controllers\LinkIdRequestController::class, 'myCollaborations'])->name('my-collaboration');
-        Route::get('requests', [App\Http\Controllers\LinkIdRequestController::class, 'index'])->name('requests');
-        Route::post('requests/{linkIdRequest}/accept', [App\Http\Controllers\LinkIdRequestController::class, 'accept'])->name('requests.accept');
-        Route::post('requests/{linkIdRequest}/decline', [App\Http\Controllers\LinkIdRequestController::class, 'decline'])->name('requests.decline');
         Route::get('messages', [LinkIdMessageController::class, 'index'])->name('messages');
         Route::get('messages/unread', [LinkIdMessageController::class, 'unread'])->name('messages.unread');
         Route::get('messages/{conversation}', [LinkIdMessageController::class, 'show'])->name('messages.show');
@@ -132,6 +143,33 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 /*
 |--------------------------------------------------------------------------
+| Shopping cart & checkout (public, guest friendly)
+|--------------------------------------------------------------------------
+*/
+Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('cart/add/{product}', [CartController::class, 'add'])
+    ->where('product', '[0-9]+')
+    ->name('cart.add');
+Route::post('cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+Route::get('checkout', [CheckoutController::class, 'show'])->name('checkout.show');
+Route::post('checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('checkout/success', [CheckoutController::class, 'success'])->name('public.checkout.success');
+
+Route::middleware('auth')->group(function () {
+    Route::post('addresses', [AddressController::class, 'store'])->name('addresses.store');
+    Route::delete('addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
+});
+
+Route::post('order/{order}/payment-proof', [PublicShopController::class, 'uploadProof'])
+    ->where('order', '[0-9]+')
+    ->middleware('signed')
+    ->name('public.order.proof');
+
+/*
+|--------------------------------------------------------------------------
 | Public link-in-bio pages
 |--------------------------------------------------------------------------
 | Kept at the very bottom so it never shadows the routes above. Those
@@ -149,10 +187,28 @@ Route::get('{username}/connections/{connection}', [FollowController::class, 'con
     ->where('username', PublicProfileController::USERNAME_PATTERN)
     ->name('public.connections');
 
-Route::post('{username}/linkid/request', [App\Http\Controllers\LinkIdRequestController::class, 'store'])
+Route::get('{username}/product/{product}', [PublicShopController::class, 'show'])
+    ->where('product', '[0-9]+')
     ->where('username', PublicProfileController::USERNAME_PATTERN)
-    ->name('public.linkid.request');
+    ->name('public.product.show');
+
+Route::get('{username}/order/{order}', [PublicShopController::class, 'confirmation'])
+    ->where('order', '[0-9]+')
+    ->where('username', PublicProfileController::USERNAME_PATTERN)
+    ->middleware('signed')
+    ->name('public.order.confirmation');
 
 Route::get('{username}', [PublicProfileController::class, 'show'])
     ->where('username', PublicProfileController::USERNAME_PATTERN)
     ->name('public.profile');
+
+
+
+
+
+use App\Http\Controllers\Payment\TreePayController;
+
+// TreePay payment routes
+Route::post('treepay/callback', [TreePayController::class, 'callback'])->name('treepay.callback');
+Route::get('treepay/success', [TreePayController::class, 'success'])->name('treepay.success');
+Route::get('treepay/failed', [TreePayController::class, 'failed'])->name('treepay.failed');

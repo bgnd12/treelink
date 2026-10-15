@@ -14,14 +14,8 @@ class Conversation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'link_id_request_id',
         'product_id',
     ];
-
-    public function request(): BelongsTo
-    {
-        return $this->belongsTo(LinkIdRequest::class, 'link_id_request_id');
-    }
 
     public function product(): BelongsTo
     {

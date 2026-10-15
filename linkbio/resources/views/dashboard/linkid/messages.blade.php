@@ -39,7 +39,7 @@
                 @empty
                     <div class="px-4 py-10 text-center">
                         <p class="text-sm font-semibold text-ink-700">Belum ada percakapan</p>
-                        <p class="mt-1 text-xs leading-5 text-ink-500">Terima request kolaborasi untuk memulai chat dengan akun TreeLink lain.</p>
+                        <p class="mt-1 text-xs leading-5 text-ink-500">Chat penjual dari Jelajahi Shop untuk memulai percakapan.</p>
                     </div>
                 @endforelse
             </div>
@@ -90,7 +90,7 @@
                     <div class="max-w-sm text-center">
                         <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f1f3e9] text-2xl text-[#1e2a5b]">✉</div>
                         <h3 class="mt-4 text-lg font-extrabold text-ink-900">Pilih percakapan</h3>
-                        <p class="mt-1 text-sm leading-6 text-ink-500">Terima request kolaborasi atau chat penjual dari Jelajahi Shop. Percakapanmu akan tampil di sini.</p>
+                        <p class="mt-1 text-sm leading-6 text-ink-500">Chat penjual dari Jelajahi Shop. Percakapanmu akan tampil di sini.</p>
                         <a href="{{ route('dashboard.marketplace') }}" class="mt-4 inline-flex rounded-xl bg-[#c8ff4d] px-4 py-2.5 text-sm font-bold text-[#1e2a5b] hover:bg-[#ddff91]">Jelajahi Shop</a>
                     </div>
                 </div>

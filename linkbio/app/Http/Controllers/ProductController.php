@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -34,8 +34,22 @@ class ProductController extends Controller
             });
         }
 
+        $marketplace = Product::query()
+            ->with([
+                'user.profile',
+                'user' => fn ($query) => $query
+                    ->withCount('followers')
+                    ->withExists(['followers as is_followed_by_me' => fn ($followerQuery) => $followerQuery->where('users.id', $user->id)]),
+            ])
+            ->where('is_active', true)
+            ->where('user_id', '!=', $user->id)
+            ->whereHas('user', fn ($query) => $query->where('is_active', true))
+            ->latest()
+            ->get();
+
         return view('dashboard.shop', [
             'products' => $products->get(),
+            'marketplace' => $marketplace,
             'totalProducts' => $user->products()->count(),
             'activeProducts' => $user->products()->where('is_active', true)->count(),
             'draftProducts' => $user->products()->where('is_active', false)->count(),
@@ -61,7 +75,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
-            'url' => ['required', 'string', 'max:2048'],
+            'url' => ['nullable', 'string', 'max:2048'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:99999999999'],
             'description' => ['nullable', 'string', 'max:500'],
             'category' => ['nullable', 'string', 'max:100'],
@@ -74,7 +88,7 @@ class ProductController extends Controller
 
         $product = $request->user()->products()->create([
             'name' => $validated['name'],
-            'url' => $validated['url'],
+            'url' => $validated['url'] ?? null,
             'price' => $validated['price'] ?? null,
             'description' => $validated['description'] ?? null,
             'category' => $validated['category'] ?? null,
@@ -97,7 +111,7 @@ class ProductController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:150'],
-            'url' => ['required', 'string', 'max:2048'],
+            'url' => ['nullable', 'string', 'max:2048'],
             'price' => ['nullable', 'numeric', 'min:0', 'max:99999999999'],
             'description' => ['nullable', 'string', 'max:500'],
             'category' => ['nullable', 'string', 'max:100'],
@@ -108,7 +122,7 @@ class ProductController extends Controller
 
         $attributes = [
             'name' => $validated['name'],
-            'url' => $validated['url'],
+            'url' => $validated['url'] ?? null,
             'price' => $validated['price'] ?? null,
         ];
 

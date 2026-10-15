@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -73,17 +72,22 @@ class User extends Authenticatable
         return $this->hasMany(Product::class)->orderBy('position');
     }
 
-    public function linkIdRequests(): HasMany
+    public function orders(): HasMany
     {
-        return $this->hasMany(LinkIdRequest::class, 'recipient_user_id')->latest();
+        return $this->hasMany(Order::class, 'seller_id')->latest();
     }
 
-    public function sentLinkIdRequests(): HasMany
+    public function purchases(): HasMany
     {
-        return $this->hasMany(LinkIdRequest::class, 'requester_user_id')->latest();
+        return $this->hasMany(Order::class, 'buyer_id')->latest();
     }
 
-    public function conversations(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class)->latest();
+    }
+
+    public function conversations(): BelongsToMany
     {
         return $this->belongsToMany(Conversation::class)
             ->withPivot('last_read_at')
