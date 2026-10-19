@@ -6,10 +6,11 @@
     <title>@yield('title', config('app.name'))</title>
     <meta name="description" content="@yield('description', 'Buat halaman link-in-bio kamu sendiri dan bagikan semua tautan penting hanya lewat satu link.')">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-white text-ink-900">
     @yield('content')
+    @include('components.page-loading-overlay')
 </body>
 </html>

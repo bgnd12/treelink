@@ -12,6 +12,7 @@ class ShortLink extends Model
 
     protected $fillable = [
         'user_id',
+        'page_id',
         'slug',
         'destination_url',
         'is_active',

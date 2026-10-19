@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
+use App\Models\LinkPage;
 use App\Models\ShortLink;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -60,18 +61,21 @@ class PublicProfileController extends Controller
             return redirect()->away($shortLink->destination_url);
         }
 
-        $user = User::where('username', $normalized)
-            ->where('is_active', true)
+        $page = LinkPage::with('user')
+            ->whereRaw('LOWER(username) = ?', [$normalized])
+            ->whereHas('user', fn ($query) => $query->where('is_active', true))
             ->firstOrFail();
+        $user = $page->user;
 
         $user->loadCount(['followers', 'following']);
-        $profile = $user->getOrCreateProfile();
-        $links = $user->links()->where('is_active', true)->orderBy('position')->get();
-        $products = $user->products()->where('is_active', true)->get();
+        $profile = $page->profile ?: $user->getOrCreateProfile();
+        $links = $page->links()->where('is_active', true)->orderBy('position')->get();
+        $products = $page->products()->where('is_active', true)->get();
 
         // Record a profile view (skip if the owner is previewing their own page).
         if (! $request->user() || $request->user()->id !== $user->id) {
-            $user->profileViews()->create([
+            $page->profileViews()->create([
+                'user_id' => $user->id,
                 'ip_address' => $request->ip(),
                 'user_agent' => substr((string) $request->userAgent(), 0, 255),
                 'referrer' => substr((string) $request->headers->get('referer'), 0, 255),
@@ -80,6 +84,7 @@ class PublicProfileController extends Controller
 
         return view('profile.show', [
             'profileUser' => $user,
+            'profilePage' => $page,
             'profile' => $profile,
             'links' => $links,
             'products' => $products,
@@ -88,7 +93,8 @@ class PublicProfileController extends Controller
 
     public function redirectLink(Request $request, string $username, Link $link): RedirectResponse
     {
-        abort_unless(strtolower($link->user->username) === strtolower($username), 404);
+        $page = LinkPage::whereRaw('LOWER(username) = ?', [strtolower($username)])->firstOrFail();
+        $link = Link::whereKey($link->id)->where('page_id', $page->id)->firstOrFail();
         abort_unless($link->is_active, 404);
 
         $link->clicks()->create([

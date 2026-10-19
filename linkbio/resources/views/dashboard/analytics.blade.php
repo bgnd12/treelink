@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Analytics')
-@section('page-title', 'Analytics')
+@section('title', __('Analitik'))
+@section('page-title', __('Analitik'))
 
 @section('content')
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
@@ -12,6 +12,7 @@
                 ['label' => 'Pengunjung Unik', 'value' => number_format($uniqueVisitors), 'icon' => '🧑‍🤝‍🧑'],
                 ['label' => 'Click-Through Rate', 'value' => $ctr.'%', 'icon' => '🎯'],
             ];
+            $cards = array_map(fn (array $card): array => [...$card, 'label' => __($card['label'])], $cards);
         @endphp
         @foreach ($cards as $card)
             <div class="bg-white rounded-2xl border border-ink-100 p-6 shadow-card">
@@ -23,23 +24,23 @@
     </div>
 
     <div class="bg-white rounded-2xl border border-ink-100 p-6 shadow-card mb-8">
-        <h2 class="font-bold text-ink-900 mb-1">Tren 30 Hari Terakhir</h2>
-        <p class="text-sm text-ink-500 mb-5">Kunjungan halaman dan klik link dari waktu ke waktu.</p>
+        <h2 class="font-bold text-ink-900 mb-1">{{ __('Tren 30 Hari Terakhir') }}</h2>
+        <p class="text-sm text-ink-500 mb-5">{{ __('Kunjungan halaman dan klik link dari waktu ke waktu.') }}</p>
         <div class="h-72">
             <canvas id="analytics-chart"></canvas>
         </div>
     </div>
 
     <div class="bg-white rounded-2xl border border-ink-100 p-6 shadow-card">
-        <h2 class="font-bold text-ink-900 mb-5">Statistik Per Link</h2>
+        <h2 class="font-bold text-ink-900 mb-5">{{ __('Statistik Per Link') }}</h2>
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-left text-ink-400 border-b border-ink-100">
-                        <th class="pb-3 font-semibold">Link</th>
+                        <th class="pb-3 font-semibold">{{ __('Link') }}</th>
                         <th class="pb-3 font-semibold">URL</th>
-                        <th class="pb-3 font-semibold text-right">Klik</th>
-                        <th class="pb-3 font-semibold text-right">Status</th>
+                        <th class="pb-3 font-semibold text-right">{{ __('Klik') }}</th>
+                        <th class="pb-3 font-semibold text-right">{{ __('Status') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,14 +51,14 @@
                             <td class="py-3 text-right font-bold text-ink-900">{{ number_format($link->clicks_count) }}</td>
                             <td class="py-3 text-right">
                                 @if ($link->is_active)
-                                    <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">Aktif</span>
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 text-xs font-semibold">{{ __('Aktif') }}</span>
                                 @else
-                                    <span class="px-2.5 py-1 rounded-full bg-ink-100 text-ink-500 text-xs font-semibold">Nonaktif</span>
+                                    <span class="px-2.5 py-1 rounded-full bg-ink-100 text-ink-500 text-xs font-semibold">{{ __('Nonaktif') }}</span>
                                 @endif
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="py-8 text-center text-ink-400">Belum ada data link.</td></tr>
+                        <tr><td colspan="4" class="py-8 text-center text-ink-400">{{ __('Belum ada data link.') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

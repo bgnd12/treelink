@@ -33,9 +33,11 @@ class RegisterController extends Controller
             ],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'terms' => ['accepted'],
         ], [
             'username.regex' => 'Username hanya boleh berisi huruf, angka, titik, dan garis bawah.',
             'username.not_regex' => 'Username ini dipakai oleh sistem. Pilih username lain.',
+            'terms.accepted' => 'Kamu perlu menyetujui Syarat & Ketentuan dan Kebijakan Privasi.',
         ]);
 
         $user = User::create([

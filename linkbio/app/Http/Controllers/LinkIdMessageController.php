@@ -6,7 +6,7 @@ use App\Models\Conversation;
 use App\Support\UnreadMessages;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
 use Illuminate\View\View;
 
 class LinkIdMessageController extends Controller

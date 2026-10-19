@@ -45,13 +45,36 @@ class Order extends Model
     ];
 
     public const PAYMENT_METHODS = [
-        'transfer' => 'Transfer Bank (Manual)',
-        'ewallet' => 'E-Wallet (Manual)',
-        'cod' => 'Bayar di Tempat (COD)',
-        'treepay_qris' => 'QRIS (TreePay)',
-        'treepay_va' => 'Virtual Account (TreePay)',
-        'treepay_ewallet' => 'E-Wallet (TreePay)',
-        'treepay_cc' => 'Kartu Kredit/Debit (TreePay)',
+        'tripay_qris' => 'QRIS',
+        'tripay_briva' => 'Virtual Account BRI',
+        'tripay_bniva' => 'Virtual Account BNI',
+        'tripay_bcava' => 'Virtual Account BCA',
+        'tripay_mandiriva' => 'Virtual Account Mandiri',
+        'tripay_bsiva' => 'Virtual Account BSI',
+        'tripay_permata' => 'Virtual Account Permata',
+        'tripay_ovo' => 'OVO',
+        'tripay_dana' => 'DANA',
+        'tripay_shopeepay' => 'ShopeePay',
+        'tripay_alfamart' => 'Alfamart',
+        'tripay_indomaret' => 'Indomaret',
+    ];
+
+    /**
+     * Metode pembayaran yang diproses otomatis lewat gateway Tripay.
+     */
+    public const ONLINE_PAYMENT_METHODS = [
+        'tripay_qris',
+        'tripay_briva',
+        'tripay_bniva',
+        'tripay_bcava',
+        'tripay_mandiriva',
+        'tripay_bsiva',
+        'tripay_permata',
+        'tripay_ovo',
+        'tripay_dana',
+        'tripay_shopeepay',
+        'tripay_alfamart',
+        'tripay_indomaret',
     ];
 
     protected $fillable = [
@@ -180,6 +203,12 @@ class Order extends Model
     public function getIsPaidAttribute(): bool
     {
         return $this->payment_status === 'paid';
+    }
+
+    public function isOnlinePayment(): bool
+    {
+        return in_array($this->payment_method, self::ONLINE_PAYMENT_METHODS, true)
+            || $this->payment_gateway === 'tripay';
     }
 
     public function proofStorageDisk(): string

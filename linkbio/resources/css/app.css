@@ -6,6 +6,46 @@
     display: none !important;
 }
 
+/* Keep every dashboard surface inside the viewport on phones. */
+.dashboard-shell {
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+.dashboard-shell main,
+.dashboard-shell main > * {
+    min-width: 0;
+}
+
+@media (max-width: 1023px) {
+    .dashboard-shell header {
+        min-width: 0;
+    }
+
+    .dashboard-shell header > div {
+        min-width: 0;
+    }
+
+    .dashboard-shell header h1 {
+        max-width: 48vw;
+    }
+}
+
+@media (max-width: 639px) {
+    .dashboard-shell main {
+        padding: 1rem;
+    }
+
+    .dashboard-shell header {
+        padding: .75rem 1rem;
+    }
+
+    .dashboard-shell header h1 {
+        max-width: 42vw;
+        font-size: 1.05rem;
+    }
+}
+
 /* Background pattern utilities (base colour comes from the theme/design) */
 .pattern-dots {
     background-image: radial-gradient(circle, rgba(255, 255, 255, 0.28) 2px, transparent 2.5px);
@@ -42,6 +82,15 @@ html {
 ::-webkit-scrollbar-thumb {
     background-color: #d9d9e6;
     border-radius: 999px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .line-clamp-3 {
@@ -621,6 +670,48 @@ html {
         --treelink-lime: #c8ff4d;
         background: #f8f9f7;
         color: #14213d;
+    }
+
+    /* Dashboard-wide theme selected from the header toggle. */
+    body.dashboard-dark {
+        background: #0b1220 !important;
+        color: #e2e8f0 !important;
+    }
+
+    body.dashboard-dark aside,
+    body.dashboard-dark header,
+    body.dashboard-dark main,
+    body.dashboard-dark .bg-white,
+    body.dashboard-dark [class*="bg-[#f8fafc]"] {
+        background-color: #111b2e !important;
+        color: #e2e8f0;
+    }
+
+    body.dashboard-dark [class*="bg-[#f8f9f7]"] {
+        background-color: #0b1220 !important;
+    }
+
+    body.dashboard-dark [class*="text-[#14213d]"],
+    body.dashboard-dark [class*="text-slate-900"],
+    body.dashboard-dark [class*="text-slate-700"],
+    body.dashboard-dark [class*="text-slate-600"] {
+        color: #e2e8f0 !important;
+    }
+
+    body.dashboard-dark [class*="text-slate-500"],
+    body.dashboard-dark [class*="text-slate-400"] {
+        color: #94a3b8 !important;
+    }
+
+    body.dashboard-dark [class*="border-slate-100"],
+    body.dashboard-dark [class*="border-slate-200"] {
+        border-color: #26344d !important;
+    }
+
+    body.dashboard-dark .dark-mode-control {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #e2e8f0 !important;
     }
 
     .dashboard-shell .bg-brand-600 {

@@ -6,7 +6,7 @@
         {{-- Inner Screen --}}
         <div class="rounded-[2.5rem] overflow-hidden relative h-[590px] flex flex-col bg-slate-900 transition-colors duration-300"
              :class="backgroundClass + ' ' + (cardEnabled ? '' : profile.theme_text)"
-             :style="profile.background_image_url ? backgroundStyle : 'background: linear-gradient(180deg, rgba(15,23,42,0.7) 0%, rgba(15,23,42,0.9) 100%), url(https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop&q=80) center/cover no-repeat;'">
+             :style="profile.background_image_url ? backgroundStyle : ''">
 
             {{-- iOS Status Bar with Traditional iPhone Notch --}}
             <div class="h-10 pt-2 px-6 flex items-center justify-between text-white/90 z-20 select-none flex-shrink-0 relative">
@@ -145,7 +145,7 @@
                     </template>
 
                     {{-- Fallback default links if none yet --}}
-                    <template x-if="!activeLinks.length">
+                    <template x-if="false && !activeLinks.length">
                         <div class="space-y-2.5">
                             <div class="flex items-center gap-3 w-full py-3 px-3.5 rounded-2xl bg-white text-[#14213d] shadow-sm font-bold text-sm">
                                 <div class="w-7 h-7 rounded-lg bg-[#ff0000] text-white flex items-center justify-center flex-shrink-0 shadow-2xs">
@@ -166,7 +166,7 @@
                 </div>
 
                 {{-- Products / Shop Card Section (White Card Container with 2-Column Grid) --}}
-                <div class="mt-4 rounded-3xl bg-white p-3.5 text-left shadow-sm">
+                <div x-show="activeProducts.length" x-cloak class="mt-4 rounded-3xl bg-white p-3.5 text-left shadow-sm">
                     {{-- Shop Card Header --}}
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-1.5 font-bold text-xs text-[#14213d]">
@@ -182,9 +182,11 @@
 
                     {{-- Real Active Products Grid (if any) --}}
                     <template x-if="activeProducts.length">
-                        <div class="grid grid-cols-2 gap-2.5">
+                        <div class="flex flex-row flex-nowrap gap-2.5 overflow-x-auto pb-1 no-scrollbar select-none"
+                             style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
                             <template x-for="product in activeProducts" :key="product.id">
-                                <div class="group flex flex-col cursor-pointer">
+                                <div class="group flex flex-col cursor-pointer flex-shrink-0"
+                                     style="scroll-snap-align: start; flex: 0 0 calc(50% - 5px); width: calc(50% - 5px); min-width: calc(50% - 5px); max-width: calc(50% - 5px);">
                                     <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center relative">
                                         <img x-show="product.image_url" :src="product.image_url" class="w-full h-full object-cover">
                                         <span x-show="!product.image_url" class="text-2xl">🛍️</span>
@@ -197,9 +199,11 @@
                     </template>
 
                     {{-- Showcase Sample Products (matching screenshot when activeProducts is empty) --}}
-                    <template x-if="!activeProducts.length">
-                        <div class="grid grid-cols-2 gap-2.5">
-                            <div class="flex flex-col cursor-pointer">
+                    <template x-if="false && !activeProducts.length">
+                        <div class="flex flex-row flex-nowrap gap-2.5 overflow-x-auto pb-1 no-scrollbar select-none"
+                             style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;">
+                            <div class="flex flex-col cursor-pointer flex-shrink-0"
+                                 style="scroll-snap-align: start; flex: 0 0 calc(50% - 5px); width: calc(50% - 5px); min-width: calc(50% - 5px); max-width: calc(50% - 5px);">
                                 <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center p-2">
                                     <img src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=300&auto=format&fit=crop&q=80" alt="Hoodie Oversize" class="w-full h-full object-contain">
                                 </div>
@@ -207,7 +211,8 @@
                                 <p class="text-[10px] text-slate-500 font-medium">Rp 199.000</p>
                             </div>
 
-                            <div class="flex flex-col cursor-pointer">
+                            <div class="flex flex-col cursor-pointer flex-shrink-0"
+                                 style="scroll-snap-align: start; flex: 0 0 calc(50% - 5px); width: calc(50% - 5px); min-width: calc(50% - 5px); max-width: calc(50% - 5px);">
                                 <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center p-2">
                                     <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=300&auto=format&fit=crop&q=80" alt="Sneakers Urban" class="w-full h-full object-contain">
                                 </div>
@@ -215,7 +220,8 @@
                                 <p class="text-[10px] text-slate-500 font-medium">Rp 279.000</p>
                             </div>
 
-                            <div class="flex flex-col cursor-pointer">
+                            <div class="flex flex-col cursor-pointer flex-shrink-0"
+                                 style="scroll-snap-align: start; flex: 0 0 calc(50% - 5px); width: calc(50% - 5px); min-width: calc(50% - 5px); max-width: calc(50% - 5px);">
                                 <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center p-2">
                                     <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?w=300&auto=format&fit=crop&q=80" alt="Tote Bag" class="w-full h-full object-contain">
                                 </div>
@@ -223,7 +229,8 @@
                                 <p class="text-[10px] text-slate-500 font-medium">Rp 89.000</p>
                             </div>
 
-                            <div class="flex flex-col cursor-pointer">
+                            <div class="flex flex-col cursor-pointer flex-shrink-0"
+                                 style="scroll-snap-align: start; flex: 0 0 calc(50% - 5px); width: calc(50% - 5px); min-width: calc(50% - 5px); max-width: calc(50% - 5px);">
                                 <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center p-2">
                                     <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=300&auto=format&fit=crop&q=80" alt="Topi Baseball" class="w-full h-full object-contain">
                                 </div>

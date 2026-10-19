@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -13,6 +14,7 @@ class Product extends Model
 
     protected $fillable = [
         'user_id',
+        'page_id',
         'name',
         'url',
         'price',
@@ -42,6 +44,20 @@ class Product extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function page(): BelongsTo
+    {
+        return $this->belongsTo(LinkPage::class, 'page_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Product $product) {
+            if (! $product->page_id && $product->user) {
+                $product->page_id = $product->user->currentPageId();
+            }
+        });
     }
 
     public function orderItems(): HasMany
@@ -103,7 +119,7 @@ class Product extends Model
             return null;
         }
 
-        return url('storage/'.$this->image_path);
+        return Storage::disk('public')->url($this->image_path);
     }
 
     public function getPriceLabelAttribute(): ?string

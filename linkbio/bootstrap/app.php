@@ -12,8 +12,11 @@ $app = Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
-        $middleware->web(append: [
-            \App\Http\Middleware\SetLocale::class,
+    $middleware->web(append: [
+        \App\Http\Middleware\SetLocale::class,
+    ]);
+        $middleware->validateCsrfTokens(except: [
+            'tripay/callback',
         ]);
 
         $middleware->alias([

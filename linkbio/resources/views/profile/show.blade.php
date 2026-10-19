@@ -1,9 +1,12 @@
+@php
+    $publicUsername = $profilePage->username;
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $profile->seo_title ?: ($profile->display_name ?: $profileUser->name).' (@'.$profileUser->username.')' }}</title>
+    <title>{{ $profile->seo_title ?: ($profile->display_name ?: $profileUser->name).' (@'.$publicUsername.')' }}</title>
     <meta name="description" content="{{ $profile->seo_description ?: ($profile->bio ?: 'Lihat semua link '.$profileUser->name.' di satu halaman.') }}">
 
     {{-- Open Graph for nice link previews when shared --}}
@@ -72,19 +75,59 @@
             $cardStyle .= 'backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);';
         }
     @endphp
+    <style>
+        .shop-carousel-track::-webkit-scrollbar { display: none; }
+        .shop-carousel-track { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @media (max-width: 640px) {
+            .profile-page-shell {
+                padding: 1.25rem .75rem;
+            }
+
+            .profile-page-content {
+                max-width: 100%;
+            }
+
+            .profile-card-enabled {
+                padding: 1.5rem 1rem 1.5rem;
+            }
+
+            .profile-card-flat {
+                margin: -1.25rem -.75rem;
+                padding: 1.25rem .75rem;
+            }
+
+            .profile-main-link {
+                min-height: 3.25rem;
+                padding: .75rem .8rem;
+                gap: .7rem;
+            }
+
+            .profile-share-button {
+                width: 100%;
+                max-width: 20rem;
+                min-height: 2.75rem;
+                justify-content: center;
+            }
+
+            .profile-page-content .mt-8 {
+                margin-top: 1.5rem;
+            }
+        }
+    </style>
 </head>
-<body class="min-h-screen {{ $theme['text'] }} {{ $bgClass }}" style="{{ $bgStyle }} font-family:{{ $fontFamily }}">
+<body class="profile-public min-h-screen {{ $theme['text'] }} {{ $bgClass }}" style="{{ $bgStyle }} font-family:{{ $fontFamily }}">
 
     @if ($bgOverlay)
         <div class="fixed inset-0 bg-black/35"></div>
     @endif
 
-    <div class="relative min-h-screen flex flex-col items-center px-4 py-8 sm:py-12 {{ $animate ? 'animate-fade-up' : '' }}">
-        <div class="w-full max-w-md sm:max-w-lg mx-auto text-center">
+    <div class="profile-page-shell relative min-h-screen flex flex-col items-center px-4 py-8 sm:py-12 {{ $animate ? 'animate-fade-up' : '' }}">
+        <div class="profile-page-content w-full max-w-md sm:max-w-lg mx-auto text-center">
             @if ($cardOn)
-                <div class="overflow-hidden px-5 sm:px-6 pt-9 pb-8" style="{{ $cardStyle }}">
+                <div class="profile-card-enabled overflow-hidden px-5 sm:px-6 pt-9 pb-8" style="{{ $cardStyle }}">
             @else
-                <div class="-mx-4 -my-8 sm:-my-12 px-4 py-8 sm:py-12">
+                <div class="profile-card-flat -mx-4 -my-8 sm:-my-12 px-4 py-8 sm:py-12">
             @endif
 
             @if(session('status'))
@@ -98,7 +141,7 @@
                     <img src="{{ $profile->avatar_url }}" alt="{{ $profileUser->name }}"
                          class="w-24 h-24 rounded-full object-cover mx-auto -mt-12 border-4 {{ $isLight ? 'border-gray-200 shadow-xl' : 'border-white/80 shadow-xl' }}">
                     <h1 class="mt-3 text-xl font-bold">{{ $profile->display_name ?: $profileUser->name }}</h1>
-                    <p class="text-sm opacity-70">{{ $profileUser->username }}</p>
+                    <p class="text-sm opacity-70">{{ $publicUsername }}</p>
                     @if ($profile->bio)<p class="mt-2 text-sm opacity-90 leading-relaxed px-2">{{ $profile->bio }}</p>@endif
                 </div>
             @elseif ($layout === 'cutout')
@@ -108,28 +151,28 @@
                          class="absolute inset-0 w-full h-full rounded-full object-cover border-4 {{ $isLight ? 'border-white' : 'border-white/80' }}">
                 </div>
                 <h1 class="mt-5 text-xl font-bold">{{ $profile->display_name ?: $profileUser->name }}</h1>
-                <p class="text-sm opacity-70">{{ $profileUser->username }}</p>
+                <p class="text-sm opacity-70">{{ $publicUsername }}</p>
                 @if ($profile->bio)<p class="mt-2 text-sm opacity-90 leading-relaxed px-2">{{ $profile->bio }}</p>@endif
             @elseif ($layout === 'shape')
                 <div class="mx-auto mt-2 w-24 h-24 rounded-[36%] p-1.5 {{ $isLight ? 'bg-white shadow-xl' : 'bg-white/25' }}">
                     <img src="{{ $profile->avatar_url }}" alt="{{ $profileUser->name }}" class="w-full h-full rounded-[34%] object-cover">
                 </div>
                 <h1 class="mt-5 text-xl font-bold">{{ $profile->display_name ?: $profileUser->name }}</h1>
-                <p class="text-sm opacity-70">{{ $profileUser->username }}</p>
+                <p class="text-sm opacity-70">{{ $publicUsername }}</p>
                 @if ($profile->bio)<p class="mt-2 text-sm opacity-90 leading-relaxed px-2">{{ $profile->bio }}</p>@endif
             @elseif ($layout === 'hero')
                 <div class="mx-auto mt-2 w-28 h-28 rounded-[1.75rem] p-1 {{ $isLight ? 'bg-white shadow-xl' : 'bg-white/90' }}">
                     <img src="{{ $profile->avatar_url }}" alt="{{ $profileUser->name }}" class="w-full h-full rounded-[1.5rem] object-cover">
                 </div>
                 <h1 class="mt-5 text-2xl font-extrabold">{{ $profile->display_name ?: $profileUser->name }}</h1>
-                <p class="text-sm opacity-70 mt-0.5">{{ $profileUser->username }}</p>
+                <p class="text-sm opacity-70 mt-0.5">{{ $publicUsername }}</p>
                 @if ($profile->bio)<p class="mt-2 text-sm opacity-90 leading-relaxed px-2">{{ $profile->bio }}</p>@endif
             @else
                 {{-- classic --}}
                 <img src="{{ $profile->avatar_url }}" alt="{{ $profileUser->name }}"
                      class="w-24 h-24 rounded-full object-cover mx-auto border-4 {{ $isLight ? 'border-black/10' : 'border-white/40' }} shadow-lg">
                 <h1 class="mt-4 text-xl font-bold">{{ $profile->display_name ?: $profileUser->name }}</h1>
-                <p class="text-sm opacity-70">{{ $profileUser->username }}</p>
+                <p class="text-sm opacity-70">{{ $publicUsername }}</p>
                 @if ($profile->bio)<p class="mt-3 text-sm opacity-90 leading-relaxed px-2">{{ $profile->bio }}</p>@endif
             @endif
 
@@ -178,9 +221,9 @@
                         $brandStyle = \App\Support\Brands::brandStyle($resolvedBrand['slug']);
                         $linkRadius = $profile->button_style === 'pill' ? 'border-radius:9999px;' : ($profile->button_style === 'square' ? 'border-radius:0.75rem;' : 'border-radius:1rem;');
                     @endphp
-                    <a href="{{ route('public.link.redirect', ['username' => $profileUser->username, 'link' => $link->id]) }}"
+                    <a href="{{ route('public.link.redirect', ['username' => $publicUsername, 'link' => $link->id]) }}"
                        target="_blank" rel="noopener"
-                       class="group flex items-center gap-3.5 w-full py-3.5 px-4 font-bold text-sm bg-white text-[#14213d] shadow-sm {{ $hoverClass }} {{ $link->is_featured ? 'ring-2 ring-blue-500' : '' }}"
+                       class="profile-main-link group flex items-center gap-3.5 w-full py-3.5 px-4 font-bold text-sm bg-white text-[#14213d] shadow-sm {{ $hoverClass }} {{ $link->is_featured ? 'ring-2 ring-blue-500' : '' }}"
                        style="{{ $linkRadius }}">
                         
                         {{-- Brand badge container on left --}}
@@ -202,8 +245,11 @@
                 @endforelse
             </div>
 
-            {{-- Shop / Products Section (White Card Container with 2-Column Grid) --}}
+            {{-- Shop / Products Section (White Card Container) --}}
             @if ($products->count())
+                @php
+                    $isCarousel = $products->count() > 2;
+                @endphp
                 <div class="mt-4 rounded-3xl bg-white p-4 text-left shadow-sm">
                     {{-- Shop Card Header --}}
                     <div class="flex items-center justify-between mb-3.5">
@@ -213,40 +259,101 @@
                             </svg>
                             <span>Shop</span>
                         </div>
-                        <span class="text-[11px] font-semibold text-slate-400 flex items-center gap-0.5">
-                            {{ $products->count() }} Produk
-                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-semibold text-slate-400 flex items-center gap-0.5">
+                                {{ $products->count() }} Produk
+                            </span>
+                            @if ($isCarousel)
+                                <div class="flex items-center gap-1">
+                                    <button type="button" id="shopCarouselPrev"
+                                            class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+                                            aria-label="Produk sebelumnya" disabled>
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                                        </svg>
+                                    </button>
+                                    <button type="button" id="shopCarouselNext"
+                                            class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition hover:bg-slate-200 active:scale-95 disabled:opacity-30 disabled:pointer-events-none"
+                                            aria-label="Produk berikutnya">
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
-                    {{-- 2-Column Product Grid --}}
-                    <div class="grid grid-cols-2 gap-3">
-                        @foreach ($products as $product)
-                            <a href="{{ route('public.product.show', ['username' => $profileUser->username, 'product' => $product->id]) }}"
-                               class="group flex flex-col cursor-pointer transition-transform duration-150 hover:-translate-y-0.5">
-                                <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center relative p-2 shadow-2xs">
-                                    @if ($product->image_url)
-                                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
-                                    @else
-                                        <span class="text-2xl">🛍️</span>
+                    @if (!$isCarousel)
+                        {{-- 1 or 2 products: Clean grid without forcing carousel --}}
+                        <div class="grid grid-cols-2 gap-3">
+                            @foreach ($products as $product)
+                                <a href="{{ route('public.product.show', ['username' => $publicUsername, 'product' => $product->id]) }}"
+                                   class="group flex flex-col cursor-pointer transition-transform duration-150 hover:-translate-y-0.5">
+                                    <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center relative p-2 shadow-2xs">
+                                        @if ($product->image_url)
+                                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-contain">
+                                        @else
+                                            <span class="text-2xl">🛍️</span>
+                                        @endif
+                                        @if ($product->stock === 0)
+                                            <span class="absolute left-1.5 top-1.5 rounded-full bg-rose-600 px-2 py-0.5 text-[9px] font-bold text-white">Habis</span>
+                                        @endif
+                                    </div>
+                                    <p class="font-bold text-xs text-[#14213d] truncate mt-2">{{ $product->name }}</p>
+                                    @if ($product->price_label)
+                                        <p class="text-[11px] text-slate-500 font-semibold">{{ $product->price_label }}</p>
                                     @endif
-                                    @if ($product->stock === 0)
-                                        <span class="absolute left-1.5 top-1.5 rounded-full bg-rose-600 px-2 py-0.5 text-[9px] font-bold text-white">Habis</span>
-                                    @endif
-                                </div>
-                                <p class="font-bold text-xs text-[#14213d] truncate mt-2">{{ $product->name }}</p>
-                                @if ($product->price_label)
-                                    <p class="text-[11px] text-slate-500 font-semibold">{{ $product->price_label }}</p>
-                                @endif
-                            </a>
-                        @endforeach
-                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        {{-- > 2 products: Horizontal Carousel showing max 2 cards at a time --}}
+                        <div class="relative">
+                            <div id="shopCarouselTrack"
+                                 class="shop-carousel-track flex flex-row flex-nowrap gap-3 overflow-x-auto pb-1 scroll-smooth select-none cursor-grab active:cursor-grabbing"
+                                 style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
+                                @foreach ($products as $product)
+                                    <a href="{{ route('public.product.show', ['username' => $publicUsername, 'product' => $product->id]) }}"
+                                       class="shop-carousel-item group flex flex-col cursor-pointer flex-shrink-0 transition-transform duration-150 hover:-translate-y-0.5"
+                                       style="scroll-snap-align: start; flex: 0 0 calc(50% - 6px); width: calc(50% - 6px); min-width: calc(50% - 6px); max-width: calc(50% - 6px);"
+                                       draggable="false">
+                                        <div class="aspect-square w-full rounded-2xl bg-[#f3f4f6] overflow-hidden flex items-center justify-center relative p-2 shadow-2xs pointer-events-none">
+                                            @if ($product->image_url)
+                                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-contain" draggable="false">
+                                            @else
+                                                <span class="text-2xl">🛍️</span>
+                                            @endif
+                                            @if ($product->stock === 0)
+                                                <span class="absolute left-1.5 top-1.5 rounded-full bg-rose-600 px-2 py-0.5 text-[9px] font-bold text-white">Habis</span>
+                                            @endif
+                                        </div>
+                                        <p class="font-bold text-xs text-[#14213d] truncate mt-2 pointer-events-none">{{ $product->name }}</p>
+                                        @if ($product->price_label)
+                                            <p class="text-[11px] text-slate-500 font-semibold pointer-events-none">{{ $product->price_label }}</p>
+                                        @endif
+                                    </a>
+                                @endforeach
+                            </div>
+
+                            {{-- Dot Indicators --}}
+                            <div class="mt-3 flex items-center justify-center gap-1.5" id="shopCarouselDots">
+                                @for ($i = 0; $i < $products->count(); $i++)
+                                    <button type="button"
+                                            class="shop-dot h-1.5 rounded-full transition-all duration-200 {{ $i === 0 ? 'w-4 bg-[#14213d]' : 'w-1.5 bg-slate-200' }}"
+                                            data-index="{{ $i }}"
+                                            aria-label="Menuju produk ke-{{ $i + 1 }}"></button>
+                                @endfor
+                            </div>
+                        </div>
+                    @endif
                 </div>
             @endif
 
             {{-- Share button --}}
             <div class="mt-8 flex items-center justify-center gap-3">
                 <button type="button" onclick="shareProfile()"
-                        class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-[#14213d] shadow-sm font-bold text-xs {{ $hoverClass }} border border-slate-100 hover:shadow-md">
+                        class="profile-share-button flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-[#14213d] shadow-sm font-bold text-xs {{ $hoverClass }} border border-slate-100 hover:shadow-md">
                     <svg class="w-3.5 h-3.5 text-[#14213d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                     </svg>
@@ -273,6 +380,122 @@
                 });
             }
         }
+
+        (function initShopCarousel() {
+            const track = document.getElementById('shopCarouselTrack');
+            if (!track) return;
+
+            const prevBtn = document.getElementById('shopCarouselPrev');
+            const nextBtn = document.getElementById('shopCarouselNext');
+            const dots = document.querySelectorAll('.shop-dot');
+            const items = track.querySelectorAll('.shop-carousel-item');
+            if (!items.length) return;
+
+            function getStep() {
+                const item = items[0];
+                return item ? item.getBoundingClientRect().width + 12 : 0;
+            }
+
+            function updateControls() {
+                const step = getStep();
+                const scrollLeft = track.scrollLeft;
+                const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+
+                if (prevBtn) {
+                    prevBtn.disabled = scrollLeft <= 4;
+                }
+                if (nextBtn) {
+                    nextBtn.disabled = scrollLeft >= maxScroll - 4;
+                }
+
+                if (dots.length && maxScroll > 0) {
+                    const activeIndex = Math.max(0, Math.min(
+                        Math.round((scrollLeft / maxScroll) * (dots.length - 1)),
+                        dots.length - 1
+                    ));
+                    dots.forEach((dot, idx) => {
+                        if (idx === activeIndex) {
+                            dot.classList.remove('w-1.5', 'bg-slate-200');
+                            dot.classList.add('w-4', 'bg-[#14213d]');
+                        } else {
+                            dot.classList.remove('w-4', 'bg-[#14213d]');
+                            dot.classList.add('w-1.5', 'bg-slate-200');
+                        }
+                    });
+                }
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function () {
+                    const step = getStep();
+                    track.scrollBy({ left: -step, behavior: 'smooth' });
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function () {
+                    const step = getStep();
+                    track.scrollBy({ left: step, behavior: 'smooth' });
+                });
+            }
+
+            dots.forEach((dot) => {
+                dot.addEventListener('click', function () {
+                    const index = parseInt(this.getAttribute('data-index'), 10);
+                    const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+                    if (maxScroll > 0 && dots.length > 1) {
+                        const target = (index / (dots.length - 1)) * maxScroll;
+                        track.scrollTo({ left: target, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            track.addEventListener('scroll', updateControls, { passive: true });
+            window.addEventListener('resize', updateControls);
+
+            // Desktop mouse drag to scroll
+            let isDown = false;
+            let startX = 0;
+            let scrollStart = 0;
+            let isDragging = false;
+
+            track.addEventListener('mousedown', function (e) {
+                if (e.button !== 0) return;
+                isDown = true;
+                isDragging = false;
+                startX = e.pageX - track.getBoundingClientRect().left;
+                scrollStart = track.scrollLeft;
+            });
+
+            window.addEventListener('mousemove', function (e) {
+                if (!isDown) return;
+                const x = e.pageX - track.getBoundingClientRect().left;
+                const walk = x - startX;
+                if (Math.abs(walk) > 4) {
+                    isDragging = true;
+                }
+                track.scrollLeft = scrollStart - walk;
+            });
+
+            window.addEventListener('mouseup', function () {
+                if (!isDown) return;
+                isDown = false;
+                setTimeout(() => {
+                    isDragging = false;
+                }, 80);
+            });
+
+            items.forEach((item) => {
+                item.addEventListener('click', function (e) {
+                    if (isDragging) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+            });
+
+            updateControls();
+        })();
     </script>
 </body>
 </html>

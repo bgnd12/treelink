@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Address;
 use App\Models\Order;
-use App\Services\TreePayService;
+use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Services\TripayService;
 use App\Support\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ class CheckoutController extends Controller
 {
     public function __construct(
         private readonly Cart $cart,
-        protected TreePayService $treePayService
+        protected TripayService $tripayService
     ) {}
 
     public function show(Request $request): View|RedirectResponse
@@ -69,6 +71,12 @@ class CheckoutController extends Controller
             'save_address' => ['nullable', 'boolean'],
         ]);
 
+        if (count($groups) > 1 && in_array($validated['payment_method'], Order::ONLINE_PAYMENT_METHODS, true)) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'Pembayaran TriPay untuk beberapa penjual dalam satu checkout belum tersedia. Silakan checkout per toko.',
+            ]);
+        }
+
         $orderIds = DB::transaction(function () use ($groups, $validated, $request) {
             $orderIds = [];
 
@@ -78,12 +86,21 @@ class CheckoutController extends Controller
                     $variant = $row['variant'];
                     $quantity = $row['quantity'];
 
-                    $stockTarget = $variant ? $variant->stock : $product->stock;
-                    if ($stockTarget !== null && $stockTarget < $quantity) {
+                    // Lock the stock row while creating the order so two buyers
+                    // cannot reserve the same last item concurrently.
+                    $stockTarget = $variant
+                        ? ProductVariant::query()->whereKey($variant->id)->lockForUpdate()->firstOrFail()
+                        : Product::query()->whereKey($product->id)->lockForUpdate()->firstOrFail();
+
+                    if ($stockTarget->stock !== null && $stockTarget->stock < $quantity) {
                         $name = $product->name.($variant ? ' ('.$variant->label.')' : '');
                         throw ValidationException::withMessages([
-                            'cart' => "Stok \"{$name}\" tidak mencukupi. Sisa: {$stockTarget}.",
+                            'cart' => "Stok \"{$name}\" tidak mencukupi. Sisa: {$stockTarget->stock}.",
                         ]);
+                    }
+
+                    if ($stockTarget->stock !== null) {
+                        $stockTarget->decrement('stock', $quantity);
                     }
                 }
 
@@ -104,6 +121,7 @@ class CheckoutController extends Controller
                     'shipping_province' => $validated['shipping_province'] ?? null,
                     'shipping_postal_code' => $validated['shipping_postal_code'] ?? null,
                     'payment_method' => $validated['payment_method'],
+                    'payment_gateway' => in_array($validated['payment_method'], Order::ONLINE_PAYMENT_METHODS, true) ? 'tripay' : null,
                     'payment_status' => 'unpaid',
                 ]);
 
@@ -122,10 +140,6 @@ class CheckoutController extends Controller
                         'subtotal' => $unitPrice * $row['quantity'],
                     ]);
 
-                    $stockTarget = $variant ? $variant : $product;
-                    if ($stockTarget->stock !== null) {
-                        $stockTarget->decrement('stock', $row['quantity']);
-                    }
                 }
 
                 $orderIds[] = $order->id;
@@ -138,8 +152,85 @@ class CheckoutController extends Controller
 
         $this->rememberAddress($request, $validated);
 
+        // Metode pembayaran online diproses otomatis lewat Tripay.
+        if (in_array($validated['payment_method'], Order::ONLINE_PAYMENT_METHODS, true)) {
+            return $this->redirectToTripay($request, $orderIds, $validated['payment_method']);
+        }
+
         return redirect()->route('public.checkout.success')
             ->with('checkout_success_orders', $orderIds);
+    }
+
+    /**
+     * Buat transaksi Tripay untuk pesanan pertama lalu arahkan ke halaman pembayaran.
+     */
+    protected function redirectToTripay(Request $request, array $orderIds, string $paymentMethod): RedirectResponse
+    {
+        // Keep the order scope in the application session. The return URL is
+        // navigation only and must never be used to discover arbitrary orders.
+        $request->session()->put('checkout_success_orders', $orderIds);
+
+        $order = Order::with('items')->find($orderIds[0] ?? null);
+
+        if (! $order) {
+            return redirect()->route('public.checkout.success')
+                ->with('checkout_success_orders', $orderIds);
+        }
+
+        $channel = $this->tripayService->mapMethodToChannel($paymentMethod);
+        $merchantRef = $order->code;
+        $amount = (int) round((float) $order->total);
+
+        $order->update([
+            'payment_reference' => $merchantRef,
+            'payment_gateway' => 'tripay',
+        ]);
+
+        $payload = [
+            'method' => $channel,
+            'merchant_ref' => $merchantRef,
+            'amount' => $amount,
+            'customer_name' => $order->buyer_name,
+            'customer_email' => $request->user()?->email ?? 'guest@treelink.test',
+            'customer_phone' => $order->buyer_contact,
+            'order_items' => $order->items->map(fn ($item) => [
+                'sku' => 'PRD-'.$item->product_id,
+                'name' => $item->product_name,
+                'price' => (int) round((float) $item->price),
+                'quantity' => (int) $item->quantity,
+            ])->values()->toArray(),
+            'callback_url' => route('tripay.callback'),
+            'return_url' => route('tripay.success', ['merchant_ref' => $merchantRef]),
+            'expired_time' => now()->addHours(24)->timestamp,
+            'signature' => $this->tripayService->createSignature($merchantRef, $amount),
+        ];
+
+        $result = $this->tripayService->createTransaction($payload);
+
+        if ($result['success']) {
+            $data = $result['data'];
+
+            $order->update([
+                'payment_external_id' => $data['reference'] ?? null,
+                'payment_url' => $data['checkout_url'] ?? null,
+                'payment_qr_url' => $data['qr_url'] ?? null,
+                'payment_va_number' => $data['pay_code'] ?? null,
+                'payment_merchant_id' => config('tripay.merchant_code'),
+                'payment_status_raw' => $data['status'] ?? 'UNPAID',
+                'payment_metadata' => $data,
+            ]);
+
+            $checkoutUrl = $data['checkout_url'] ?? $data['pay_url'] ?? null;
+
+            if ($checkoutUrl) {
+                return redirect()->away($checkoutUrl);
+            }
+        }
+
+        Log::error('Tripay transaction creation failed', ['order_id' => $order->id, 'result' => $result]);
+
+        return redirect()->route('public.checkout.success', ['orders' => $order->id])
+            ->withErrors(['payment' => $result['message'] ?? 'Gagal membuat transaksi Tripay. Silakan coba lagi.']);
     }
 
     /**
@@ -180,10 +271,7 @@ class CheckoutController extends Controller
 
         if (empty($ids)) {
             // Allow refreshing the page using the previously stored order ids.
-            $ids = collect(explode(',', (string) $request->query('orders')))
-                ->filter(fn ($id) => ctype_digit($id))
-                ->map(fn ($id) => (int) $id)
-                ->all();
+            $ids = [];
         }
 
         $orders = Order::with(['items', 'seller'])

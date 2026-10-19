@@ -13,6 +13,7 @@ class Link extends Model
 
     protected $fillable = [
         'user_id',
+        'page_id',
         'title',
         'url',
         'icon',
@@ -33,6 +34,20 @@ class Link extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function page(): BelongsTo
+    {
+        return $this->belongsTo(LinkPage::class, 'page_id');
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Link $link) {
+            if (! $link->page_id && $link->user) {
+                $link->page_id = $link->user->currentPageId();
+            }
+        });
     }
 
     public function clicks(): HasMany

@@ -14,6 +14,7 @@ class ProfileView extends Model
 
     protected $fillable = [
         'user_id',
+        'page_id',
         'ip_address',
         'user_agent',
         'referrer',

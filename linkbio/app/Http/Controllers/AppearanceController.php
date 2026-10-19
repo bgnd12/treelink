@@ -36,7 +36,7 @@ class AppearanceController extends Controller
             'social_links.facebook' => ['nullable', 'url', 'max:255'],
             'social_links.twitter' => ['nullable', 'url', 'max:255'],
             'social_links.whatsapp' => ['nullable', 'url', 'max:255'],
-            'featured_link_id' => ['nullable', 'integer', Rule::exists('links', 'id')->where(fn ($query) => $query->where('user_id', $request->user()->id)->where('is_active', true))],
+            'featured_link_id' => ['nullable', 'integer', Rule::exists('links', 'id')->where(fn ($query) => $query->where('page_id', $request->user()->currentPageId())->where('is_active', true))],
             'animations_enabled' => ['nullable', 'boolean'],
             'seo_title' => ['nullable', 'string', 'max:60'],
             'seo_description' => ['nullable', 'string', 'max:300'],

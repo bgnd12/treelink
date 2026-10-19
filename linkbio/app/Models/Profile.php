@@ -12,6 +12,7 @@ class Profile extends Model
 
     protected $fillable = [
         'user_id',
+        'page_id',
         'display_name',
         'bio',
         'avatar_path',
@@ -62,6 +63,11 @@ class Profile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function page(): BelongsTo
+    {
+        return $this->belongsTo(LinkPage::class, 'page_id');
     }
 
     public function getAvatarUrlAttribute(): string

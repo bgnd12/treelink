@@ -56,11 +56,18 @@ class ProductController extends Controller
             'outOfStockProducts' => $user->products()->where('stock', 0)->count(),
             'filter' => $filter,
             'search' => $search ?? '',
+            'hasBankAccount' => $user->bankAccounts()->exists(),
         ]);
     }
 
     public function create(): View
     {
+        $user = request()->user();
+
+        if (! $user->bankAccounts()->exists()) {
+            return redirect()->route('dashboard.accounts.index', ['from' => 'shop']);
+        }
+
         return view('dashboard.shop-form', ['product' => null]);
     }
 
@@ -87,6 +94,7 @@ class ProductController extends Controller
         $maxPosition = (int) $request->user()->products()->max('position');
 
         $product = $request->user()->products()->create([
+            'page_id' => $request->user()->currentPageId(),
             'name' => $validated['name'],
             'url' => $validated['url'] ?? null,
             'price' => $validated['price'] ?? null,
@@ -206,18 +214,22 @@ class ProductController extends Controller
             return null;
         }
 
-        return $request->file('image')->store('products', config('filesystems.default'));
+        return $request->file('image')->store('products', 'public');
     }
 
     private function deleteImage(Product $product): void
     {
         if ($product->image_path) {
-            Storage::disk(config('filesystems.default'))->delete($product->image_path);
+            Storage::disk('public')->delete($product->image_path);
         }
     }
 
     private function authorizeOwnership(Product $product): void
     {
-        abort_unless($product->user_id === Auth::id(), 403);
+        abort_unless(
+            $product->user_id === Auth::id()
+                && $product->page_id === Auth::user()->currentPageId(),
+            403
+        );
     }
 }

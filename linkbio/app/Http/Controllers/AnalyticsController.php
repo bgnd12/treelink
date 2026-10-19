@@ -16,7 +16,7 @@ class AnalyticsController extends Controller
         $totalViews = $user->profileViews()->count();
         $totalClicks = DB::table('link_clicks')
             ->join('links', 'links.id', '=', 'link_clicks.link_id')
-            ->where('links.user_id', $user->id)
+            ->where('links.page_id', $user->currentPageId())
             ->count();
 
         $ctr = $totalViews > 0 ? round(($totalClicks / $totalViews) * 100, 1) : 0;
@@ -52,7 +52,7 @@ class AnalyticsController extends Controller
         $clicks = DB::table('link_clicks')
             ->join('links', 'links.id', '=', 'link_clicks.link_id')
             ->selectRaw('DATE(link_clicks.created_at) as date, COUNT(*) as total')
-            ->where('links.user_id', $user->id)
+            ->where('links.page_id', $user->currentPageId())
             ->where('link_clicks.created_at', '>=', now()->subDays(29)->startOfDay())
             ->groupBy('date')
             ->pluck('total', 'date');

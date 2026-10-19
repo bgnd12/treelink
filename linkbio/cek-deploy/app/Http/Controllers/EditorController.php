@@ -13,7 +13,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 /**
- * Backs the Linktree-style editor screen (Content / Header / Design / Enhance).
+ * Backs the Treelink-style editor screen (Content / Header / Design / Enhance).
  *
  * The Alpine component in resources/js/editor.js owns the live state and posts
  * every mutation back to the endpoints below, which answer with the refreshed

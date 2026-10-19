@@ -10,6 +10,10 @@ return new class extends Migration
     {
         if (Schema::hasColumn('conversations', 'link_id_request_id')) {
             Schema::table('conversations', function (Blueprint $table) {
+                // The original column was also declared unique. SQLite cannot
+                // rebuild the table while that index still references a
+                // column being dropped.
+                $table->dropUnique(['link_id_request_id']);
                 $table->dropConstrainedForeignId('link_id_request_id');
             });
         }

@@ -24,6 +24,7 @@ class LoginController extends Controller
         ]);
 
         $field = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $credentials['login'] = strtolower(trim($credentials['login']));
 
         if (! Auth::attempt([$field => $credentials['login'], 'password' => $credentials['password']], $request->boolean('remember'))) {
             throw ValidationException::withMessages([

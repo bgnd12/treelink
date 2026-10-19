@@ -5,9 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Address;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AddressController extends Controller
 {
+    public function create(): View
+    {
+        return view('profile.address-create');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -27,7 +33,7 @@ class AddressController extends Controller
             'is_default' => $user->addresses()->count() === 0,
         ]);
 
-        return back()->with('status', 'Alamat berhasil disimpan.');
+        return redirect()->route('checkout.show')->with('status', 'Alamat baru berhasil disimpan.');
     }
 
     public function destroy(Request $request, Address $address): RedirectResponse

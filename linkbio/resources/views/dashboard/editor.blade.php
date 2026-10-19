@@ -339,15 +339,6 @@
                 {{-- ============ TAB: DESIGN ============ --}}
                 <section x-show="activeTab === 'design'" x-cloak class="space-y-6">
 
-                    {{-- Light / Dark mode --}}
-                    <div class="rounded-2xl border border-ink-100 p-5">
-                        <h3 class="font-bold text-ink-900 mb-1">Mode Terang / Gelap</h3>
-                        <p class="text-sm text-ink-500 mb-5">Ubah tema halaman publikmu dengan sekali klik. Pilih preset warna lengkap di bawah untuk kustomisasi.</p>
-                        <div class="flex justify-center">
-                            <x-theme-toggle :initial-dark="$__isDarkTheme" />
-                        </div>
-                    </div>
-
                     {{-- Theme --}}
                     <div class="rounded-2xl border border-ink-100 p-5">
                         <h3 class="font-bold text-ink-900 mb-1">Tema</h3>

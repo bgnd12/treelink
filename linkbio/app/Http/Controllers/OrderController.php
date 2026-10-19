@@ -16,11 +16,13 @@ class OrderController extends Controller
         $status = $request->query('status', 'all');
         $status = in_array($status, array_merge(['all'], array_keys(Order::STATUSES)), true) ? $status : 'all';
 
-        $orders = $user->orders()->with('items');
+        $orders = $user->orders()->with('items.product');
 
         if ($status !== 'all') {
             $orders->where('status', $status);
         }
+
+        $paidOrders = $user->orders()->where('payment_status', 'paid');
 
         return view('dashboard.orders', [
             'orders' => $orders->paginate(15)->withQueryString(),
@@ -29,6 +31,10 @@ class OrderController extends Controller
             'pendingOrders' => $user->orders()->whereIn('status', array_merge(['awaiting_payment', 'awaiting_confirmation', 'pending']))->count(),
             'completedOrders' => $user->orders()->where('status', 'completed')->count(),
             'revenue' => (float) $user->orders()->where('status', 'completed')->sum('total'),
+            'paidOrderCount' => (clone $paidOrders)->count(),
+            'recordedRevenue' => (clone $paidOrders)->sum('total'),
+            'completedRevenue' => (clone $paidOrders)->where('status', 'completed')->sum('total'),
+            'pendingRevenue' => (clone $paidOrders)->whereNotIn('status', ['completed', 'cancelled'])->sum('total'),
         ]);
     }
 
@@ -52,18 +58,4 @@ class OrderController extends Controller
         return back()->with('status', 'Status pesanan '.$order->code.' diperbarui.');
     }
 
-    public function updatePayment(Request $request, Order $order): RedirectResponse
-    {
-        abort_unless($order->seller_id === Auth::id(), 403);
-
-        $validated = $request->validate([
-            'payment_status' => ['required', 'string', 'in:'.implode(',', array_keys(Order::PAYMENT_STATUSES))],
-        ]);
-
-        $order->update([
-            'status' => $validated['payment_status'] === 'paid' ? 'processing' : $order->status,
-        ]);
-
-        return back()->with('status', 'Status pembayaran '.$order->code.' diperbarui.');
-    }
 }

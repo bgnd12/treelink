@@ -35,13 +35,17 @@
                     <p><span class="font-bold text-slate-700">Kirim ke:</span> {{ $order->shipping_name }} &middot; {{ $order->shipping_phone }}</p>
                     <p class="mt-0.5">{{ $order->shipping_summary }}</p>
                     <p class="mt-1"><span class="font-bold text-slate-700">Pembayaran:</span> {{ $order->payment_method_label }} &middot; <span class="{{ $order->is_paid ? 'text-emerald-600' : 'text-amber-600' }} font-bold">{{ $order->payment_status_label }}</span></p>
+                    <p class="mt-1 text-[11px] text-slate-500">Halaman ini hanya menampilkan status pesanan. Konfirmasi pembayaran berasal dari callback gateway yang tervalidasi.</p>
                 </div>
 
                 @unless ($order->is_paid)
-                    @if (str_starts_with($order->payment_method, 'treepay_'))
+                    @if ($order->isOnlinePayment())
                         <div class="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs text-blue-700">
-                            <p class="font-bold">Pembayaran Online via TreePay</p>
-                            <p class="mt-1">Pesanan ini menggunakan pembayaran TreePay. Setelah integrasi TreePay selesai, kamu akan diarahkan ke halaman pembayaran otomatis. Untuk saat ini, tunggu konfirmasi penjual atau hubungi penjual untuk instruksi pembayaran.</p>
+                            <p class="font-bold">Pembayaran Online (Otomatis)</p>
+                            <p class="mt-1">Selesaikan pembayaran melalui halaman pembayaran. Status akan diperbarui otomatis setelah pembayaran berhasil.</p>
+                            @if ($order->payment_url)
+                                <a href="{{ $order->payment_url }}" class="mt-2 inline-block rounded-lg bg-[#1e2a5b] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#303e76]">Lanjutkan Pembayaran</a>
+                            @endif
                         </div>
                     @else
                         <form method="POST" action="{{ URL::signedRoute('public.order.proof', ['order' => $order->id]) }}" enctype="multipart/form-data" class="flex flex-col gap-2 rounded-xl border border-dashed border-slate-300 px-4 py-3 sm:flex-row sm:items-center">
@@ -54,7 +58,7 @@
                         </form>
                     @endif
                 @else
-                    <p class="rounded-xl bg-emerald-50 px-4 py-2.5 text-xs font-semibold text-emerald-700">Pembayaran sudah dikonfirmasi penjual.</p>
+                    <p class="rounded-xl bg-emerald-50 px-4 py-2.5 text-xs font-semibold text-emerald-700">Pembayaran sudah dikonfirmasi oleh sistem pembayaran.</p>
                 @endunless
 
                 <a href="{{ route('public.profile', $order->seller->username) }}" class="inline-block text-xs font-bold text-slate-500 underline underline-offset-4 hover:text-slate-800">Kunjungi toko {{ $order->seller->username }}</a>

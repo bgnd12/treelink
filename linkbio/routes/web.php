@@ -2,14 +2,18 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\BankAccountController;
+use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AppearanceController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EditorController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\LinkController;
@@ -17,7 +21,9 @@ use App\Http\Controllers\LinkIdMessageController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Payment\TripayController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfilePageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\PublicShopController;
@@ -49,6 +55,9 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'create'])->name('login');
     Route::post('login', [LoginController::class, 'store']);
 
+    Route::get('auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
     Route::get('forgot-password', [ForgotPasswordController::class, 'create'])->name('password.request');
     Route::post('forgot-password', [ForgotPasswordController::class, 'store'])->name('password.email');
 
@@ -66,8 +75,17 @@ Route::post('logout', [LoginController::class, 'destroy'])
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->group(function () {
-    Route::get('/', [EditorController::class, 'index'])->name('index');
+    Route::get('/', [DashboardController::class, 'index'])->name('index');
+    Route::get('profile-pages/create', [ProfilePageController::class, 'create'])->name('profile-pages.create');
+    Route::post('profile-pages', [ProfilePageController::class, 'store'])->name('profile-pages.store');
+    Route::post('profile-pages/{page}/switch', [ProfilePageController::class, 'switch'])->name('profile-pages.switch');
+    Route::get('editor', [EditorController::class, 'index'])->name('editor');
     Route::get('shop', [ProductController::class, 'index'])->name('shop');
+    Route::get('accounts', [BankAccountController::class, 'index'])->name('accounts.index');
+    Route::post('accounts', [BankAccountController::class, 'store'])->name('accounts.store');
+    Route::delete('accounts/{bankAccount}', [BankAccountController::class, 'destroy'])->name('accounts.destroy');
+    Route::get('withdrawals/create', [WithdrawalController::class, 'create'])->name('withdrawals.create');
+    Route::post('withdrawals', [WithdrawalController::class, 'store'])->name('withdrawals.store');
     Route::get('marketplace', [MarketplaceController::class, 'index'])->name('marketplace');
     Route::post('marketplace/products/{product}/chat', [MarketplaceController::class, 'startChat'])->name('marketplace.products.chat');
     Route::get('shop/products/create', [ProductController::class, 'create'])->name('products.create');
@@ -83,7 +101,7 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
     Route::delete('short-links/{shortLink}', [ShortLinkController::class, 'destroy'])->name('short-links.destroy');
     Route::patch('short-links/{shortLink}/toggle', [ShortLinkController::class, 'toggle'])->name('short-links.toggle');
 
-    Route::get('links', [LinkController::class, 'index'])->name('links.index');
+    Route::get('links', fn () => redirect()->route('dashboard.index'))->name('links.index');
     Route::post('links', [LinkController::class, 'store'])->name('links.store');
     Route::put('links/{link}', [LinkController::class, 'update'])->name('links.update');
     Route::delete('links/{link}', [LinkController::class, 'destroy'])->name('links.destroy');
@@ -101,7 +119,8 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
 
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
-    Route::patch('orders/{order}/payment', [OrderController::class, 'updatePayment'])->name('orders.payment');
+    // Compatibility URL: earnings is now part of the orders page.
+    Route::redirect('earnings', '/dashboard/orders')->name('earnings.index');
 
     Route::get('purchases', [PurchaseController::class, 'index'])->name('purchases.index');
     Route::get('purchases/{order}', [PurchaseController::class, 'show'])->name('purchases.show');
@@ -136,6 +155,12 @@ Route::middleware(['auth', 'active'])->prefix('dashboard')->name('dashboard.')->
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::get('users', [AdminController::class, 'users'])->name('users');
+    Route::get('transactions', [AdminController::class, 'transactions'])->name('transactions');
+    Route::patch('transactions/{order}/confirm-payment', [AdminController::class, 'confirmPayment'])->name('transactions.confirm-payment');
+    Route::patch('transactions/{order}/reject-payment', [AdminController::class, 'rejectPayment'])->name('transactions.reject-payment');
+    Route::get('withdrawals', [AdminController::class, 'withdrawals'])->name('withdrawals');
+    Route::patch('withdrawals/{withdrawal}/approve', [AdminController::class, 'approveWithdrawal'])->name('withdrawals.approve');
+    Route::patch('withdrawals/{withdrawal}/reject', [AdminController::class, 'rejectWithdrawal'])->name('withdrawals.reject');
     Route::get('users/{user}', [AdminController::class, 'show'])->name('users.show');
     Route::patch('users/{user}/toggle', [AdminController::class, 'toggleActive'])->name('users.toggle');
     Route::delete('users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
@@ -159,6 +184,7 @@ Route::post('checkout', [CheckoutController::class, 'store'])->name('checkout.st
 Route::get('checkout/success', [CheckoutController::class, 'success'])->name('public.checkout.success');
 
 Route::middleware('auth')->group(function () {
+    Route::get('addresses/create', [AddressController::class, 'create'])->name('addresses.create');
     Route::post('addresses', [AddressController::class, 'store'])->name('addresses.store');
     Route::delete('addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
 });
@@ -167,6 +193,15 @@ Route::post('order/{order}/payment-proof', [PublicShopController::class, 'upload
     ->where('order', '[0-9]+')
     ->middleware('signed')
     ->name('public.order.proof');
+
+/*
+|--------------------------------------------------------------------------
+| Tripay payment gateway
+|--------------------------------------------------------------------------
+*/
+Route::post('tripay/callback', [TripayController::class, 'callback'])->name('tripay.callback');
+Route::get('tripay/success', [TripayController::class, 'success'])->name('tripay.success');
+Route::get('tripay/failed', [TripayController::class, 'failed'])->name('tripay.failed');
 
 /*
 |--------------------------------------------------------------------------
@@ -201,14 +236,3 @@ Route::get('{username}/order/{order}', [PublicShopController::class, 'confirmati
 Route::get('{username}', [PublicProfileController::class, 'show'])
     ->where('username', PublicProfileController::USERNAME_PATTERN)
     ->name('public.profile');
-
-
-
-
-
-use App\Http\Controllers\Payment\TreePayController;
-
-// TreePay payment routes
-Route::post('treepay/callback', [TreePayController::class, 'callback'])->name('treepay.callback');
-Route::get('treepay/success', [TreePayController::class, 'success'])->name('treepay.success');
-Route::get('treepay/failed', [TreePayController::class, 'failed'])->name('treepay.failed');

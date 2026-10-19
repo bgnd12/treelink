@@ -12,18 +12,27 @@
             <h2 class="text-2xl font-extrabold tracking-tight text-slate-900">Shop Saya</h2>
             <p class="mt-1 text-sm text-slate-500">Kelola produkmu dan temukan produk kreator lain di satu tempat.</p>
         </div>
-        <a href="{{ route('dashboard.products.create') }}"
-           class="inline-flex items-center gap-2 rounded-2xl bg-[#c8ff4d] px-5 py-3 text-sm font-bold text-[#1e2a5b] shadow-sm transition hover:bg-[#ddff91] hover:shadow-md">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-            </svg>
-            Tambah Produk
-        </a>
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('cart.index') }}"
+               class="relative inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-[#1e2a5b] shadow-sm transition hover:border-slate-300 hover:bg-slate-50 hover:shadow-md">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                Keranjang
+                <?php $cartCount = app(\App\Support\Cart::class)->count(); ?>
+                <?php if ($cartCount > 0): ?>
+                    <span class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#c8ff4d] px-1.5 text-[10px] font-extrabold text-[#14213d]">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
+                <?php endif; ?>
+            </a>
+            <a href="{{ $hasBankAccount ? route('dashboard.products.create') : route('dashboard.accounts.index', ['from' => 'shop']) }}"
+               class="inline-flex items-center gap-2 rounded-2xl bg-[#c8ff4d] px-5 py-3 text-sm font-bold text-[#1e2a5b] shadow-sm transition hover:bg-[#ddff91] hover:shadow-md">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                Tambah Produk
+            </a>
+        </div>
     </div>
 
     {{-- ===== STAT CARDS ===== --}}
     <div class="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        @foreach([
+        <?php foreach ([
             [
                 'label' => 'Total Produk',
                 'value' => $totalProducts,
@@ -52,7 +61,7 @@
                 'color' => 'bg-rose-50 text-rose-500',
                 'icon'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>',
             ],
-        ] as $stat)
+        ] as $stat): ?>
             <div class="flex min-h-[7rem] items-start gap-3 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl {{ $stat['color'] }}">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">{!! $stat['icon'] !!}</svg>
@@ -63,7 +72,7 @@
                     <p class="mt-2 text-[11px] leading-4 text-slate-400">{{ $stat['note'] }}</p>
                 </div>
             </div>
-        @endforeach
+        <?php endforeach; ?>
     </div>
 
     {{-- ===== PRODUK SAYA ===== --}}
@@ -71,37 +80,37 @@
         {{-- Section Header --}}
         <div class="flex items-center justify-between mb-5">
             <h3 class="text-xl font-extrabold text-slate-900">Produk Saya</h3>
-            @if($totalProducts > 4)
+            <?php if ($totalProducts > 4): ?>
                 <a href="{{ route('dashboard.shop', ['filter' => 'all']) }}" class="text-sm font-semibold text-[#536239] hover:underline flex items-center gap-1">
                     Lihat semua
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </a>
-            @endif
+            <?php endif; ?>
         </div>
 
-        @if($products->isEmpty())
+        <?php if ($products->isEmpty()): ?>
             <div class="rounded-2xl border border-dashed border-slate-200 bg-white px-6 py-14 text-center">
                 <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f1f3e9]">
                     <svg class="h-7 w-7 text-[#1e2a5b]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                 </div>
                 <h4 class="text-base font-bold text-slate-800">Shop kamu masih kosong</h4>
                 <p class="mt-1 text-sm text-slate-500">Tambahkan produk pertama kamu sekarang.</p>
-                <a href="{{ route('dashboard.products.create') }}" class="mt-4 inline-flex rounded-xl bg-[#c8ff4d] px-5 py-2.5 text-sm font-bold text-[#1e2a5b] hover:bg-[#ddff91]">+ Tambah Produk</a>
+                <a href="{{ $hasBankAccount ? route('dashboard.products.create') : route('dashboard.accounts.index', ['from' => 'shop']) }}" class="mt-4 inline-flex rounded-xl bg-[#c8ff4d] px-5 py-2.5 text-sm font-bold text-[#1e2a5b] hover:bg-[#ddff91]">+ Tambah Produk</a>
             </div>
-        @else
+        <?php else: ?>
             <div class="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                @foreach($products->take(8) as $product)
+                <?php foreach ($products->take(8) as $product): ?>
                     <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                         {{-- Product image --}}
                         <a href="{{ route('dashboard.products.edit', $product) }}" class="relative block aspect-[4/3] w-full shrink-0 overflow-hidden border-b border-slate-100 bg-[#f8fafc]">
-                            @if($product->image_url)
+                            <?php if ($product->image_url): ?>
                                 <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                                      class="absolute inset-0 h-full w-full object-contain object-center p-2 transition duration-300 group-hover:scale-[1.04]">
-                            @else
+                            <?php else: ?>
                                 <div class="flex h-full w-full items-center justify-center text-4xl font-extrabold text-[#1e2a5b]/30">
                                     {{ strtoupper(substr($product->name, 0, 1)) }}
                                 </div>
-                            @endif
+                            <?php endif; ?>
                             {{-- Status badge --}}
                             <span class="absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold shadow-sm
                                 {{ $product->is_active
@@ -116,16 +125,16 @@
                             <h4 class="line-clamp-2 min-h-[2.5rem] font-bold text-slate-900 text-sm leading-snug">{{ $product->name }}</h4>
                             <p class="mt-1 text-sm font-extrabold text-slate-800">{{ $product->price_label ?? '—' }}</p>
                             <p class="mt-1 flex items-center gap-1 text-[11px] text-slate-400">
-                                @if($product->stock === null)
+                                <?php if ($product->stock === null): ?>
                                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                     Stok tidak dibatasi
-                                @elseif($product->stock > 0)
+                                <?php elseif ($product->stock > 0): ?>
                                     <svg class="h-3 w-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                     Stok {{ $product->stock }}
-                                @else
+                                <?php else: ?>
                                     <svg class="h-3 w-3 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                     Stok 0
-                                @endif
+                                <?php endif; ?>
                             </p>
 
                             {{-- Actions row --}}
@@ -161,13 +170,13 @@
                             </div>
                         </div>
                     </article>
-                @endforeach
+                <?php endforeach; ?>
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 
     {{-- ===== PRODUK LAIN UNTUK KAMU ===== --}}
-    @if(isset($marketplace) && $marketplace->isNotEmpty())
+    <?php if (isset($marketplace) && $marketplace->isNotEmpty()): ?>
     <div>
         {{-- Section Header --}}
         <div class="flex items-center justify-between mb-5">
@@ -178,7 +187,7 @@
         </div>
 
         <div class="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            @foreach($marketplace as $product)
+            <?php foreach ($marketplace as $product): ?>
                 @php
                     $seller        = $product->user;
                     $sellerProfile = $seller?->profile;
@@ -186,14 +195,14 @@
                 <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                     {{-- Product image --}}
                     <a href="{{ route('public.profile', $seller->username) }}" target="_blank" class="relative block aspect-[4/3] w-full shrink-0 overflow-hidden border-b border-slate-100 bg-[#f8fafc]">
-                        @if($product->image_url)
+                        <?php if ($product->image_url): ?>
                             <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                                  class="absolute inset-0 h-full w-full object-contain object-center p-2 transition duration-300 group-hover:scale-[1.04]">
-                        @else
+                        <?php else: ?>
                             <div class="flex h-full w-full items-center justify-center text-4xl font-extrabold text-[#1e2a5b]/30">
                                 {{ strtoupper(substr($product->name, 0, 1)) }}
                             </div>
-                        @endif
+                        <?php endif; ?>
 
                         @php
                             $badge = match(true) {
@@ -202,9 +211,9 @@
                                 default => null,
                             };
                         @endphp
-                        @if($badge)
+                        <?php if ($badge): ?>
                             <span class="absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold shadow-sm {{ $badge['class'] }}">{{ $badge['label'] }}</span>
-                        @endif
+                        <?php endif; ?>
                     </a>
 
                     {{-- Product info --}}
@@ -214,13 +223,13 @@
 
                         {{-- Seller --}}
                         <div class="mt-1 flex items-center gap-1.5 text-[11px] text-slate-400">
-                            @if($sellerProfile?->avatar_path)
+                            <?php if ($sellerProfile?->avatar_path): ?>
                                 <img src="{{ $sellerProfile->avatar_url }}" alt="" class="h-4 w-4 shrink-0 rounded-full object-cover">
-                            @else
+                            <?php else: ?>
                                 <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#f1f3e9] text-[8px] font-bold text-[#1e2a5b]">
                                     {{ strtoupper(substr($seller->name, 0, 1)) }}
                                 </span>
-                            @endif
+                            <?php endif; ?>
                             <span class="min-w-0 flex-1 truncate">{{ $sellerProfile?->display_name ?: $seller->name }}</span>
                         </div>
 
@@ -243,10 +252,10 @@
                         </div>
                     </div>
                 </article>
-            @endforeach
+            <?php endforeach; ?>
         </div>
     </div>
-    @endif
+    <?php endif; ?>
 
 </div>
 @endsection

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Session;
 
 class User extends Authenticatable
 {
@@ -22,6 +23,7 @@ class User extends Authenticatable
         'name',
         'username',
         'email',
+        'google_id',
         'password',
         'is_admin',
         'is_active',
@@ -54,12 +56,40 @@ class User extends Authenticatable
 
     public function profile(): HasOne
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class)->where('page_id', $this->currentPageId());
+    }
+
+    public function pages(): HasMany
+    {
+        return $this->hasMany(LinkPage::class);
+    }
+
+    public function currentPage(): LinkPage
+    {
+        $pageId = Session::get('active_link_page_id');
+        $page = $pageId ? $this->pages()->whereKey($pageId)->first() : null;
+
+        if ($page) {
+            return $page;
+        }
+
+        $page = $this->pages()->where('is_default', true)->first();
+
+        return $page ?: $this->pages()->create([
+            'name' => $this->name,
+            'username' => $this->username,
+            'is_default' => true,
+        ]);
+    }
+
+    public function currentPageId(): int
+    {
+        return $this->currentPage()->id;
     }
 
     public function links(): HasMany
     {
-        return $this->hasMany(Link::class)->orderBy('position');
+        return $this->hasMany(Link::class)->where('page_id', $this->currentPageId())->orderBy('position');
     }
 
     public function shortLinks(): HasMany
@@ -69,7 +99,7 @@ class User extends Authenticatable
 
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class)->orderBy('position');
+        return $this->hasMany(Product::class)->where('page_id', $this->currentPageId())->orderBy('position');
     }
 
     public function orders(): HasMany
@@ -87,6 +117,16 @@ class User extends Authenticatable
         return $this->hasMany(Address::class)->latest();
     }
 
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+
+    public function withdrawals(): HasMany
+    {
+        return $this->hasMany(Withdrawal::class)->latest();
+    }
+
     public function conversations(): BelongsToMany
     {
         return $this->belongsToMany(Conversation::class)
@@ -97,7 +137,7 @@ class User extends Authenticatable
 
     public function profileViews(): HasMany
     {
-        return $this->hasMany(ProfileView::class);
+        return $this->hasMany(ProfileView::class)->where('page_id', $this->currentPageId());
     }
 
     public function followers(): BelongsToMany
@@ -115,7 +155,8 @@ class User extends Authenticatable
      */
     public function getOrCreateProfile(): Profile
     {
-        return $this->profile()->firstOrCreate([], [
+        return Profile::firstOrCreate(['page_id' => $this->currentPageId()], [
+            'user_id' => $this->id,
             'bio' => null,
             'theme' => 'aurora',
             'button_style' => 'rounded',
@@ -126,6 +167,6 @@ class User extends Authenticatable
 
     public function publicUrl(): string
     {
-        return url('/'.$this->username);
+        return $this->currentPage()->publicUrl();
     }
 }

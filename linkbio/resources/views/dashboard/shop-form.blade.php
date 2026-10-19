@@ -16,7 +16,8 @@
             @csrf
             @if($product) @method('PUT') @endif
 
-            <label class="flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#c7d19f] bg-[#f6f8ee] text-center transition hover:bg-[#f1f3e9]">
+            <label id="product-image-picker" class="flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-[#c7d19f] bg-[#f6f8ee] text-center transition hover:bg-[#f1f3e9]">
+                <img id="product-image-preview" src="{{ $product?->image_url }}" alt="{{ $product?->name ?: 'Preview foto produk' }}" class="{{ $product?->image_url ? '' : 'hidden' }} h-full w-full object-cover">
                 @if($product?->image_url)
                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-full w-full object-cover">
                 @else
@@ -24,7 +25,7 @@
                     <span class="mt-2 text-xs font-bold text-slate-700">Upload foto produk</span>
                     <span class="mt-1 px-3 text-[10px] text-slate-400">PNG, JPG, maksimal 4 MB</span>
                 @endif
-                <input type="file" name="image" accept="image/*" class="sr-only">
+                <input id="product_image" type="file" name="image" accept="image/*" class="sr-only">
             </label>
 
             <div class="grid gap-4 sm:grid-cols-2">
@@ -78,4 +79,20 @@
         </form>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    document.getElementById('product_image')?.addEventListener('change', function (event) {
+        const file = event.target.files?.[0];
+        const preview = document.getElementById('product-image-preview');
+        const picker = document.getElementById('product-image-picker');
+
+        if (!file || !file.type.startsWith('image/')) return;
+
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove('hidden');
+        picker.querySelectorAll('span').forEach((span) => span.classList.add('hidden'));
+    });
+</script>
 @endsection

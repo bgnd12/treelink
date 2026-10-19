@@ -13,11 +13,17 @@ class DashboardController extends Controller
         $user = $request->user();
         $profile = $user->getOrCreateProfile();
         $links = $user->links()->get();
+        $pages = $user->pages()
+            ->with('profile')
+            ->withCount(['links as active_links_count' => fn ($query) => $query->where('is_active', true)])
+            ->orderByDesc('is_default')
+            ->orderBy('name')
+            ->get();
 
         $totalViews = $user->profileViews()->count();
         $totalClicks = DB::table('link_clicks')
             ->join('links', 'links.id', '=', 'link_clicks.link_id')
-            ->where('links.user_id', $user->id)
+            ->where('links.page_id', $user->currentPageId())
             ->count();
 
         $viewsLast7Days = $user->profileViews()
@@ -33,6 +39,8 @@ class DashboardController extends Controller
         return view('dashboard.overview', [
             'profile' => $profile,
             'links' => $links,
+            'pages' => $pages,
+            'activePageId' => $user->currentPageId(),
             'totalViews' => $totalViews,
             'totalClicks' => $totalClicks,
             'viewsLast7Days' => $viewsLast7Days,

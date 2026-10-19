@@ -1,9 +1,9 @@
 {
     "type": "project",
-    "description": "Link-in-bio platform (Linktree clone) built with Laravel.",
+    "description": "Link-in-bio platform (Treelink clone) built with Laravel.",
     "keywords": [
         "laravel",
-        "linktree",
+        "Treelink",
         "link-in-bio"
     ],
     "license": "MIT",

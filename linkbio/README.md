@@ -1,4 +1,4 @@
-# TreeLink — Platform Link-in-Bio (Clone Linktree)
+# TreeLink — Platform Link-in-Bio (Clone Treelink)
 
 Platform "link-in-bio" lengkap yang dibangun dengan **Laravel 11, PHP, MySQL, Tailwind CSS, dan JavaScript (Alpine.js + SortableJS + Chart.js)**.
 

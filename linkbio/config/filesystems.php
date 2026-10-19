@@ -16,7 +16,9 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            // Keep this path relative so uploaded images follow the current host
+            // (localhost, LAN, or an ngrok URL) instead of pointing to APP_URL.
+            'url' => '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],

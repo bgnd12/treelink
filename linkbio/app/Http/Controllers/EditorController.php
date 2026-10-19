@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 /**
- * Backs the Linktree-style editor screen (Content / Header / Design / Enhance).
+ * Backs the -style editor screen (Content / Header / Design / Enhance).
  *
  * The Alpine component in resources/js/editor.js owns the live state and posts
  * every mutation back to the endpoints below, which answer with the refreshed
@@ -40,7 +40,7 @@ class EditorController extends Controller
                 'profile' => $this->profilePayload($profile),
                 'links' => $user->links()->get()->toArray(),
                 'products' => $user->products()->get()->toArray(),
-                'publicUrl' => $user->publicUrl(),
+                'publicUrl' => $user->currentPage()->publicUrl(),
                 'themes' => Profile::AVAILABLE_THEMES,
                 'headerLayouts' => Profile::HEADER_LAYOUTS,
                 'backgroundTypes' => Profile::BACKGROUND_TYPES,
@@ -71,7 +71,7 @@ class EditorController extends Controller
                     'preg_quote',
                     PublicProfileController::RESERVED_USERNAMES
                 )).')$/i',
-                Rule::unique('users', 'username')->ignore($user->id),
+                Rule::unique('link_pages', 'username')->ignore($user->currentPageId()),
             ],
             'bio' => ['nullable', 'string', 'max:280'],
             'header_layout' => ['nullable', Rule::in(array_keys(Profile::HEADER_LAYOUTS))],
@@ -101,7 +101,7 @@ class EditorController extends Controller
         $profile->update($attributes);
 
         if (! empty($validated['username'])) {
-            $user->update(['username' => strtolower($validated['username'])]);
+            $user->currentPage()->update(['username' => strtolower($validated['username'])]);
         }
 
         return response()->json(['profile' => $this->profilePayload($profile->fresh())]);
@@ -212,7 +212,7 @@ class EditorController extends Controller
         ]);
 
         // Keep the denormalised is_featured flag on links in sync.
-        Link::where('user_id', $user->id)->update(['is_featured' => false]);
+        Link::where('page_id', $user->currentPageId())->update(['is_featured' => false]);
 
         if ($featuredLinkId !== null) {
             Link::whereKey($featuredLinkId)->update(['is_featured' => true]);
@@ -233,7 +233,7 @@ class EditorController extends Controller
         $theme = $profile->themeConfig();
 
         return array_merge($profile->toArray(), [
-            'username' => $profile->user?->username,
+            'username' => $profile->page?->username ?: $profile->user?->username,
             'avatar_url' => $profile->avatar_url,
             'background_image_url' => $profile->background_image_url,
             'theme_from' => $theme['from'],

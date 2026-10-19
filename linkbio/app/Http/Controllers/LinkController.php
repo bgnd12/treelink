@@ -36,6 +36,7 @@ class LinkController extends Controller
         $maxPosition = (int) $request->user()->links()->max('position');
 
         $link = $request->user()->links()->create([
+            'page_id' => $request->user()->currentPageId(),
             'title' => $validated['title'],
             'url' => $validated['url'],
             'icon' => $this->resolveIcon($validated['icon'] ?? 'link', $validated['url']),
@@ -112,7 +113,11 @@ class LinkController extends Controller
 
     private function authorizeOwnership(Link $link): void
     {
-        abort_unless($link->user_id === Auth::id(), 403);
+        abort_unless(
+            $link->user_id === Auth::id()
+                && $link->page_id === Auth::user()->currentPageId(),
+            403
+        );
     }
 
     private function resolveIcon(string $icon, string $url): string
