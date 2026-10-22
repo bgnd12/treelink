@@ -67,7 +67,6 @@
                             @foreach ([18, 30, 24, 42, 35, 56, 68, 48, 76, 62, 84, 72] as $bar)<span class="flex-1 rounded-t-md bg-[#c8ff4d] transition group-hover:bg-[#a3e635]" style="height: {{ $bar }}%"></span>@endforeach
                         </div>
                     </div>
-                    <p class="mt-4 text-xs font-bold text-[#4f46e5]">{{ __('Buka analitik pengunjung →') }}</p>
                 </a>
 
                 <div class="group min-h-[250px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">

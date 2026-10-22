@@ -152,6 +152,19 @@
         form.addEventListener('submit', function () {
             try { sessionStorage.setItem('tl_chat_bottom', '1'); } catch (e) {}
         });
+
+        /* Enter = kirim, Shift+Enter = baris baru */
+        var textarea = form.querySelector('textarea');
+        if (textarea) {
+            textarea.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (textarea.value.trim() !== '') {
+                        form.submit();
+                    }
+                }
+            });
+        }
     }
     try {
         if (sessionStorage.getItem('tl_chat_bottom') === '1') {

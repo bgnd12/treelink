@@ -40,7 +40,7 @@
                         ['route' => 'admin.index', 'label' => 'Overview', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />'],
                         ['route' => 'admin.users', 'label' => 'Semua User', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />'],
                           ['route' => 'admin.transactions', 'label' => 'Transaksi', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10M7 12h10M7 17h6M5 3h10l4 4v14H5V3z" />'],
-                          ['route' => 'admin.withdrawals', 'label' => 'Pengajuan Dana', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18m9-9H3m15.5-6.5L19 7l-1.5 1.5M5 15l-1.5 1.5L5 18" />'],
+                          ['route' => 'admin.withdrawals', 'label' => 'Penerimaan Dana', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18m9-9H3m15.5-6.5L19 7l-1.5 1.5M5 15l-1.5 1.5L5 18" />'],
                     ];
                 @endphp
                 

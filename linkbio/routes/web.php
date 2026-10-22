@@ -159,7 +159,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::patch('transactions/{order}/confirm-payment', [AdminController::class, 'confirmPayment'])->name('transactions.confirm-payment');
     Route::patch('transactions/{order}/reject-payment', [AdminController::class, 'rejectPayment'])->name('transactions.reject-payment');
     Route::get('withdrawals', [AdminController::class, 'withdrawals'])->name('withdrawals');
-    Route::patch('withdrawals/{withdrawal}/approve', [AdminController::class, 'approveWithdrawal'])->name('withdrawals.approve');
+    Route::post('withdrawals/{withdrawal}/approve', [AdminController::class, 'approveWithdrawal'])->name('withdrawals.approve');
     Route::patch('withdrawals/{withdrawal}/reject', [AdminController::class, 'rejectWithdrawal'])->name('withdrawals.reject');
     Route::get('users/{user}', [AdminController::class, 'show'])->name('users.show');
     Route::patch('users/{user}/toggle', [AdminController::class, 'toggleActive'])->name('users.toggle');

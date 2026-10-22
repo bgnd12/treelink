@@ -12,7 +12,6 @@ use App\Models\Withdrawal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -90,23 +89,32 @@ class AdminController extends Controller
         return view('admin.withdrawals', compact('withdrawals', 'status'));
     }
 
-    public function approveWithdrawal(Withdrawal $withdrawal): RedirectResponse
+    public function approveWithdrawal(Request $request, Withdrawal $withdrawal): RedirectResponse
     {
-        DB::transaction(function () use ($withdrawal): void {
+        $request->validate([
+            'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+        ], [
+            'proof.required' => 'Bukti transfer wajib diupload.',
+            'proof.mimes'    => 'Format file harus jpg, png, atau pdf.',
+            'proof.max'      => 'Ukuran file maksimal 5MB.',
+        ]);
+
+        DB::transaction(function () use ($request, $withdrawal): void {
             $withdrawal = Withdrawal::query()->with('user', 'bankAccount')->lockForUpdate()->findOrFail($withdrawal->id);
 
             abort_if($withdrawal->status !== 'pending', 422, 'Pengajuan ini sudah diproses.');
 
-            $withdrawal->forceFill([
-                'status' => 'paid',
-                'note' => 'Pengajuan diterima oleh super admin.',
-                'processed_at' => now(),
-            ])->save();
+            $proofPath = $request->file('proof')->store('withdrawal-proofs', 'public');
 
-            $withdrawal->forceFill(['proof_path' => $this->makeWithdrawalProof($withdrawal)])->save();
+            $withdrawal->forceFill([
+                'status'       => 'paid',
+                'note'         => 'Pengajuan diterima oleh super admin.',
+                'processed_at' => now(),
+                'proof_path'   => $proofPath,
+            ])->save();
         });
 
-        return back()->with('status', 'Pengajuan pencairan diterima dan bukti struk berhasil dibuat.');
+        return back()->with('status', 'Pengajuan pencairan diterima dan bukti transfer berhasil disimpan.');
     }
 
     public function rejectWithdrawal(Request $request, Withdrawal $withdrawal): RedirectResponse
@@ -129,43 +137,6 @@ class AdminController extends Controller
         return back()->with('status', 'Pengajuan pencairan ditolak.');
     }
 
-    private function makeWithdrawalProof(Withdrawal $withdrawal): string
-    {
-        $path = 'withdrawal-proofs/'.$withdrawal->transfer_reference.'.svg';
-        $escape = static fn ($value): string => htmlspecialchars((string) $value, ENT_QUOTES | ENT_XML1, 'UTF-8');
-        $amount = 'Rp '.number_format((float) $withdrawal->amount, 0, ',', '.');
-        $bank = $withdrawal->bankAccount?->bank_name ?: 'Rekening bank';
-        $account = $withdrawal->bankAccount?->masked_account_number ?: '-';
-        $date = optional($withdrawal->processed_at)->format('d/m/Y H:i') ?: now()->format('d/m/Y H:i');
-
-        $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="720" height="920" viewBox="0 0 720 920">'
-            .'<rect width="720" height="920" fill="#f4f6f8"/>'
-            .'<rect x="72" y="48" width="576" height="824" rx="18" fill="#ffffff" stroke="#d9dee7" stroke-width="2"/>'
-            .'<rect x="72" y="48" width="576" height="150" rx="18" fill="#1e2a5b"/>'
-            .'<text x="360" y="106" text-anchor="middle" fill="#c8ff4d" font-family="Arial,sans-serif" font-size="34" font-weight="700">TreeLink</text>'
-            .'<text x="360" y="150" text-anchor="middle" fill="#ffffff" font-family="Arial,sans-serif" font-size="20">BUKTI PENCAIRAN DANA</text>'
-            .'<text x="120" y="250" fill="#718096" font-family="Arial,sans-serif" font-size="18">STATUS</text>'
-            .'<text x="600" y="250" text-anchor="end" fill="#16803c" font-family="Arial,sans-serif" font-size="22" font-weight="700">DITERIMA</text>'
-            .'<line x1="120" y1="278" x2="600" y2="278" stroke="#e2e8f0"/>'
-            .'<text x="120" y="330" fill="#718096" font-family="Arial,sans-serif" font-size="18">NOMOR REFERENSI</text>'
-            .'<text x="600" y="330" text-anchor="end" fill="#1a202c" font-family="Arial,sans-serif" font-size="20" font-weight="700">'.$escape($withdrawal->transfer_reference).'</text>'
-            .'<text x="120" y="400" fill="#718096" font-family="Arial,sans-serif" font-size="18">PENERIMA</text>'
-            .'<text x="600" y="400" text-anchor="end" fill="#1a202c" font-family="Arial,sans-serif" font-size="20" font-weight="700">'.$escape($withdrawal->user?->name ?: '-').'</text>'
-            .'<text x="120" y="470" fill="#718096" font-family="Arial,sans-serif" font-size="18">REKENING TUJUAN</text>'
-            .'<text x="600" y="470" text-anchor="end" fill="#1a202c" font-family="Arial,sans-serif" font-size="20" font-weight="700">'.$escape($bank).' · '.$escape($account).'</text>'
-            .'<line x1="120" y1="520" x2="600" y2="520" stroke="#e2e8f0"/>'
-            .'<text x="120" y="580" fill="#718096" font-family="Arial,sans-serif" font-size="18">TOTAL DANA</text>'
-            .'<text x="600" y="580" text-anchor="end" fill="#1e2a5b" font-family="Arial,sans-serif" font-size="30" font-weight="700">'.$escape($amount).'</text>'
-            .'<text x="120" y="650" fill="#718096" font-family="Arial,sans-serif" font-size="18">WAKTU DIPROSES</text>'
-            .'<text x="600" y="650" text-anchor="end" fill="#1a202c" font-family="Arial,sans-serif" font-size="20">'.$escape($date).'</text>'
-            .'<text x="360" y="770" text-anchor="middle" fill="#718096" font-family="Arial,sans-serif" font-size="17">Bukti ini dibuat otomatis oleh TreeLink.</text>'
-            .'<text x="360" y="805" text-anchor="middle" fill="#a0aec0" font-family="Arial,sans-serif" font-size="15">Dokumen simulasi lokal, bukan konfirmasi bank.</text>'
-            .'</svg>';
-
-        Storage::disk('public')->put($path, $svg);
-
-        return $path;
-    }
 
     public function confirmPayment(Order $order): RedirectResponse
     {

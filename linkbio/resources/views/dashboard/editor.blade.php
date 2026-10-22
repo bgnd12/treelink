@@ -12,7 +12,7 @@
     <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div class="flex items-center gap-2 text-sm text-ink-500" x-cloak x-show="savedAt">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Tersimpan otomatis · <span x-text="savedAt"></span>
+            Tersimpan otomatis Â· <span x-text="savedAt"></span>
         </div>
     </div>
 
@@ -114,7 +114,7 @@
                                     :class="!link.is_active ? 'opacity-55' : ''">
 
                                     {{-- Drag handle --}}
-                                    <span class="drag-handle cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 text-lg select-none px-1">⠿</span>
+                                    <span class="drag-handle cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 text-lg select-none px-1">â ¿</span>
 
                                     {{-- Brand icon container with authentic colors --}}
                                     <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-2xs overflow-hidden"
@@ -160,7 +160,7 @@
                             </template>
                             <li x-show="!links.length" class="text-center py-10 text-slate-400 text-sm">Belum ada link. Tambahkan link pertamamu di atas!</li>
                         </ul>
-                        <p x-show="links.length" class="mt-2 text-xs text-slate-400">Seret <span class="font-semibold">⠿</span> untuk mengatur urutan.</p>
+                        <p x-show="links.length" class="mt-2 text-xs text-slate-400">Seret <span class="font-semibold">â ¿</span> untuk mengatur urutan.</p>
                     </div>
 
                     {{-- SHOP --}}
@@ -215,11 +215,11 @@
                             <template x-for="product in products" :key="product.id">
                                 <li class="flex items-center gap-4 p-4 rounded-2xl border border-slate-200/80 bg-white transition hover:border-slate-300 shadow-xs"
                                     :class="!product.is_active ? 'opacity-55' : ''">
-                                    <span class="drag-handle cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 text-lg select-none px-1">⠿</span>
+                                    <span class="drag-handle cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 text-lg select-none px-1">â ¿</span>
 
                                     <div class="w-11 h-11 rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center flex-shrink-0 border border-slate-100">
                                         <img x-show="product.image_url" :src="product.image_url" class="w-full h-full object-cover">
-                                        <span x-show="!product.image_url" class="text-lg">🛍️</span>
+                                        <span x-show="!product.image_url" class="text-lg">ðŸ›ï¸</span>
                                     </div>
 
                                     <div class="flex-1 min-w-0" x-show="editingProductId !== product.id">
@@ -276,7 +276,7 @@
                                 <template x-if="avatarSrc">
                                     <img :src="avatarSrc" class="w-full h-full object-cover">
                                 </template>
-                                <span x-show="!avatarSrc" class="text-2xl">👤</span>
+                                <span x-show="!avatarSrc" class="text-2xl">ðŸ‘¤</span>
                             </div>
                             <div>
                                 <label class="inline-block px-4 py-2.5 rounded-xl border border-ink-200 text-sm font-semibold cursor-pointer hover:border-brand-500 transition">
@@ -477,15 +477,15 @@
 
                             <div class="grid sm:grid-cols-3 gap-5">
                                 <div x-show="cardStyleName !== 'outline'">
-                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Transparansi · <span x-text="cardOpacity"></span>%</label>
+                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Transparansi Â· <span x-text="cardOpacity"></span>%</label>
                                     <input type="range" min="0" max="100" x-model.number="profile.card_opacity" @input="designChanged()" class="w-full accent-brand-600">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Radius · <span x-text="profile.card_radius ?? 32"></span>px</label>
+                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Radius Â· <span x-text="profile.card_radius ?? 32"></span>px</label>
                                     <input type="range" min="0" max="64" x-model.number="profile.card_radius" @input="designChanged()" class="w-full accent-brand-600">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Border · <span x-text="profile.card_border_width ?? 0"></span>px</label>
+                                    <label class="block text-sm font-semibold text-ink-800 mb-2">Border Â· <span x-text="profile.card_border_width ?? 0"></span>px</label>
                                     <input type="range" min="0" max="8" x-model.number="profile.card_border_width" @input="designChanged()" class="w-full accent-brand-600">
                                 </div>
                             </div>
@@ -536,11 +536,11 @@
 
                         <div class="grid sm:grid-cols-3 gap-5">
                             <div>
-                                <label class="block text-sm font-semibold text-ink-800 mb-2">Radius · <span x-text="profile.button_radius ?? (profile.button_style === 'pill' ? 999 : profile.button_style === 'square' ? 6 : 14)"></span>px</label>
+                                <label class="block text-sm font-semibold text-ink-800 mb-2">Radius Â· <span x-text="profile.button_radius ?? (profile.button_style === 'pill' ? 999 : profile.button_style === 'square' ? 6 : 14)"></span>px</label>
                                 <input type="range" min="0" max="32" x-model.number="profile.button_radius" @input="designChanged()" class="w-full accent-brand-600">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-ink-800 mb-2">Border · <span x-text="profile.button_border_width || 0"></span>px</label>
+                                <label class="block text-sm font-semibold text-ink-800 mb-2">Border Â· <span x-text="profile.button_border_width || 0"></span>px</label>
                                 <input type="range" min="0" max="8" x-model.number="profile.button_border_width" @input="designChanged()" class="w-full accent-brand-600">
                             </div>
                             <div class="flex items-end">
@@ -633,7 +633,7 @@
 
                         <div>
                             <label class="block text-sm font-semibold text-ink-800 mb-1.5">Judul SEO</label>
-                            <input type="text" x-model="profile.seo_title" @input="enhanceChanged()" placeholder="Contoh: Akbar Maulana — Semua Link Saya"
+                            <input type="text" x-model="profile.seo_title" @input="enhanceChanged()" placeholder="Contoh: Akbar Maulana â€” Semua Link Saya"
                                    class="w-full px-4 py-3 rounded-xl border border-ink-200 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition">
                             <p class="text-xs text-ink-400 mt-1.5" x-text="profile.seo_title ? profile.seo_title.slice(0, 60) : 'Judul berisi maksimal 60 karakter.'"></p>
                         </div>
@@ -664,9 +664,11 @@
             <div class="rounded-3xl bg-white border border-slate-100 shadow-[0_2px_20px_-4px_rgba(0,0,0,0.04)] p-6">
                 <div class="flex items-center justify-between mb-5">
                     <p class="text-base font-extrabold text-[#14213d]">Preview</p>
-                    <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-[#edf8dd] text-[#22c55e] flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#22c55e]"></span> Live
-                    </span>
+                    <a href="{{ $editorData['publicUrl'] }}" target="_blank"
+                       class="text-xs font-bold px-2.5 py-1 rounded-full bg-[#edf8dd] text-[#22c55e] flex items-center gap-1.5 hover:bg-[#d4f7b0] transition-colors duration-150 cursor-pointer">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse"></span> Lihat Halaman 
+                        <svg class="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
                 </div>
                 @include('components.editor-phone-preview')
             </div>
